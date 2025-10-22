@@ -10,3 +10,6 @@ To run the react navigate to ./app then type "npm start" in the terminal
 
 
 To run the server navigate to ./server then type "node index.js" in the terminal
+
+
+BEFORE EDITING ANYTHING RUN "npm install" in either the ./app or the ./server to make sure the used packages are installed on your computer
