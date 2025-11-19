@@ -1,11 +1,5 @@
 import Post from "../models/Post.js";
 import Community from "../models/Community.js";
-import fetch from "node-fetch";
-import OpenAI from "openai";
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-
 
 export const createPost = async (req, res) => {
   try {
@@ -186,28 +180,50 @@ export const summarizePost = async (req, res) => {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: "Post not found" });
 
+    const openaiApiKey = process.env.OPENAI_API_KEY;
     const fallbackContent = post.content || post.title || "No content";
     let summary = null;
 
-    try {
-      const response = await openai.responses.create({
-        model: "gpt-4o-mini", // or "gpt-5" if available
-        input: `
-          Summarize this Reddit-style post in one sentence (max 60 words).
-          Title: ${post.title}
-          Content: ${post.content}
-        `,
-      });
+    if (openaiApiKey && typeof fetch === "function") {
+      try {
+        const prompt = `Summarize this Reddit-style post in one concise sentence (max 60 words).\\n\\nTitle: ${post.title}\\n\\nContent:\\n${post.content || ""}`;
+        const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${openaiApiKey}`,
+          },
+          body: JSON.stringify({
+            model: "gpt-4o-mini",
+            messages: [
+              {
+                role: "system",
+                content:
+                  "You summarize posts into one short, direct sentence. Avoid fluff.",
+              },
+              { role: "user", content: prompt },
+            ],
+            max_tokens: 80,
+            temperature: 0.3,
+          }),
+        });
 
-      summary = response.output_text.trim();
-    } catch (err) {
-      console.error("OpenAI error:", err);
+        if (!aiRes.ok) {
+          throw new Error(`OpenAI HTTP ${aiRes.status}`);
+        }
+
+        const aiData = await aiRes.json();
+        summary = aiData?.choices?.[0]?.message?.content?.trim() || null;
+      } catch (err) {
+        console.error("AI summarization failed:", err.message);
+      }
     }
 
     if (!summary) {
-      summary = fallbackContent.length > 150
-        ? fallbackContent.slice(0, 150) + "..."
-        : fallbackContent;
+      summary =
+        fallbackContent.length > 150
+          ? fallbackContent.slice(0, 150) + "..."
+          : fallbackContent;
     }
 
     res.json({
