@@ -8,7 +8,6 @@ import {
   upvotePost,
   downvotePost,
   getFeedPosts,
-  summarizePost,
 } from "../controllers/post.controller.js";
 import { protect } from "../middleware/auth.js";
 
@@ -22,6 +21,5 @@ router.put("/:id", protect, updatePost);
 router.delete("/:id", protect, deletePost);
 router.put("/:id/upvote", protect, upvotePost);
 router.put("/:id/downvote", protect, downvotePost);
-router.post("/:id/summarize", summarizePost);
 
 export default router;
