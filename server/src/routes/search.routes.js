@@ -1,9 +1,8 @@
 import express from "express";
+import { searchUsersAndCommunities } from "../controllers/user.controller.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.json({ message: "Search route working!" });
-});
+router.get("/", searchUsersAndCommunities);
 
-export default router; // ✅ important
+export default router;
