@@ -1,10 +1,15 @@
 import Post from "../models/Post.js";
 import Community from "../models/Community.js";
-import fetch from "node-fetch";
 import OpenAI from "openai";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+// Note: removed direct Google GenAI usage here to avoid runtime errors
+// and leaking API keys. summarizePost supports optional AI summarization
+// when `?ai=true` is provided. It prefers OpenAI when `OPENAI_API_KEY`
+// is set; otherwise it falls back to a safe local summarizer.
 
+const openaiClient = process.env.OPENAI_API_KEY
+  ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+  : null;
 
 
 export const createPost = async (req, res) => {
@@ -180,41 +185,67 @@ export const downvotePost = async (req, res) => {
   }
 };
 
-// frontend would call: POST /api/posts/:id/summarize (yousef ibrahim etfadal)
 export const summarizePost = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ message: "Post not found" });
 
-    const fallbackContent = post.content || post.title || "No content";
     let summary = null;
 
-    try {
-      const response = await openai.responses.create({
-        model: "gpt-4o-mini", // or "gpt-5" if available
-        input: `
-          Summarize this Reddit-style post in one sentence (max 60 words).
-          Title: ${post.title}
-          Content: ${post.content}
-        `,
-      });
+    // local summarizer — used as fallback or when AI is not requested
+    const generateSummaryFromText = (title, content) => {
+      const text = (content || "").toString().replace(/\s+/g, ' ').trim();
+      if (text.length) {
+        const sentences = text.split(/(?<=[.!?])\s+/);
+        let sentence = sentences.find((s) => s.trim().length > 20) || sentences[0] || text;
+        sentence = sentence.trim();
+        if (sentence.length > 120) sentence = sentence.slice(0, 117).trim() + '...';
+        return sentence;
+      }
+      if (title && title.toString().trim().length) return title.toString().trim();
+      return '';
+    };
 
-      summary = response.output_text.trim();
-    } catch (err) {
-      console.error("OpenAI error:", err);
+    const useAI = (req.query.ai === 'true' || req.query.useAI === 'true');
+
+    if (useAI && openaiClient) {
+      try {
+        const prompt = `Summarize this Reddit-style post in ONE clear sentence (max 60 words). Avoid emojis, fluff, and unnecessary details.\n\nTitle: ${post.title}\nContent: ${post.content || ""}`;
+
+        const completion = await openaiClient.chat.completions.create({
+          model: 'gpt-3.5-turbo',
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 120,
+          temperature: 0.2,
+        });
+
+        const aiText = completion?.choices?.[0]?.message?.content;
+        if (aiText && aiText.toString().trim().length) {
+          summary = aiText.toString().trim();
+        }
+      } catch (aiErr) {
+        console.error('AI summarization failed:', aiErr?.message || aiErr);
+        // fall through to local summarizer
+      }
     }
 
     if (!summary) {
-      summary = fallbackContent.length > 150
-        ? fallbackContent.slice(0, 150) + "..."
-        : fallbackContent;
+      summary = generateSummaryFromText(post.title, post.content);
     }
 
-    res.json({
+    // fallback
+    if (!summary || summary.length === 0) {
+      summary = post.content
+        ? post.content.slice(0, 120) + "..."
+        : post.title;
+    }
+
+    return res.json({
       postId: post._id,
       summary,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
+
