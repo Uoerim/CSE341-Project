@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import api from "../api/apiClient";
-import PostCard from "../components/PostCard";
+import PostCard from "../components/Postcard";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);

@@ -41,9 +41,10 @@ function Navbar() {
         />
       </form>
 
-      <nav style={{ display: "flex", gap: "8px" }}>
+      <nav style={{ display: "flex", gap: "8px", alignItems: "center" }}>
         <Link to="/login">Log in</Link>
         <Link to="/register">Sign up</Link>
+        <Link to="/settings">Settings</Link>
       </nav>
     </header>
   );

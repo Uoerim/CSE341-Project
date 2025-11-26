@@ -1,0 +1,410 @@
+/* PAGE WRAPPER */
+.settings-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 16px 24px 40px;
+}
+
+/* TITLE */
+.settings-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+/* TABS */
+.settings-tabs {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.settings-tab {
+  border: none;
+  background: none;
+  padding: 12px 0;
+  font-size: 14px;
+  color: #6a6a6a;
+  cursor: pointer;
+  position: relative;
+}
+
+.settings-tab--active {
+  color: #222;
+  font-weight: 600;
+}
+
+.settings-tab--active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: #222;
+}
+
+/* CONTENT AREA */
+.settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* SECTION HEADER */
+.settings-section {
+  padding-bottom: 16px;
+}
+
+.settings-section-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+/* ROW */
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  font-size: 14px;
+}
+
+.settings-row-label {
+  font-weight: 500;
+}
+
+.settings-row-helper {
+  font-size: 12px;
+  color: #7a7a7a;
+  margin-top: 3px;
+}
+
+.settings-row-value {
+  color: #555;
+}
+
+.settings-row-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* PILL BUTTON */
+.settings-row-button {
+  padding: 6px 18px;
+  border-radius: 20px;
+  border: 1px solid #d8d8d8;
+  background: #ffffff;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.settings-row-button:hover {
+  background: #f6f7f8;
+}
+
+.settings-row-button--primary {
+  background: #0079d3;
+  border-color: #0079d3;
+  color: white;
+}
+
+.settings-row-button--primary:hover {
+  background: #0067b5;
+}
+
+/* CHEVRON CIRCLE BUTTON */
+.settings-row-chevron {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: #e4e6eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.settings-row-chevron:hover {
+  background: #d8dadf;
+}
+
+.settings-row-chevron-icon {
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+}
+
+/* TOGGLE SWITCH */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: #dce1e6;
+  border-radius: 30px;
+  transition: 0.25s ease;
+}
+
+.slider:before {
+  content: "";
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  left: 2px;
+  bottom: 2px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.25s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.toggle-switch input:checked + .slider {
+  background: #1a5cff;
+}
+
+.toggle-switch input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+/* FOOTER */
+.settings-footer {
+  margin-top: 40px;
+  font-size: 12px;
+  color: #737373;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.settings-footer a {
+  color: #737373;
+  text-decoration: none;
+}
+
+.settings-footer a:hover {
+  text-decoration: underline;
+}
+
+.settings-footer span {
+  opacity: 0.8;
+}
+
+/* clickable rows */
+.settings-row-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-row--clickable {
+  cursor: pointer;
+}
+
+/* MODAL */
+.settings-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.settings-modal {
+  background: #ffffff;
+  border-radius: 8px;
+  max-width: 420px;
+  width: 100%;
+  padding: 20px 24px 16px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+}
+
+.settings-modal-header h3 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.settings-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.settings-modal-label {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  gap: 4px;
+}
+
+.settings-modal-input {
+  padding: 6px 8px;
+  border-radius: 4px;
+  border: 1px solid #d8d8d8;
+  font-size: 13px;
+}
+
+.settings-modal-input:focus {
+  outline: none;
+  border-color: #0079d3;
+}
+
+.settings-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.settings-modal-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.settings-modal-text {
+  font-size: 13px;
+  color: #555;
+}
+
+/* "Show all" button on the right side of the row */
+.settings-row-showall-button {
+  border: none;
+  background: none;
+  font-size: 12px;
+  color: #1a1a1b;
+  cursor: pointer;
+}
+
+/* card under Content & activity */
+.profile-content-card {
+  margin-top: 8px;
+  padding: 16px 20px;
+  border-radius: 20px;
+  background: #f6f7f8;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* each option row */
+.profile-content-option {
+  border: none;
+  background: transparent;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  cursor: pointer;
+  padding: 6px 4px;
+  border-radius: 12px;
+}
+
+.profile-content-option--active {
+  background: rgba(0, 121, 211, 0.06);
+}
+
+.profile-content-option-left {
+  display: flex;
+  gap: 10px;
+}
+
+.profile-content-option-icon {
+  font-size: 18px;
+  margin-top: 2px;
+}
+
+.profile-content-option-title {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.profile-content-option-helper {
+  font-size: 12px;
+  color: #777;
+}
+
+/* custom radio circle on the right */
+.profile-content-option-radio {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #a5a5a5;
+  box-sizing: border-box;
+}
+
+.profile-content-option-radio--checked {
+  border-color: #0079d3;
+  background: #0079d3;
+  box-shadow: inset 0 0 0 3px #ffffff;
+}
+
+.profile-info-box {
+  margin-top: 12px;
+  padding: 16px 20px;
+  border-radius: 20px;
+  background: #f6f7f8;
+  font-size: 13px;
+  color: #555;
+}
+
+/* blue "Profile curation" link */
+.profile-info-link {
+  color: #0079d3;
+  text-decoration: none;
+}
+
+.profile-info-link:hover {
+  text-decoration: underline;
+}
+
+/* external link icon button (right side of Profile moderation) */
+.settings-external-button {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-external-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* blue value text like "Everyone" */
+.settings-row-value--link {
+  color: #0079d3;
+}
+
+/* grey "Clear" pill button */
+.settings-row-button--ghost {
+  background: #e4e6eb;
+  border: none;
+  border-radius: 999px;
+}
+
+.settings-row-button--ghost:hover {
+  background: #d8dadf;
+}

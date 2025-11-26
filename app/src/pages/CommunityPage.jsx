@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api/apiClient";
-import PostCard from "../components/PostCard";
+import PostCard from "../components/Postcard";
 
 function CommunityPage() {
   const { communityId } = useParams();

@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
+import LeftNav from "./LeftNav";
 
 const layoutStyles = {
   display: "flex",
@@ -27,7 +28,13 @@ function Layout({ children }) {
     <div style={layoutStyles}>
       <Navbar />
       <div style={mainStyles}>
+        {/* LEFT MENU */}
+        <LeftNav />
+
+        {/* CENTER CONTENT */}
         <div style={contentStyles}>{children}</div>
+
+        {/* RIGHT SIDEBAR */}
         <Sidebar />
       </div>
     </div>
