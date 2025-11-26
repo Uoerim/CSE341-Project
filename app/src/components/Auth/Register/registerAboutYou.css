@@ -1,0 +1,63 @@
+.register-about-you-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    color: #ffffff;
+    padding: 0px;
+}
+
+.register-about-you-container h1 {
+    font-size: 1.8em;
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.register-about-you-container p {
+    font-size: 0.9em;
+    text-align: center;
+    color: #b7cad4;
+    line-height: 1.5em;
+    margin-bottom: 40px;
+}
+
+.gender-section h2 {
+    font-size: 1em;
+    text-align: center;
+    color: #b7cad4;
+    margin-bottom: 20px;
+    font-weight: 400;
+    width: 100%;
+}
+
+.gender-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.gender-btn {
+    padding: 14px 20px;
+    background-color: #2A3236;
+    border: 2px solid transparent;
+    border-radius: 20px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.gender-btn:hover {
+    background-color: #333D42;
+}
+
+.gender-btn.selected {
+    background-color: #333D42;
+    border-color: #6a92f8;
+}
