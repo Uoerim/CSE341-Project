@@ -1,0 +1,108 @@
+.main-side-panel{
+    height: calc(100vh - 60px);
+    width: 234px;
+    background-color: #0E1113;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 15px 18px;
+    border-right: 0.5px solid #26282A;
+    overflow-y: auto;
+    position: relative;
+}
+
+.side-menu{
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    padding: 0 8px;
+}
+
+.side-menu-item{
+    background-color: transparent;
+    border: none;
+    color: #D1D5DB;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    text-align: left;
+}
+
+.side-menu-item:hover{
+    background-color: rgba(255, 255, 255, 0.08);
+    color: white;
+}
+
+.side-menu-item svg{
+    width: 20px;
+    height: 20px;
+    fill: #D1D5DB;
+    flex-shrink: 0;
+}
+
+.side-menu-item:hover svg{
+    fill: white;
+}
+
+.side-menu-create{
+    margin-top: 4px;
+}
+
+.side-sections{
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 12px;
+    padding: 0;
+    padding-right: 15px;
+    flex: 1;
+}
+
+.side-section{
+    border-top: 1px solid #26282A;
+    padding: 0;
+}
+
+.side-section-title{
+    font-size: 12px;
+    font-weight: 500;
+    color: #748791;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    cursor: pointer;
+    padding: 22px 16px;
+    transition: color 0.15s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+
+
+.side-panel-footer{
+    font-size: 10px;
+    color: #ACACAC;
+    text-align: center;
+    padding: 12px 0;
+    margin-top: auto;
+    line-height: 1.3;
+    margin-bottom: 20px;
+    margin-left: -30px;
+}
+
+.main-content{
+    flex: 1;
+    height: calc(100vh - 56px);
+    background-color: #16191C;
+    color: white;
+    padding: 20px;
+}
