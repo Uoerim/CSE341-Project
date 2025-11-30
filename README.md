@@ -1,15 +1,9 @@
-"# CSE341-Project" 
-
-
-DONT MERGEEEEEEEE 
-
-ADD CODE IN A NEW BRANCH AND MAKE A PULL REQUEST DONTTT MERGEEEEEEEEE
-
-
-To run the react navigate to ./app then type "npm start" in the terminal
-
-
-To run the server navigate to ./server then type "node index.js" in the terminal
-
-
-BEFORE EDITING ANYTHING RUN "npm install" in either the ./app or the ./server to make sure the used packages are installed on your computer
+| Type | Prefix | Example | Purpose |
+|------|--------|---------|---------|
+| Feature | `feature/` | `feature/post-api` | New features |
+| Bug Fix | `bugfix/` | `bugfix/login-issue` | Fixes |
+| Hotfix | `hotfix/` | `hotfix/prod-auth-bug` | Critical fixes |
+| Refactor | `refactor/` | `refactor/user-service` | Code improvements |
+| Documentation | `docs/` | `docs/readme-update` | Documentation changes |
+| Chore | `chore/` | `chore/update-deps` | Maintenance |
+| UI/UX | `ui/` | `ui/navbar` | Design/UI work |
