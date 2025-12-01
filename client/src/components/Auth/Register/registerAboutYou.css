@@ -8,10 +8,39 @@
     padding: 0px;
 }
 
+.register-about-you-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.register-back-btn {
+    background: none;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    border-radius: 50%;
+}
+
+.register-back-btn:hover {
+    background-color: #333D42;
+}
+
+.back-icon {
+    color: #fff;
+    transition: color 0.2s ease;
+}
+
 .register-about-you-container h1 {
     font-size: 1.8em;
     text-align: center;
-    margin-top: 30px;
+    margin-top: 20px;
     margin-bottom: 15px;
     font-weight: 600;
 }
@@ -38,6 +67,7 @@
     flex-direction: column;
     gap: 12px;
     width: 100%;
+    margin-bottom: 40px;
 }
 
 .gender-btn {
@@ -60,4 +90,43 @@
 .gender-btn.selected {
     background-color: #333D42;
     border-color: #6a92f8;
+}
+
+.bio-section h2 {
+    font-size: 1em;
+    color: #b7cad4;
+    margin-bottom: 12px;
+    font-weight: 400;
+    width: 100%;
+}
+
+.bio-input {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: #2A3236;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.bio-input:focus {
+    outline: none;
+    background-color: #333D42;
+    border-color: #6a92f8;
+}
+
+.bio-input::placeholder {
+    color: #8a9098;
+}
+
+.bio-char-count {
+    font-size: 0.85em;
+    color: #8a9098;
+    margin-top: 8px;
+    text-align: right;
 }
