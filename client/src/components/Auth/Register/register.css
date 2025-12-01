@@ -87,8 +87,60 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 15px;
+    gap: 2px;
+}
 
+.email-input-wrapper {
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.email-status-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.email-error-message {
+    width: 100%;
+    font-size: 0.8em !important;
+    color: #f44336 !important;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    display: flex;
+    justify-content: start;
+    margin-top: 0px !important;
+    margin-left: 30px !important;
+}
+
+.email-success {
+    width: 100%;
+    font-size: 0.8em !important;
+    color: #4CAF50 !important;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    display: flex;
+    justify-content: start;
+    margin-top: 0px !important;
+    margin-left: 30px !important;
+}
+
+.checking-message {
+    width: 100%;
+    font-size: 0.8em;
+    color: #6a92f8;
+    margin: 0;
+    padding: 0;
+    text-align: left;
 }
 
 .forgot-password {
