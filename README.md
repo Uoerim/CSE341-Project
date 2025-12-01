@@ -7,3 +7,6 @@
 | Documentation | `docs/<Your Name>/` | `docs/<Your Name>/readme-update` | Documentation changes |
 | Chore | `chore/<Your Name>/` | `chore/<Your Name>/update-deps` | Maintenance |
 | UI/UX | `ui/<Your Name>/` | `ui/<Your Name>/navbar` | Design/UI work |
+
+
+Enjoy :)
