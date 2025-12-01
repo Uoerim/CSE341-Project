@@ -91,6 +91,18 @@
 
 }
 
+.login-error-message {
+    width: 100%;
+    font-size: 0.8em !important;
+    color: #f44336 !important;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    display: flex;
+    margin-left: 30px !important;
+
+}
+
 .forgot-password {
     align-self: flex-start;
     color: #6a92f8;

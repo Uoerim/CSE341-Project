@@ -1,16 +1,12 @@
 import React from "react";
 import './textbox.css';
 
-function Textbox({ placeholder, type = "text", value, onChange }) {
+function Textbox({ placeholder, type = "text", value, onChange, showCheckmark = true, error = false }) {
     const [isFocused, setIsFocused] = React.useState(false);
     const [showPassword, setShowPassword] = React.useState(false);
     const isPassword = type === "password";
     const inputType = isPassword && !showPassword ? "password" : "text";
     const hasValue = value && value.length > 0;
-
-
-    console.log("Textbox value:", value);
-
 
     return (
         <div className="textbox-wrapper">
@@ -20,16 +16,19 @@ function Textbox({ placeholder, type = "text", value, onChange }) {
             </label>
             <div className="input-container">
                 <input
-                    className="global-textbox"
+                    className={`global-textbox ${error ? 'error' : ''}`}
                     type={inputType}
                     value={value}
                     onChange={onChange}
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
                 />
+                {error && hasValue && (
+                    <svg className="error-icon" fill="currentColor" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M11.21 13.5a1.21 1.21 0 11-2.42 0 1.21 1.21 0 012.42 0zM19 10c0-4.963-4.038-9-9-9s-9 4.037-9 9 4.038 9 9 9 9-4.037 9-9zm-1.801 0c0 3.97-3.229 7.2-7.199 7.2-3.97 0-7.199-3.23-7.199-7.2S6.03 2.8 10 2.8c3.97 0 7.199 3.23 7.199 7.2zm-6.441 1.24l.242-6H9l.242 6h1.516z"></path></svg>
+                )}
                 {hasValue && isPassword && isFocused && (
                     <button
-                        className="password-toggle"
+                        className={`password-toggle ${error ? 'with-error' : ''}`}
                         onClick={() => setShowPassword(!showPassword)}
                         onMouseDown={(e) => e.preventDefault()}
                         type="button"
@@ -47,12 +46,12 @@ function Textbox({ placeholder, type = "text", value, onChange }) {
                         )}
                     </button>
                 )}
-                {hasValue && !isPassword && !isFocused && (
+                {hasValue && !isPassword && !isFocused && showCheckmark && (
                     <svg className="checkmark-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" strokeWidth="3">
                         <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>
                 )}
-                {hasValue && isPassword && !isFocused && (
+                {hasValue && isPassword && !isFocused && showCheckmark && (
                     <svg className="checkmark-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" strokeWidth="3">
                         <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>

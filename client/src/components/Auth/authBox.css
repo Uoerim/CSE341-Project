@@ -12,6 +12,36 @@
     
 }
 
+.authBox-back-btn {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: none;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    border-radius: 50%;
+}
+
+.authBox-back-btn:hover {
+    background-color: #333D42;
+}
+
+.error-message {
+    background-color: #d93900;
+    color: #fff;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    text-align: center;
+}
+
 .switch-btn{
     display: flex;
     flex-direction: row;
@@ -41,6 +71,10 @@
     cursor: pointer;
     margin-top: 30px;
     transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 
     position: absolute;
     bottom: 20px;
