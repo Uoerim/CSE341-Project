@@ -1,3 +1,7 @@
+This code is a project for university
+Its made for educational purpose only
+
+
 | Type | Prefix | Example | Purpose |
 |------|--------|---------|---------|
 | Feature | `feature/<Your Name>/` | `feature/<Your Name>/post-api` | New features |
