@@ -4,6 +4,7 @@
  */
 
 export * from "./authService";
+export * from "./googleAuthService";
 export * from "./tokenService";
 export * from "./userService";
 export { apiRequest } from "./api";

@@ -2,13 +2,15 @@ import React from "react";
 import './login.css';
 import Textbox from "../../Global/textbox/textbox";
 import Spinner from "../../Global/Spinner/Spinner";
+import GoogleSignInButton from "../GoogleSignInButton";
 import { loginUser, setToken } from "../../../services";
 import { useNavigate } from "react-router-dom";
 
-function Login({ email, setEmail, password, setPassword, onHandleLogin }, ref) {
+function Login({ email, setEmail, password, setPassword, onHandleLogin, onGoogleSignIn }, ref) {
     const navigate = useNavigate();
     const [error, setError] = React.useState("");
     const [loading, setLoading] = React.useState(false);
+    const [googleLoading, setGoogleLoading] = React.useState(false);
 
     const handleLogin = async () => {
         if (!email || !password) {
@@ -25,6 +27,19 @@ function Login({ email, setEmail, password, setPassword, onHandleLogin }, ref) {
         } catch (err) {
             setError("Invalid username or password.");
             setLoading(false);
+        }
+    };
+
+    const handleGoogleSignIn = async (token) => {
+        setGoogleLoading(true);
+        setError("");
+        try {
+            if (onGoogleSignIn) {
+                await onGoogleSignIn(token);
+            }
+        } catch (err) {
+            setError(err.message || "Google Sign-In failed");
+            setGoogleLoading(false);
         }
     };
 
@@ -48,7 +63,7 @@ function Login({ email, setEmail, password, setPassword, onHandleLogin }, ref) {
             <h1>Log In</h1>
             <p>By continuing, you agree to our <span>User Agreement</span> and acknowledge that you understand the <span>Privacy Policy</span>.</p>
             <div className="login-external-container">
-                <div className="login-button-placeholder">Placeholder</div>
+                <GoogleSignInButton onSuccess={handleGoogleSignIn} onError={(err) => setError(err)} disabled={googleLoading} />
                 <div className="login-button-placeholder">Placeholder</div>
                 <div className="login-button-placeholder">Placeholder</div>
                 <div className="login-button-placeholder">Placeholder</div>
