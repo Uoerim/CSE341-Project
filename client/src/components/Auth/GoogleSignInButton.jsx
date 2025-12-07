@@ -22,10 +22,11 @@ function GoogleSignInButton({ onSuccess, onError, disabled = false }) {
                     onSuccess={handleSuccess}
                     onError={handleError}
                     disabled={disabled}
-                    theme="dark"
+                    type="standard"
+                    theme="light"
                     size="large"
                     width="100%"
-                    text="signin_with"
+                    text="continue_with"
                 />
             </div>
         </GoogleOAuthProvider>

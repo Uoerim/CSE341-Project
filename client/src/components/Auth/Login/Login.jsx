@@ -63,8 +63,8 @@ function Login({ email, setEmail, password, setPassword, onHandleLogin, onGoogle
             <h1>Log In</h1>
             <p>By continuing, you agree to our <span>User Agreement</span> and acknowledge that you understand the <span>Privacy Policy</span>.</p>
             <div className="login-external-container">
-                <GoogleSignInButton onSuccess={handleGoogleSignIn} onError={(err) => setError(err)} disabled={googleLoading} />
                 <div className="login-button-placeholder">Placeholder</div>
+                <GoogleSignInButton onSuccess={handleGoogleSignIn} onError={(err) => setError(err)} disabled={googleLoading} />
                 <div className="login-button-placeholder">Placeholder</div>
                 <div className="login-button-placeholder">Placeholder</div>
 

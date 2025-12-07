@@ -78,8 +78,8 @@ function Register({ email, setEmail, onGoogleSignIn }) {
             <h1>Sign Up</h1>
             <p>By continuing, you agree to our <span>User Agreement</span> and acknowledge that you understand the <span>Privacy Policy</span>.</p>
             <div className="register-external-container">
-                <GoogleSignInButton onSuccess={handleGoogleSignIn} onError={(err) => setEmailError(err)} disabled={googleLoading} />
                 <div className="register-button-placeholder">Placeholder</div>
+                <GoogleSignInButton onSuccess={handleGoogleSignIn} onError={(err) => setEmailError(err)} disabled={googleLoading} />
                 <div className="register-button-placeholder">Placeholder</div>
 
             </div>
