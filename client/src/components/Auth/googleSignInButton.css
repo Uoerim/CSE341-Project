@@ -1,0 +1,48 @@
+.google-signin-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.google-signin-wrapper > div {
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.google-signin-wrapper button {
+    width: 100% !important;
+    height: 43px !important;
+    border-radius: 100px !important;
+    font-weight: 500 !important;
+    font-size: 0.95em !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    padding: 0 16px !important;
+    border: none !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.google-signin-wrapper button:hover:not(:disabled) {
+    background-color: #f5f5f5 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+.google-signin-wrapper button:disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+}
+
+.google-signin-wrapper button img {
+    width: 18px !important;
+    height: 18px !important;
+}
+
+.google-signin-wrapper button span {
+    font-size: 0.95em !important;
+}

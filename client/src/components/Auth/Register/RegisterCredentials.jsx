@@ -3,7 +3,7 @@ import './registerCredentials.css';
 import Textbox from "../../Global/textbox/textbox";
 import { checkUsername } from "../../../services";
 
-function RegisterCredentials({ username, setUsername, password, setPassword, onBack }) {
+function RegisterCredentials({ username, setUsername, password, setPassword, onBack, isGoogleFlow = false, googleEmail = "" }) {
     const [usernameError, setUsernameError] = React.useState("");
     const [passwordErrors, setPasswordErrors] = React.useState([]);
     const [checkingUsername, setCheckingUsername] = React.useState(false);
@@ -66,24 +66,41 @@ function RegisterCredentials({ username, setUsername, password, setPassword, onB
 
     React.useEffect(() => {
         const handleKeyPress = (e) => {
-            if (e.key === 'Enter' && username && isPasswordValid) {
-                const continueButton = document.querySelector('[data-credentials-continue]');
-                if (continueButton) {
-                    continueButton.click();
+            if (isGoogleFlow) {
+                // For Google flow: only username required
+                if (e.key === 'Enter' && username && username.length >= 4) {
+                    const continueButton = document.querySelector('[data-credentials-continue]');
+                    if (continueButton) {
+                        continueButton.click();
+                    }
+                }
+            } else {
+                // For regular flow: username and password required
+                if (e.key === 'Enter' && username && isPasswordValid) {
+                    const continueButton = document.querySelector('[data-credentials-continue]');
+                    if (continueButton) {
+                        continueButton.click();
+                    }
                 }
             }
         };
         window.addEventListener('keydown', handleKeyPress);
         return () => window.removeEventListener('keydown', handleKeyPress);
-    }, [username, isPasswordValid]);
+    }, [username, isPasswordValid, isGoogleFlow]);
 
     return (
         <div className="register-credentials-container">
             <div className="register-credentials-header">
 
             </div>
-            <h1>Create your username and password</h1>
-            <p>Loopify is anonymous, so your username is what you'll go by here. Choose wisely—because once you get a name, you can't change it.</p>
+            <h1>{isGoogleFlow ? "Create your username" : "Create your username and password"}</h1>
+            <p>{isGoogleFlow 
+                ? "Loopify is anonymous, so your username is what you'll go by here. Choose wisely—because once you get a name, you can't change it."
+                : "Loopify is anonymous, so your username is what you'll go by here. Choose wisely—because once you get a name, you can't change it."
+            }</p>
+            {isGoogleFlow && googleEmail && (
+                <p className="google-email-note">Signing up with {googleEmail}</p>
+            )}
             <div className="register-credentials-inputs">
                 <div className="input-field">
                     <Textbox 
@@ -107,34 +124,36 @@ function RegisterCredentials({ username, setUsername, password, setPassword, onB
                         </svg>
                     )}
                 </div>
-                <div className="input-field">
-                    <Textbox 
-                        placeholder="Password" 
-                        type="password" 
-                        value={password} 
-                        onChange={handlePasswordChange}
-                        showCheckmark={false}
-                        error={password.length > 0 && passwordErrors.length > 0 ? true : false}
-                    />
-                    {password && (
-                        <div className="password-requirements">
-                            <p className={passwordErrors.length === 0 ? "requirement-met" : "requirement-unmet"}>
-                                ✓ Password strength requirements:
-                            </p>
-                            <ul>
-                                <li className={password.length >= 12 ? "met" : "unmet"}>
-                                    At least 12 characters ({password.length}/12)
-                                </li>
-                                <li className={/[a-zA-Z]/.test(password) ? "met" : "unmet"}>
-                                    At least one letter
-                                </li>
-                                <li className={/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password) ? "met" : "unmet"}>
-                                    At least one special character
-                                </li>
-                            </ul>
-                        </div>
-                    )}
-                </div>
+                {!isGoogleFlow && (
+                    <div className="input-field">
+                        <Textbox 
+                            placeholder="Password" 
+                            type="password" 
+                            value={password} 
+                            onChange={handlePasswordChange}
+                            showCheckmark={false}
+                            error={password.length > 0 && passwordErrors.length > 0 ? true : false}
+                        />
+                        {password && (
+                            <div className="password-requirements">
+                                <p className={passwordErrors.length === 0 ? "requirement-met" : "requirement-unmet"}>
+                                    ✓ Password strength requirements:
+                                </p>
+                                <ul>
+                                    <li className={password.length >= 12 ? "met" : "unmet"}>
+                                        At least 12 characters ({password.length}/12)
+                                    </li>
+                                    <li className={/[a-zA-Z]/.test(password) ? "met" : "unmet"}>
+                                        At least one letter
+                                    </li>
+                                    <li className={/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password) ? "met" : "unmet"}>
+                                        At least one special character
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );
