@@ -1,11 +1,13 @@
 import React from "react";
 import './register.css';
 import Textbox from "../../Global/textbox/textbox";
+import GoogleSignInButton from "../GoogleSignInButton";
 import { checkEmail } from "../../../services";
 
-function Register({ email, setEmail }) {
+function Register({ email, setEmail, onGoogleSignIn }) {
     const [emailError, setEmailError] = React.useState("");
     const [checkingEmail, setCheckingEmail] = React.useState(false);
+    const [googleLoading, setGoogleLoading] = React.useState(false);
 
     const isValidEmail = (emailValue) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -42,6 +44,19 @@ function Register({ email, setEmail }) {
         }
     };
 
+    const handleGoogleSignIn = async (token) => {
+        setGoogleLoading(true);
+        setEmailError("");
+        try {
+            if (onGoogleSignIn) {
+                await onGoogleSignIn(token);
+            }
+        } catch (err) {
+            setEmailError(err.message || "Google Sign-In failed");
+            setGoogleLoading(false);
+        }
+    };
+
     const isValid = email.length > 0 && isValidEmail(email) && emailError === "";
 
     React.useEffect(() => {
@@ -64,7 +79,7 @@ function Register({ email, setEmail }) {
             <p>By continuing, you agree to our <span>User Agreement</span> and acknowledge that you understand the <span>Privacy Policy</span>.</p>
             <div className="register-external-container">
                 <div className="register-button-placeholder">Placeholder</div>
-                <div className="register-button-placeholder">Placeholder</div>
+                <GoogleSignInButton onSuccess={handleGoogleSignIn} onError={(err) => setEmailError(err)} disabled={googleLoading} />
                 <div className="register-button-placeholder">Placeholder</div>
 
             </div>
