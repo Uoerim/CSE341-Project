@@ -1,5 +1,5 @@
 .google-signin-wrapper {
-    width: 100%;
+    width: 105%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8,7 +8,22 @@
 .google-signin-wrapper > div {
     width: 100%;
     max-width: 100% !important;
+    border-radius: 100px !important;
 }
+
+.google-signin-wrapper > div > div {
+    border-radius: 100px !important;
+}
+
+.google-signin-wrapper > div > div > button {
+    border-radius: 100px !important;
+}
+
+.google-signin-wrapper * {
+    border-radius: 100px !important;
+}
+
+
 
 .google-signin-wrapper button {
     width: 100% !important;
@@ -26,6 +41,7 @@
     color: #000000 !important;
     cursor: pointer;
     transition: all 0.3s ease;
+    
 }
 
 .google-signin-wrapper button:hover:not(:disabled) {
@@ -44,5 +60,10 @@
 }
 
 .google-signin-wrapper button span {
+    color: #000000 !important;
     font-size: 0.95em !important;
+}
+
+.google-signin-wrapper span {
+    color: #000000 !important;
 }
