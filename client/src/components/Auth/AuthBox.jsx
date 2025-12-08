@@ -7,6 +7,8 @@ import RegisterAboutYou from "./Register/RegisterAboutYou";
 import Spinner from "../Global/Spinner/Spinner";
 import { registerUser, setToken, googleAuthenticate, completeGoogleRegistration } from "../../services";
 import { useNavigate } from "react-router-dom";
+import PhoneLogin from "./Login/PhoneLogin/PhoneLogin";
+import PhoneVerification from "./Login/PhoneLogin/PhoneVerification";
 
 function AuthBox() {
     const navigate = useNavigate();
@@ -158,55 +160,195 @@ function AuthBox() {
             setLoginLoading(false);
         }
     };
+// Add these states to the existing AuthBox.jsx component
+const [phoneNumber, setPhoneNumber] = React.useState("");
+const [showPhoneLogin, setShowPhoneLogin] = React.useState(false);
+const [showPhoneVerification, setShowPhoneVerification] = React.useState(false);
+const [verificationCode, setVerificationCode] = React.useState("");
 
-    return (
-        <div className="authBox-container">
-            {(registerStage > 0 || isGoogleFlow) && (
-                <button className="authBox-back-btn" onClick={() => { 
-                    setAuthOption(0); 
-                    setRegisterStage(0); 
-                    setIsGoogleFlow(false);
-                    setGoogleIdToken("");
-                    setGoogleUserEmail("");
-                }}>
-                    <svg className="back-icon" fill="currentColor" height="20" icon-name="arrow-back" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M17.5 9.1H4.679l5.487-5.462a.898.898 0 00.003-1.272.898.898 0 00-1.272-.003l-7.032 7a.898.898 0 000 1.275l7.03 7a.896.896 0 001.273-.003.898.898 0 00-.002-1.272l-5.487-5.462h12.82a.9.9 0 000-1.8z"></path>
-                    </svg>
-                </button>
-            )}
-            {error && <div className="error-message">{error}</div>}
-            {authOption === 0 && <Login ref={loginRef} email={email} setEmail={setEmail} password={password} setPassword={setPassword} onGoogleSignIn={handleGoogleSignIn} />}
-            {authOption === 1 && registerStage === 0 && <Register email={registerEmail} setEmail={setRegisterEmail} onGoogleSignIn={handleGoogleSignIn} />}
-            {authOption === 1 && registerStage === 1 && (
-                <RegisterCredentials 
-                    username={username}
-                    setUsername={setUsername}
-                    password={registerPassword}
-                    setPassword={setRegisterPassword}
-                    onBack={handleBackClick}
-                    isGoogleFlow={isGoogleFlow}
-                    googleEmail={googleUserEmail}
-                />
-            )}
-            {authOption === 1 && registerStage === 2 && (
-                <RegisterAboutYou 
-                    onGenderSelect={handleGenderSelect}
-                    onBack={handleBackClick}
-                    selectedGender={gender}
-                />
-            )}
-            {authOption === 0 && <div className="switch-btn"><p>New to Loopify? &nbsp;</p> <a onClick={() => setAuthOption(1)}>Sign up</a></div>}
-            {authOption === 1 && registerStage === 0 && <div className="switch-btn"><p>Already a Loopifier? &nbsp;</p> <a onClick={() => { setAuthOption(0); setRegisterStage(0); }}>Log In</a></div>}
-            {authOption === 0 && <button className="authBox-auth-btn" onClick={handleLoginClick} disabled={loginLoading}>
+// Add a function to handle phone login initiation
+const handlePhoneLoginClick = () => {
+    setShowPhoneLogin(true);
+    setAuthOption(0); // Keep it on login view
+    setPhoneNumber("");
+    setError("");
+};
+
+// Add a function to handle phone number submission
+const handlePhoneSubmit = async (phone) => {
+    setPhoneNumber(phone);
+    setShowPhoneLogin(false);
+    setShowPhoneVerification(true);
+    setError("");
+    
+    // TODO: Send verification code to phone
+    console.log("Sending verification code to:", phone);
+};
+
+// Add a function to handle verification completion
+const handlePhoneVerificationComplete = async (phone, code) => {
+    setLoading(true);
+    setError("");
+    
+    try {
+        // TODO: Verify the code and login/signup user
+        console.log("Verifying phone:", phone, "with code:", code);
+        
+        // For now, simulate successful verification
+        // In production, you'd call an API endpoint
+        // const result = await verifyPhoneNumber(phone, code);
+        // setToken(result.token);
+        // navigate("/app");
+        
+        setShowPhoneVerification(false);
+        setPhoneNumber("");
+        setVerificationCode("");
+        setError("Phone verification successful! (This is a demo)");
+        
+        // Navigate to app after a delay
+        setTimeout(() => {
+            navigate("/app");
+        }, 1000);
+        
+    } catch (err) {
+        setError(err.message || "Verification failed");
+    } finally {
+        setLoading(false);
+    }
+};
+
+// Add a function to go back from phone views
+const handleBackFromPhone = () => {
+    setShowPhoneLogin(false);
+    setShowPhoneVerification(false);
+    setPhoneNumber("");
+    setVerificationCode("");
+    setError("");
+};
+return (
+    <div className="authBox-container">
+    {/* Show main back button for ALL screens except regular login */}
+    {(registerStage > 0 || isGoogleFlow || showPhoneLogin || showPhoneVerification) && (
+        <button className="authBox-back-btn" onClick={() => { 
+            if (showPhoneLogin) {
+                // Go back to regular login from phone login
+                setShowPhoneLogin(false);
+                setPhoneNumber("");
+            } else if (showPhoneVerification) {
+                // Go back to phone login from verification
+                setShowPhoneVerification(false);
+                setShowPhoneLogin(true);
+            } else {
+                // Go back to login from register/Google flow
+                setAuthOption(0); 
+                setRegisterStage(0); 
+                setIsGoogleFlow(false);
+                setGoogleIdToken("");
+                setGoogleUserEmail("");
+            }
+        }}>
+            <svg className="back-icon" fill="currentColor" height="20" icon-name="arrow-back" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.5 9.1H4.679l5.487-5.462a.898.898 0 00.003-1.272.898.898 0 00-1.272-.003l-7.032 7a.898.898 0 000 1.275l7.03 7a.896.896 0 001.273-.003.898.898 0 00-.002-1.272l-5.487-5.462h12.82a.9.9 0 000-1.8z"></path>
+            </svg>
+        </button>
+    )}
+        
+        {error && <div className="error-message">{error}</div>}
+        
+        {/* Phone Authentication Views */}
+        {showPhoneLogin && (
+            <PhoneLogin 
+                onBackToLogin={handleBackFromPhone}
+                onPhoneSubmit={handlePhoneSubmit}
+            />
+        )}
+        
+        {showPhoneVerification && (
+            <PhoneVerification
+                phoneNumber={phoneNumber}
+                onVerificationComplete={handlePhoneVerificationComplete}
+                onBack={handleBackFromPhone}
+            />
+        )}
+        
+        {/* Regular Login/Register Views - Only show when not in phone flow */}
+        {!showPhoneLogin && !showPhoneVerification && (
+            <>
+                {authOption === 0 && <Login 
+                    ref={loginRef} 
+                    email={email} 
+                    setEmail={setEmail} 
+                    password={password} 
+                    setPassword={setPassword} 
+                    onGoogleSignIn={handleGoogleSignIn}
+                    onPhoneLoginClick={handlePhoneLoginClick}  // Pass the handler
+                />}
+                
+                {authOption === 1 && registerStage === 0 && <Register email={registerEmail} setEmail={setRegisterEmail} onGoogleSignIn={handleGoogleSignIn} />}
+                
+                {authOption === 1 && registerStage === 1 && (
+                    <RegisterCredentials 
+                        username={username}
+                        setUsername={setUsername}
+                        password={registerPassword}
+                        setPassword={setRegisterPassword}
+                        onBack={handleBackClick}
+                        isGoogleFlow={isGoogleFlow}
+                        googleEmail={googleUserEmail}
+                    />
+                )}
+                
+                {authOption === 1 && registerStage === 2 && (
+                    <RegisterAboutYou 
+                        onGenderSelect={handleGenderSelect}
+                        onBack={handleBackClick}
+                        selectedGender={gender}
+                    />
+                )}
+                
+                {/* Switch buttons - only show when not in phone flow */}
+                {!showPhoneLogin && !showPhoneVerification && authOption === 0 && (
+                    <div className="switch-btn">
+                        <p>New to Loopify? &nbsp;</p> 
+                        <a onClick={() => setAuthOption(1)}>Sign up</a>
+                    </div>
+                )}
+                
+                {!showPhoneLogin && !showPhoneVerification && authOption === 1 && registerStage === 0 && (
+                    <div className="switch-btn">
+                        <p>Already a Loopifier? &nbsp;</p> 
+                        <a onClick={() => { setAuthOption(0); setRegisterStage(0); }}>Log In</a>
+                    </div>
+                )}
+            </>
+        )}
+        
+        {/* Action Buttons - Conditionally render based on state */}
+        {!showPhoneLogin && !showPhoneVerification && authOption === 0 && (
+            <button className="authBox-auth-btn" onClick={handleLoginClick} disabled={loginLoading}>
                 {loginLoading ? <Spinner /> : "Log in"}
-            </button>}
-            {authOption === 1 && registerStage === 0 && <button data-register-continue className="authBox-auth-btn" onClick={handleRegisterContinue} disabled={!registerEmail || !isValidEmail(registerEmail)}>Continue</button>}
-            {authOption === 1 && registerStage === 1 && <button data-credentials-continue className="authBox-auth-btn" onClick={handleCredentialsContinue} disabled={isGoogleFlow ? !username || username.length < 4 : !username || !registerPassword}>Continue</button>}
-            {authOption === 1 && registerStage === 2 && <button data-gender-continue className="authBox-auth-btn" onClick={handleFinalRegister} disabled={loading}>
+            </button>
+        )}
+        
+        {!showPhoneLogin && !showPhoneVerification && authOption === 1 && registerStage === 0 && (
+            <button data-register-continue className="authBox-auth-btn" onClick={handleRegisterContinue} disabled={!registerEmail || !isValidEmail(registerEmail)}>
+                Continue
+            </button>
+        )}
+        
+        {!showPhoneLogin && !showPhoneVerification && authOption === 1 && registerStage === 1 && (
+            <button data-credentials-continue className="authBox-auth-btn" onClick={handleCredentialsContinue} disabled={isGoogleFlow ? !username || username.length < 4 : !username || !registerPassword}>
+                Continue
+            </button>
+        )}
+        
+        {!showPhoneLogin && !showPhoneVerification && authOption === 1 && registerStage === 2 && (
+            <button data-gender-continue className="authBox-auth-btn" onClick={handleFinalRegister} disabled={loading}>
                 {loading ? <Spinner /> : "Continue"}
-            </button>}
-        </div>
-    );
+            </button>
+        )}
+    </div>
+);
 }
 
 export default AuthBox;

@@ -2,17 +2,15 @@ import React from "react";
 import './login.css';
 import Textbox from "../../Global/textbox/textbox";
 import GoogleSignInButton from "../GoogleSignInButton";
-import PhoneLogin from "./PhoneLogin/PhoneLogin";
 import phoneIcon from "../../../assets/vecteezy_smartphone-vector-icon-phone-black-symbol-isolated-on-white_4897371.svg";
 import { loginUser, setToken } from "../../../services";
 import { useNavigate } from "react-router-dom";
 
-function Login({ email, setEmail, password, setPassword, onHandleLogin, onGoogleSignIn }, ref) {
+function Login({ email, setEmail, password, setPassword, onGoogleSignIn, onPhoneLoginClick }, ref) {
     const navigate = useNavigate();
     const [error, setError] = React.useState("");
     const [loading, setLoading] = React.useState(false);
     const [googleLoading, setGoogleLoading] = React.useState(false);
-    const [showPhoneLogin, setShowPhoneLogin] = React.useState(false);
 
     const handleLogin = async () => {
         if (!email || !password) {
@@ -45,23 +43,6 @@ function Login({ email, setEmail, password, setPassword, onHandleLogin, onGoogle
         }
     };
 
-    const handlePhoneLoginClick = () => {
-        setShowPhoneLogin(true);
-        setError("");
-    };
-
-    const handleBackToLogin = () => {
-        setShowPhoneLogin(false);
-        setError("");
-    };
-
-    const handlePhoneVerificationComplete = (phoneNumber) => {
-        // Handle successful phone verification
-        console.log("Phone verified:", phoneNumber);
-        // TODO: Complete phone login logic
-        navigate("/app");
-    };
-
     React.useImperativeHandle(ref, () => ({
         handleLogin,
         isLoading: loading
@@ -69,26 +50,14 @@ function Login({ email, setEmail, password, setPassword, onHandleLogin, onGoogle
 
     React.useEffect(() => {
         const handleKeyPress = (e) => {
-            if (!showPhoneLogin && e.key === 'Enter' && email && password && !loading) {
+            // Remove the showPhoneLogin check since it's not in this component anymore
+            if (e.key === 'Enter' && email && password && !loading) {
                 handleLogin();
             }
         };
         window.addEventListener('keydown', handleKeyPress);
         return () => window.removeEventListener('keydown', handleKeyPress);
-    }, [email, password, loading, showPhoneLogin]);
-
-    // Render Phone Login if active
-    if (showPhoneLogin) {
-        return (
-            <div className="login-container">
-                <PhoneLogin 
-                    onBackToLogin={handleBackToLogin}
-                    onPhoneVerificationComplete={handlePhoneVerificationComplete}
-                    initialLoading={loading}
-                />
-            </div>
-        );
-    }
+    }, [email, password, loading]); // Remove showPhoneLogin from dependencies
 
     // Render Regular Login
     return (
@@ -101,11 +70,11 @@ function Login({ email, setEmail, password, setPassword, onHandleLogin, onGoogle
                 {/* Phone Login Button - Matching Google button style */}
                 <button
                     className="phone-login-button"
-                    onClick={handlePhoneLoginClick}
+                    onClick={onPhoneLoginClick}
                     disabled={googleLoading || loading}
                 >
                     <img src={phoneIcon} alt="" className="phone-button-icon" />
-                    <span className="phone-button-text">Continue With Phone Number</span>
+                    <span className="phone-button-text">Continue with Phone Number</span>
                 </button>
 
                 {/* Google Sign In Button */}
