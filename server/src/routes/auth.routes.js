@@ -1,5 +1,4 @@
 import express from "express";
-import { registerUser, loginUser, checkUsername, checkEmail,} from "../controllers/auth.controller.js";
 import { validate } from "../middleware/validate.js";
 import { registerUser, loginUser, checkUsername, checkEmail, verifyToken, googleAuth, completeGoogleRegistration } from "../controllers/auth.controller.js";
 
