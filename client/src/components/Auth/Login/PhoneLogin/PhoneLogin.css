@@ -1,0 +1,165 @@
+/* PhoneLogin.css - Dedicated styles for phone login flow */
+
+/* Back Button */
+.phone-login-back-button {
+    background: none;
+    border: none;
+    color: #0079d3;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px 0;
+    margin-bottom: 20px;
+    text-align: left;
+    width: 100%;
+    font-weight: 500;
+}
+
+.phone-login-back-button:hover:not(:disabled) {
+    text-decoration: underline;
+    background-color: transparent;
+}
+
+.phone-login-back-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Subtitle */
+.phone-login-subtitle {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 24px;
+    text-align: center;
+    line-height: 1.4;
+}
+
+/* Input Wrappers */
+.phone-input-wrapper,
+.code-input-wrapper {
+    margin-bottom: 16px;
+    width: 100%;
+}
+
+/* Continue Button */
+.phone-continue-button {
+    width: 100%;
+    height: 43px;
+    padding: 0 16px;
+    margin-top: 16px;
+    background: #0079d3;
+    color: white;
+    border: none;
+    border-radius: 100px;
+    font-size: 0.95em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.phone-continue-button:hover:not(:disabled) {
+    background: #0066b2;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.phone-continue-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #0079d3;
+}
+
+/* Resend Code */
+.phone-resend-container {
+    margin: 16px 0;
+    text-align: center;
+}
+
+.phone-resend-container p {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.phone-resend-button {
+    background: none;
+    border: none;
+    color: #0079d3;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: none;
+}
+
+.phone-resend-button:hover:not(.phone-resend-disabled):not(:disabled) {
+    text-decoration: underline;
+}
+
+.phone-resend-disabled,
+.phone-resend-button:disabled {
+    color: #999;
+    cursor: not-allowed;
+}
+
+/* Phone Icon */
+.phone-button-icon {
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Phone Login Container */
+.phone-login-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* Terms Notice in phone flow */
+.phone-terms-notice {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.phone-terms-notice span {
+    color: #0079d3;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.phone-terms-notice span:hover {
+    text-decoration: underline;
+}
+
+/* Loading state */
+.phone-loading-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: phone-spin 1s ease-in-out infinite;
+}
+
+@keyframes phone-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Error Message */
+.phone-error-message {
+    color: #ea0027;
+    font-size: 14px;
+    margin: 8px 0;
+    text-align: center;
+    font-weight: 500;
+}

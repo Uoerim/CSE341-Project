@@ -115,3 +115,45 @@
     color: #7fa3ff;
     text-decoration: underline;
 }
+/* Phone Login Button Styles - Matching Google button */
+.phone-login-button {
+    width: 105%;
+    height: 43px;
+    border-radius: 100px;
+    font-weight: 500;
+    font-size: 0.95em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 16px;
+    border: none;
+    background-color: #ffffff;
+    color: #000000;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
+.phone-login-button:hover:not(:disabled) {
+    background-color: #f5f5f5;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.phone-login-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.phone-button-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    filter: brightness(0) saturate(100%);
+}
+
+.phone-button-text {
+    color: #000000 !important;
+    font-size: 0.95em;
+    font-weight: 500;
+}
