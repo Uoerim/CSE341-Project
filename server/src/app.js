@@ -9,7 +9,7 @@ import postRoutes from "./routes/post.routes.js";
 import commentRoutes from "./routes/comment.routes.js";
 import searchRoutes from "./routes/search.routes.js";
 
-
+import { protect } from "./middleware/auth.js";
 import { errorHandler } from "./middleware/error.js";
 
 dotenv.config();
@@ -20,12 +20,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Routes
+// Routes (protected)
 app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/communities", communityRoutes);
-app.use("/api/posts", postRoutes);
-app.use("/api/comments", commentRoutes);
+app.use("/api/users", protect, userRoutes);
+app.use("/api/communities", protect, communityRoutes);
+app.use("/api/posts", protect, postRoutes);
+app.use("/api/comments", protect, commentRoutes);
 app.use("/api/search", searchRoutes);
 
 
