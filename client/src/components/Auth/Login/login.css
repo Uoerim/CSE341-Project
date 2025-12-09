@@ -115,3 +115,71 @@
     color: #7fa3ff;
     text-decoration: underline;
 }
+
+
+/* Make sure both buttons have same container behavior */
+.login-external-container button,
+.google-signin-wrapper > div {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Phone Login Button Styles - Matching Google button exactly */
+.phone-login-button {
+    width: 100% !important;
+    height: 43px !important;
+    border-radius: 100px !important;
+    font-weight: 500 !important;
+    font-size: 0.95em !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    padding: 0 16px !important;
+    border: none !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.phone-login-button:hover:not(:disabled) {
+    background-color: #f5f5f5 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+.phone-login-button:disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+}
+
+.phone-button-icon {
+    width: 40px !important;
+    height: 40px !important;
+    object-fit: contain !important;
+    filter: brightness(0) saturate(100%) !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+}
+
+.phone-button-text {
+    color: #000000 !important;
+    font-size: 0.95em !important;
+    font-weight: 500 !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif !important;
+    line-height: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Ensure Google wrapper is consistent */
+.google-signin-wrapper {
+    width: 105% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+

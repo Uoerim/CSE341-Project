@@ -1,12 +1,12 @@
 import React from "react";
 import './login.css';
 import Textbox from "../../Global/textbox/textbox";
-import Spinner from "../../Global/Spinner/Spinner";
 import GoogleSignInButton from "../GoogleSignInButton";
+import phoneIcon from "../../../assets/vecteezy_smartphone-vector-icon-phone-black-symbol-isolated-on-white_4897371.svg";
 import { loginUser, setToken } from "../../../services";
 import { useNavigate } from "react-router-dom";
 
-function Login({ email, setEmail, password, setPassword, onHandleLogin, onGoogleSignIn }, ref) {
+function Login({ email, setEmail, password, setPassword, onGoogleSignIn, onPhoneLoginClick }, ref) {
     const navigate = useNavigate();
     const [error, setError] = React.useState("");
     const [loading, setLoading] = React.useState(false);
@@ -50,26 +50,48 @@ function Login({ email, setEmail, password, setPassword, onHandleLogin, onGoogle
 
     React.useEffect(() => {
         const handleKeyPress = (e) => {
+            // Remove the showPhoneLogin check since it's not in this component anymore
             if (e.key === 'Enter' && email && password && !loading) {
                 handleLogin();
             }
         };
         window.addEventListener('keydown', handleKeyPress);
         return () => window.removeEventListener('keydown', handleKeyPress);
-    }, [email, password, loading]);
+    }, [email, password, loading]); // Remove showPhoneLogin from dependencies
 
+    // Render Regular Login
     return (
         <div className="login-container">
             <h1>Log In</h1>
             <p>By continuing, you agree to our <span>User Agreement</span> and acknowledge that you understand the <span>Privacy Policy</span>.</p>
+            
             <div className="login-external-container">
-                <div className="login-button-placeholder">Placeholder</div>
-                <GoogleSignInButton onSuccess={handleGoogleSignIn} onError={(err) => setError(err)} disabled={googleLoading} />
-                <div className="login-button-placeholder">Placeholder</div>
-                <div className="login-button-placeholder">Placeholder</div>
+                
+                {/* Phone Login Button - Matching Google button style */}
+                <button
+                    className="phone-login-button"
+                    onClick={onPhoneLoginClick}
+                    disabled={googleLoading || loading}
+                >
+                    <img src={phoneIcon} alt="" className="phone-button-icon" />
+                    <span className="phone-button-text">Continue with Phone Number</span>
+                </button>
 
+                {/* Google Sign In Button */}
+                <div className="google-signin-wrapper">
+                    <GoogleSignInButton 
+                        onSuccess={handleGoogleSignIn} 
+                        onError={(err) => setError(err)} 
+                        disabled={googleLoading}
+                    />
+                </div>
+                
+                <div className="login-button-placeholder">Placeholder</div>
+                <div className="login-button-placeholder">Placeholder</div>
             </div>
+            
             <div className="login-or-container"><hr /><div>OR</div></div>
+            
             <div className="login-email-container">
                 <Textbox 
                     placeholder="Email or username" 
