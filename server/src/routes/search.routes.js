@@ -1,8 +1,8 @@
 import express from "express";
-import { searchUsersAndCommunities } from "../controllers/user.controller.js";
+import { globalSearch } from "../controllers/search.controller.js";
 
 const router = express.Router();
 
-router.get("/", searchUsersAndCommunities);
+router.get("/", globalSearch);
 
 export default router;
