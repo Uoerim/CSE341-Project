@@ -1,20 +1,19 @@
 import Comment from "../models/Comment.js";
 import Post from "../models/Post.js";
+import { BadRequestError, ForbiddenError, NotFoundError} from "../utils/httpErrors.js";
 
 // CREATE comment
-export const createComment = async (req, res) => {
+export const createComment = async (req, res, next) => {
   try {
     const { content, post } = req.body;
 
     if (!content || !post) {
-      return res
-        .status(400)
-        .json({ message: "Content and post are required" });
+      throw new BadRequestError("Content and post are required");
     }
 
     const postDoc = await Post.findById(post);
     if (!postDoc) {
-      return res.status(404).json({ message: "Post not found" });
+      throw new NotFoundError("Post not found");
     }
 
     const comment = await Comment.create({
@@ -28,60 +27,60 @@ export const createComment = async (req, res) => {
 
     res.status(201).json(comment);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
 // READ comments for a post
-export const getCommentsByPost = async (req, res) => {
+export const getCommentsByPost = async (req, res, next) => {
   try {
     const comments = await Comment.find({ post: req.params.postId })
       .populate("author", "username")
       .sort({ createdAt: 1 });
+
     res.json(comments);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
 // UPDATE comment (only author)
-export const updateComment = async (req, res) => {
+export const updateComment = async (req, res, next) => {
   try {
     const { content } = req.body;
-
     const comment = await Comment.findById(req.params.id);
-    if (!comment)
-      return res.status(404).json({ message: "Comment not found" });
+
+    if (!comment) {
+      throw new NotFoundError("Comment not found");
+    }
 
     if (comment.author.toString() !== req.user._id.toString()) {
-      return res
-        .status(403)
-        .json({ message: "Not allowed to edit this comment" });
+      throw new ForbiddenError("Not allowed to edit this comment");
     }
 
     if (content) comment.content = content;
+
     await comment.save();
 
     res.json(comment);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
 // DELETE comment (only author)
-export const deleteComment = async (req, res) => {
+export const deleteComment = async (req, res, next) => {
   try {
     const comment = await Comment.findById(req.params.id);
-    if (!comment)
-      return res.status(404).json({ message: "Comment not found" });
 
-    if (comment.author.toString() !== req.user._id.toString()) {
-      return res
-        .status(403)
-        .json({ message: "Not allowed to delete this comment" });
+    if (!comment) {
+      throw new NotFoundError("Comment not found");
     }
 
-    // Remove from post.comments
+    if (comment.author.toString() !== req.user._id.toString()) {
+      throw new ForbiddenError("Not allowed to delete this comment");
+    }
+
     await Post.findByIdAndUpdate(comment.post, {
       $pull: { comments: comment._id },
     });
@@ -90,16 +89,16 @@ export const deleteComment = async (req, res) => {
 
     res.json({ message: "Comment deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
 // Get all comments (for testing)
-export const getAllComments = async (req, res) => {
+export const getAllComments = async (req, res, next) => {
   try {
     const comments = await Comment.find().populate("author", "username");
     res.json(comments);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
