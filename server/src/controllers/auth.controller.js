@@ -254,6 +254,101 @@ export const completeGoogleRegistration = async (req, res) => {
   }
 };
 
+// GOOGLE SIGN-IN authentication
+export const googleAuth = async (req, res) => {
+  try {
+    const { idToken } = req.body;
+
+    if (!idToken) {
+      return res.status(400).json({ message: "ID token is required" });
+    }
+
+    // Verify the Google ID token
+    let googleUser;
+    try {
+      googleUser = await verifyGoogleIdToken(idToken);
+    } catch (error) {
+      return res.status(401).json({ message: "Invalid Google token" });
+    }
+
+    // Check if user exists
+    let user = await User.findOne({ email: googleUser.email });
+
+    if (user) {
+      // User exists, return login response
+      return res.json({
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        token: generateToken(user._id),
+        isNewUser: false,
+      });
+    } else {
+      // User doesn't exist, return that they need to register
+      return res.json({
+        email: googleUser.email,
+        name: googleUser.name,
+        picture: googleUser.picture,
+        googleId: googleUser.sub,
+        isNewUser: true,
+        message: "User needs to complete registration",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// COMPLETE GOOGLE REGISTRATION (second stage)
+export const completeGoogleRegistration = async (req, res) => {
+  try {
+    const { idToken, username, gender } = req.body;
+
+    if (!idToken || !username) {
+      return res.status(400).json({ message: "ID token and username are required" });
+    }
+
+    // Verify the Google ID token again
+    let googleUser;
+    try {
+      googleUser = await verifyGoogleIdToken(idToken);
+    } catch (error) {
+      return res.status(401).json({ message: "Invalid Google token" });
+    }
+
+    // Check if user already exists
+    const userExists = await User.findOne({ email: googleUser.email });
+    if (userExists) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    // Check if username is taken
+    const usernameExists = await User.findOne({ username });
+    if (usernameExists) {
+      return res.status(400).json({ message: "Username already taken" });
+    }
+
+    // Create new user with Google information
+    const user = await User.create({
+      username,
+      email: googleUser.email,
+      password: generateSecurePassword(), // Generate a secure password for Google users
+      gender: gender || "prefer not to say",
+      avatar: googleUser.picture || "",
+      bio: ""
+    });
+
+    res.status(201).json({
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      token: generateToken(user._id),
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Helper function to generate a secure random password for Google users
 function generateSecurePassword() {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
