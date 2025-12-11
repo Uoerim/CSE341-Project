@@ -50,24 +50,23 @@ function Login({ email, setEmail, password, setPassword, onGoogleSignIn, onPhone
 
     React.useEffect(() => {
         const handleKeyPress = (e) => {
-            // Remove the showPhoneLogin check since it's not in this component anymore
             if (e.key === 'Enter' && email && password && !loading) {
                 handleLogin();
             }
         };
         window.addEventListener('keydown', handleKeyPress);
         return () => window.removeEventListener('keydown', handleKeyPress);
-    }, [email, password, loading]); // Remove showPhoneLogin from dependencies
+    }, [email, password, loading]);
 
-    // Render Regular Login
     return (
         <div className="login-container">
             <h1>Log In</h1>
-            <p>By continuing, you agree to our <span>User Agreement</span> and acknowledge that you understand the <span>Privacy Policy</span>.</p>
-            
+            <p>
+                By continuing, you agree to our <span>User Agreement</span> and acknowledge that you understand the <span>Privacy Policy</span>.
+            </p>
+
             <div className="login-external-container">
-                
-                {/* Phone Login Button - Matching Google button style */}
+                {/* Phone Login Button */}
                 <button
                     className="phone-login-button"
                     onClick={onPhoneLoginClick}
@@ -77,7 +76,7 @@ function Login({ email, setEmail, password, setPassword, onGoogleSignIn, onPhone
                     <span className="phone-button-text">Continue with Phone Number</span>
                 </button>
 
-                {/* Google Sign In Button */}
+                {/* Google Sign In */}
                 <div className="google-signin-wrapper">
                     <GoogleSignInButton 
                         onSuccess={handleGoogleSignIn} 
@@ -85,20 +84,24 @@ function Login({ email, setEmail, password, setPassword, onGoogleSignIn, onPhone
                         disabled={googleLoading}
                     />
                 </div>
-                
+
+                {/* Placeholder Buttons */}
                 <div className="login-button-placeholder">Placeholder</div>
                 <div className="login-button-placeholder">Placeholder</div>
             </div>
-            
-            <div className="login-or-container"><hr /><div>OR</div></div>
-            
+
+            <div className="login-or-container">
+                <hr />
+                <div>OR</div>
+            </div>
+
             <div className="login-email-container">
                 <Textbox 
                     placeholder="Email or username" 
                     type="text" 
                     value={email} 
                     onChange={(e) => { setEmail(e.target.value); setError(""); }}
-                    error={error ? true : false}
+                    error={!!error}
                     showCheckmark={false}
                 />
                 <Textbox 
@@ -106,7 +109,7 @@ function Login({ email, setEmail, password, setPassword, onGoogleSignIn, onPhone
                     type="password" 
                     value={password} 
                     onChange={(e) => { setPassword(e.target.value); setError(""); }}
-                    error={error ? true : false}
+                    error={!!error}
                     showCheckmark={false}
                 />
                 {error && <p className="login-error-message">{error}</p>}

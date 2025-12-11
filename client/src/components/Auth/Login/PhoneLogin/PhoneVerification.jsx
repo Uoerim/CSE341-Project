@@ -106,14 +106,6 @@ function PhoneVerification({ phoneNumber, onVerificationComplete, onBack }) {
                     </button>
                 </div>
             </div>
-
-            <button 
-                className="continue-btn"
-                onClick={() => handleSubmit(code.join(""))}
-                disabled={code.some(digit => digit === "")}
-            >
-                Continue
-            </button>
         </div>
     );
 }

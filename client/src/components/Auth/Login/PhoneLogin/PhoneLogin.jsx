@@ -1,60 +1,49 @@
 import React, { useState } from "react";
 import "./PhoneLogin.css";
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
+import CountryCodeSelector from "./Countries/CountryCodeSelector.jsx";
 
-function PhoneLogin({ onPhoneSubmit }) {
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [isSubmitting, setIsSubmitting] = useState(false);
+function PhoneLogin({ phoneNumber, setPhoneNumber, onPhoneSubmit }) {
+  const [phoneCode, setPhoneCode] = useState({
+    countryName: "Egypt",
+    flagEmoji: "🇪🇬",
+    code: "+20",
+    countryCode: "EG",
+  });
 
-    const handleSubmit = async () => {
-        if (!phoneNumber) return;
-        
-        setIsSubmitting(true);
-        try {
-            // phoneNumber already includes country code
-            await onPhoneSubmit(phoneNumber);
-        } catch (error) {
-            console.error("Phone submission error:", error);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+  const handleSubmit = () => {
+    if (phoneNumber.trim()) {
+      onPhoneSubmit(phoneCode.code + phoneNumber);
+    }
+  };
 
-    return (
-        <div className="phone-login-container">
-            <h1>Sign up or log in with your phone number</h1>
-            
-            <div className="phone-input-wrapper">
-                <PhoneInput
-                    country={'eg'}
-                    value={phoneNumber}
-                    onChange={setPhoneNumber}
-                    inputClass="phone-input"
-                    containerClass="phone-container"
-                    buttonClass="phone-dropdown-button"
-                    dropdownClass="phone-dropdown"
-                    inputProps={{
-                        autoFocus: true,
-                        placeholder: "Phone number"
-                    }}
-                    countryCodeEditable={false}
-                />
-            </div>
+  return (
+    <div className="phone-login-screen">
+      <h1 className="phone-title">Sign up or log in with your phone number</h1>
 
-            <p className="phone-disclaimer">
-                Loopify will use your phone number for account verification and to personalize your ads and experience. 
-                SMS fees may apply. <a href="#" className="learn-more-link">Learn more.</a>
-            </p>
+      <div className="phone-row">
+        <CountryCodeSelector
+          selectedCode={phoneCode}
+          setSelectedCode={setPhoneCode}
+        />
 
-            <button 
-                className="continue-btn" 
-                onClick={handleSubmit}
-                disabled={!phoneNumber || isSubmitting}
-            >
-                {isSubmitting ? "Sending..." : "Continue"}
-            </button>
+        <div className="phone-input-wrapper">
+          <input
+            type="text"
+            className="phone-number-input"
+            placeholder=" "
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+          />
+          <label className="phone-number-label">Phone number</label>
         </div>
-    );
+      </div>
+
+      <p className="phone-disclaimer">
+        Loopify will use your phone number for account verification and to
+        personalize your experience. SMS fees may apply.{" "}
+        <a href="#">Learn more.</a>
+      </p>
+    </div>
+  );
 }
 export default PhoneLogin;
