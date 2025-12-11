@@ -33,8 +33,8 @@ export default function CountryCodeSelector({ selectedCode, setSelectedCode }) {
         onClick={() => setIsOpen(!isOpen)} // toggle dropdown
       >
         <span className="country-pill-text">
-    <span className="country-pill-flag">{selectedCode.flagEmoji}</span>
-    <span className="country-pill-code">{selectedCode.code}</span>
+          <span className="country-pill-flag">{selectedCode.flagEmoji}</span>
+          <span className="country-pill-code">{selectedCode.code}</span>
         </span>
         <span className="country-pill-dropdown-icon">
           <svg fill="currentColor" height="20" width="20" viewBox="0 0 20 20">
@@ -47,22 +47,25 @@ export default function CountryCodeSelector({ selectedCode, setSelectedCode }) {
         <div className="country-dropdown">
           {countryCodes.map((code) => (
             <div
-            key={code.countryCode}
-            className="country-dropdown-item"
-            onClick={() => handleSelect(code)}
+              key={code.countryCode}
+              className="country-dropdown-item"
+              onClick={() => handleSelect(code)}
             >
-            <div className="country-dropdown-item-left">
+              <div className="country-dropdown-item-left">
                 <span className="country-dropdown-flag">{code.flagEmoji}</span>
                 <div className="country-dropdown-text">
-                <span className="country-name-code">{code.countryName} {code.code}</span>
-                <span className="country-extra">{/* optional subtitle */}</span>
+                  <span className="country-name-code">
+                    {code.countryName} {code.code}
+                  </span>
+                  <span className="country-extra">
+                    {/* optional subtitle */}
+                  </span>
                 </div>
-            </div>
-            <div className="country-dropdown-item-right">
+              </div>
+              <div className="country-dropdown-item-right">
                 {/* optional icon or indicator */}
+              </div>
             </div>
-            </div>
-
           ))}
         </div>
       )}

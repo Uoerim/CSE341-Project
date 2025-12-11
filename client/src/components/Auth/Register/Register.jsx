@@ -1,112 +1,151 @@
 import React from "react";
-import './register.css';
+import "./register.css";
 import Textbox from "../../Global/textbox/textbox";
 import GoogleSignInButton from "../GoogleSignInButton";
 import { checkEmail } from "../../../services";
+import phoneIcon from "../../../assets/vecteezy_smartphone-vector-icon-phone-black-symbol-isolated-on-white_4897371.svg";
+import "../Login/login.css";
 
-function Register({ email, setEmail, onGoogleSignIn }) {
-    const [emailError, setEmailError] = React.useState("");
-    const [checkingEmail, setCheckingEmail] = React.useState(false);
-    const [googleLoading, setGoogleLoading] = React.useState(false);
+function Register({ email, setEmail, onGoogleSignIn, onPhoneLoginClick }) {
+  const [emailError, setEmailError] = React.useState("");
+  const [checkingEmail, setCheckingEmail] = React.useState(false);
+  const [googleLoading, setGoogleLoading] = React.useState(false);
 
-    const isValidEmail = (emailValue) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(emailValue);
-    };
+  const isValidEmail = (emailValue) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(emailValue);
+  };
 
-    const handleEmailChange = (e) => {
-        const value = e.target.value;
-        setEmail(value);
-        
-        if (value.length > 0 && isValidEmail(value)) {
-            checkEmailAvailability(value);
-        } else if (value.length > 0) {
-            setEmailError("Please enter a valid email");
-        } else {
-            setEmailError("");
-        }
-    };
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
 
-    const checkEmailAvailability = async (emailValue) => {
-        setCheckingEmail(true);
-        try {
-            const data = await checkEmail(emailValue);
-            if (data.exists) {
-                setEmailError("Email already registered");
-            } else {
-                setEmailError("");
-            }
-        } catch (error) {
-            console.error("Error checking email:", error);
-            setEmailError("");
-        } finally {
-            setCheckingEmail(false);
-        }
-    };
+    if (value.length > 0 && isValidEmail(value)) {
+      checkEmailAvailability(value);
+    } else if (value.length > 0) {
+      setEmailError("Please enter a valid email");
+    } else {
+      setEmailError("");
+    }
+  };
 
-    const handleGoogleSignIn = async (token) => {
-        setGoogleLoading(true);
+  const checkEmailAvailability = async (emailValue) => {
+    setCheckingEmail(true);
+    try {
+      const data = await checkEmail(emailValue);
+      if (data.exists) {
+        setEmailError("Email already registered");
+      } else {
         setEmailError("");
-        try {
-            if (onGoogleSignIn) {
-                await onGoogleSignIn(token);
-            }
-        } catch (err) {
-            setEmailError(err.message || "Google Sign-In failed");
-            setGoogleLoading(false);
+      }
+    } catch (error) {
+      console.error("Error checking email:", error);
+      setEmailError("");
+    } finally {
+      setCheckingEmail(false);
+    }
+  };
+
+  const handleGoogleSignIn = async (token) => {
+    setGoogleLoading(true);
+    setEmailError("");
+    try {
+      if (onGoogleSignIn) {
+        await onGoogleSignIn(token);
+      }
+    } catch (err) {
+      setEmailError(err.message || "Google Sign-In failed");
+      setGoogleLoading(false);
+    }
+  };
+
+  const isValid = email.length > 0 && isValidEmail(email) && emailError === "";
+
+  React.useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (e.key === "Enter" && isValid) {
+        // Parent component will handle continue action
+        const continueButton = document.querySelector(
+          "[data-register-continue]"
+        );
+        if (continueButton) {
+          continueButton.click();
         }
+      }
     };
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [isValid]);
 
-    const isValid = email.length > 0 && isValidEmail(email) && emailError === "";
+  return (
+    <div className="register-container">
+      <h1>Sign Up</h1>
+      <p>
+        By continuing, you agree to our <span>User Agreement</span> and
+        acknowledge that you understand the <span>Privacy Policy</span>.
+      </p>
+      <div className="register-external-container">
+        <button
+          className="phone-login-button"
+          onClick={onPhoneLoginClick}
+          disabled={googleLoading}
+        >
+          <img src={phoneIcon} alt="" className="phone-button-icon" />
+          <span className="phone-button-text">Continue with Phone Number</span>
+        </button>
 
-    React.useEffect(() => {
-        const handleKeyPress = (e) => {
-            if (e.key === 'Enter' && isValid) {
-                // Parent component will handle continue action
-                const continueButton = document.querySelector('[data-register-continue]');
-                if (continueButton) {
-                    continueButton.click();
-                }
+        <GoogleSignInButton
+          onSuccess={handleGoogleSignIn}
+          onError={(err) => setEmailError(err)}
+          disabled={googleLoading}
+        />
+        <div className="register-button-placeholder">Placeholder</div>
+      </div>
+      <div className="register-or-container">
+        <hr />
+        <div>OR</div>
+      </div>
+      <div className="register-email-container">
+        <div className="email-input-wrapper">
+          <Textbox
+            placeholder="Email"
+            type="email"
+            value={email}
+            onChange={handleEmailChange}
+            showCheckmark={false}
+            error={
+              emailError === "Please enter a valid email" ||
+              emailError === "Email already registered"
+                ? true
+                : false
             }
-        };
-        window.addEventListener('keydown', handleKeyPress);
-        return () => window.removeEventListener('keydown', handleKeyPress);
-    }, [isValid]);
-
-    return (
-        <div className="register-container">
-            <h1>Sign Up</h1>
-            <p>By continuing, you agree to our <span>User Agreement</span> and acknowledge that you understand the <span>Privacy Policy</span>.</p>
-            <div className="register-external-container">
-                <div className="register-button-placeholder">Placeholder</div>
-                <GoogleSignInButton onSuccess={handleGoogleSignIn} onError={(err) => setEmailError(err)} disabled={googleLoading} />
-                <div className="register-button-placeholder">Placeholder</div>
-
-            </div>
-            <div className="register-or-container"><hr /><div>OR</div></div>
-            <div className="register-email-container">
-                <div className="email-input-wrapper">
-                    <Textbox 
-                        placeholder="Email" 
-                        type="email" 
-                        value={email} 
-                        onChange={handleEmailChange} 
-                        showCheckmark={false}
-                        error={emailError === "Please enter a valid email" || emailError === "Email already registered" ? true : false}
-                    />
-                    {!checkingEmail && emailError === "" && email.length > 0 && isValidEmail(email) && (
-                        <svg className="email-status-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" strokeWidth="3">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                    )}
-                </div>
-                {checkingEmail && <p className="checking-message">Checking availability...</p>}
-                {emailError && emailError !== "" && (
-                    <p className="email-error-message">{emailError}</p>
-                )}
-            </div>
+          />
+          {!checkingEmail &&
+            emailError === "" &&
+            email.length > 0 &&
+            isValidEmail(email) && (
+              <svg
+                className="email-status-icon"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#4CAF50"
+                strokeWidth="3"
+              >
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            )}
         </div>
-    );
+        {checkingEmail && (
+          <p className="checking-message">Checking availability...</p>
+        )}
+        {emailError && emailError !== "" && (
+          <p className="email-error-message">{emailError}</p>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default Register;
