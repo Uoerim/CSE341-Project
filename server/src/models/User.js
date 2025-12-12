@@ -1,7 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs"; // to hash passwords in db
+import bcrypt from "bcryptjs";
 
+// models/User.js
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -11,13 +12,17 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
-    unique: true,
     lowercase: true,
+    unique: true,
+    sparse: true, // allow null for phone-only accounts
   },
   password: {
     type: String,
-    required: true,
+  },
+  phone: {
+    type: String,
+    unique: true,
+    sparse: true,
   },
   avatar: {
     type: String,
@@ -37,8 +42,9 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
 }, { timestamps: true });
+
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next(); // pass is always hashed so we never store raw passwords
+  if (!this.isModified("password")) return next();
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();

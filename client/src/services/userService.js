@@ -41,7 +41,7 @@ export const updateUserProfile = async (userData) => {
       throw new Error("No authentication token found");
     }
 
-    const response = await apiRequest("/user/profile", {
+    const response = await apiRequest("/user/me", {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,

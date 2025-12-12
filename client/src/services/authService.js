@@ -92,3 +92,15 @@ export const verifyToken = async (token) => {
     return false;
   }
 };
+
+export const phoneAuthenticate = async (firebaseIdToken) => {
+  try {
+    const response = await apiRequest("/auth/phone-auth", {
+      method: "POST",
+      body: JSON.stringify({ firebaseIdToken }),
+    });
+    return response; // { _id, username, phone, email, token, isNewUser, needsProfile }
+  } catch (error) {
+    throw new Error(error.message || "Phone authentication failed");
+  }
+};
