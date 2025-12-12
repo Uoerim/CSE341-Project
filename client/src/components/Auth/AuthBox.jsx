@@ -276,10 +276,7 @@ function AuthBox() {
           )}
         </div>
 
-        {/* CLOSE BUTTON — always visible */}
-        <button className="authBox-close-btn" onClick={() => navigate("/")}>
-          ×
-        </button>
+
       </div>
 
       {error && <div className="error-message">{error}</div>}
