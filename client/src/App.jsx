@@ -3,6 +3,7 @@ import "./App.css";
 import Auth from "./pages/Auth/Auth";
 import Main from "./pages/Main/Main";
 import ProtectedRoute from "./components/ProtectedRoute";
+import HomePage from "./pages/HomePage/HomePage";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           } 
         />
         <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/" element={<HomePage />} />
       </Routes>
     </Router>
   );

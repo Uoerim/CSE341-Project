@@ -1,0 +1,18 @@
+.home-root {
+  min-height: 100vh;
+  background-color: #030303;
+  color: #d7dadc;
+}
+
+.home-layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 312px;
+  gap: 24px;
+}
+
+.home-feed {
+  max-width: 640px;
+}
