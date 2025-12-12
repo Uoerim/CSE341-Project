@@ -1,0 +1,145 @@
+/* CountryCodeSelector.css */
+
+/* Button (the pill) */
+.country-pill-button {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 56px;
+  width: 90px;
+  padding: 0 15px 0 14px; /* top/right/bottom/left */
+  background: #f4f5f7;
+  border-radius: 28px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  box-sizing: border-box;
+}
+
+.country-pill-button:hover {
+  background: #e0e0e0;
+}
+
+/* Text inside pill (flag + code) */
+.country-pill-text {
+  display: flex;
+  align-items: center;
+  gap: 2px; /* space between flag and code */
+}
+/* Flag or country abbreviation */
+.country-pill-flag {
+  font-size: 14px; 
+  font-weight: 800;
+  margin-right: 2px;
+}
+/* Country code (+20) */
+.country-pill-code {
+  font-size: 14px; /* smaller code */
+  font-weight:540;
+  margin-right: 2px;
+}
+
+/* Caret icon on the right */
+.country-pill-dropdown-icon {
+  margin-left: auto; /* push arrow to the right edge */
+  width: 20px;
+  height: 20px;
+  color: #000;
+  transition: transform 0.2s ease;
+}
+
+/* Rotate caret when dropdown is open */
+.country-pill-button.open .country-pill-dropdown-icon {
+  transform: rotate(180deg);
+}
+
+/* Dropdown container */
+.country-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-22%); /* center under the pill */
+  min-width: 200px; /* adjust to fit longer country names */
+  max-width: 300px; /* optional max-width */
+  max-height: 250px; /* dropdown height limit */
+  overflow-y: auto; /* scroll only inside the dropdown */
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  padding: 4px 0;
+}
+
+/* Dropdown item */
+.country-dropdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  padding: 4px 16px; /* top/bottom 4px, left/right 16px */
+  gap: 8px; /* space between flag and text */
+  cursor: pointer;
+  text-decoration: none;
+  color: #555; /* text-secondary */
+  font-size: 14px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.country-dropdown-item:hover {
+  background: #f5f5f5; /* hover background */
+  color: #111; /* hover text */
+}
+
+/* Left part: flag + name/code */
+.country-dropdown-item-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+.country-dropdown-flag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; /* h-xl/w-xl from inspect */
+  height: 36px;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.country-dropdown-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+.country-dropdown-text .country-name-code {
+  font-size: 14px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.country-dropdown-text .country-extra {
+  font-size: 12px;
+  color: #999; /* text-secondary-weak */
+}
+
+/* Right side placeholder (optional) */
+.country-dropdown-item-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+/* Optional: make dropdown wider than button */
+.country-code-selector {
+  position: relative;
+  width: 120px; /* pill width */
+}
