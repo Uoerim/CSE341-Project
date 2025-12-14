@@ -1,4 +1,4 @@
-.main-side-panel{
+.main-side-panel {
     height: calc(100vh - 60px);
     width: 234px;
     background-color: #0E1113;
@@ -6,19 +6,19 @@
     display: flex;
     flex-direction: column;
     padding: 15px 18px;
-    border-right: 0.5px solid #26282A;
-    overflow-y: auto;
+    border-right: 0.5px solid #3E4042;
+    overflow: visible;
     position: relative;
 }
 
-.side-menu{
+.side-menu {
     display: flex;
     flex-direction: column;
     gap: 0px;
     padding: 0 8px;
 }
 
-.side-menu-item{
+.side-menu-item {
     background-color: transparent;
     border: none;
     color: #D1D5DB;
@@ -37,27 +37,27 @@
     text-align: left;
 }
 
-.side-menu-item:hover{
+.side-menu-item:hover {
     background-color: rgba(255, 255, 255, 0.08);
     color: white;
 }
 
-.side-menu-item svg{
+.side-menu-item svg {
     width: 20px;
     height: 20px;
     fill: #D1D5DB;
     flex-shrink: 0;
 }
 
-.side-menu-item:hover svg{
+.side-menu-item:hover svg {
     fill: white;
 }
 
-.side-menu-create{
+.side-menu-create {
     margin-top: 4px;
 }
 
-.side-sections{
+.side-sections {
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -67,12 +67,12 @@
     flex: 1;
 }
 
-.side-section{
+.side-section {
     border-top: 1px solid #26282A;
     padding: 0;
 }
 
-.side-section-title{
+.side-section-title {
     font-size: 12px;
     font-weight: 500;
     color: #748791;
@@ -88,7 +88,7 @@
 }
 
 
-.side-panel-footer{
+.side-panel-footer {
     font-size: 10px;
     color: #ACACAC;
     text-align: center;
@@ -99,10 +99,35 @@
     margin-left: -30px;
 }
 
-.main-content{
+.main-content {
     flex: 1;
     height: calc(100vh - 56px);
     background-color: #16191C;
     color: white;
     padding: 20px;
+}
+
+.main-exp-btn {
+    background-color: #0E1113;
+    border: none;
+    cursor: pointer;
+    height: 33px;
+    width: 33px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+    margin-bottom: 10px;
+    border: 1px solid #3E4042;
+
+    position: absolute;
+    top: 18px;
+    right: -16.5px;
+}
+
+.main-exp-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: #DBE4E9;
 }
