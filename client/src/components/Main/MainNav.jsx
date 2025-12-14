@@ -1,11 +1,14 @@
 import React from "react";
 import "./mainNav.css";
+import SearchBox from "../Global/searchBox/SearchBox";
 
 function MainNav() {
     return (
         <div className="main-nav">
             <img src="/logo-white.png" alt="" />
-            <div className="nav-search">This is just a placeholder</div>
+            <div className="nav-search">
+                <SearchBox />
+            </div>
             <div className="nav-data">
                 <button className="nav-chat-button">
                     <svg viewBox="0 0 20 20">
