@@ -1,6 +1,7 @@
 import React from "react";
 import "./mainNav.css";
 import SearchBox from "../Global/searchBox/SearchBox";
+import UserMenu from "../Global/UserMenu/UserMenu";
 
 function MainNav() {
     return (
@@ -27,8 +28,8 @@ function MainNav() {
                     </svg>
                 </button>
 
-                {/* PLACEHOLDER FOR THE USER MENU COMPONENT */}
-                <div className="nav-user-menu"></div>
+                {/* USER MENU COMPONENT */}
+                <UserMenu />
                 {/*                                         */}
             </div>
         </div>
