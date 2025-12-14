@@ -8,6 +8,8 @@
     height: 100%;
     width: 100%;
     background: linear-gradient(135deg, #ff4500, #3543ff, #d400ff);
+    background-size: 200% 200%;
+    animation: gradientRotate 3s ease infinite;
     border-radius: 50px;
     padding: 2px;
     display: flex;
@@ -47,6 +49,8 @@
 
 .search-box:has(.search-ask-button:focus) {
     background: linear-gradient(135deg, #ff4500, #3543ff, #d400ff);
+    background-size: 200% 200%;
+    animation: gradientRotate 1s ease infinite;
 }
 
 .search-logo {
@@ -156,6 +160,18 @@
     to {
         opacity: 0;
         transform: translateX(-50%) translateY(-20px);
+    }
+}
+
+@keyframes gradientRotate {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
     }
 }
 
