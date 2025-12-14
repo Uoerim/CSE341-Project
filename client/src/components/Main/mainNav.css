@@ -19,7 +19,7 @@
 
 .nav-search {
     width: 550px;
-    height: 70%;
+    height: 65%;
     border-radius: 50px;
     position: absolute;
     left: 50%;
@@ -27,7 +27,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid orange;
 }
 
 .nav-data {
