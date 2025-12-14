@@ -56,6 +56,11 @@
     padding: 10px;
 }
 
+.nav-chat-button svg{
+    margin-right: -1px !important;
+    margin-top: -1px !important;
+}
+
 .nav-notifications-button{
     margin-right: 5px;
 }

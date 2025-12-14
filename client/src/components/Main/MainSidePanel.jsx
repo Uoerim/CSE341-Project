@@ -3,16 +3,47 @@ import "./mainSidePanel.css";
 
 function MainSidePanel({ onToggle }) {
     const [isPanelShifted, setIsPanelShifted] = useState(false);
+    const [isManuallyToggled, setIsManuallyToggled] = useState(false);
+    const [wasAutoUnshifted, setWasAutoUnshifted] = useState(false);
 
     const handleExpandClick = () => {
         console.log("Expand button clicked");
         const newState = !isPanelShifted;
         setIsPanelShifted(newState);
+        setIsManuallyToggled(true);
+        setWasAutoUnshifted(false);
         onToggle(newState);
     };
 
+    const handleMouseEnter = (e) => {
+        // Don't auto-expand if hovering over the button
+        if (e.target.closest('.main-exp-btn')) {
+            return;
+        }
+        if (isPanelShifted && !isManuallyToggled) {
+            setIsPanelShifted(false);
+            setWasAutoUnshifted(true);
+            onToggle(false);
+        }
+    };
+
+    const handleMouseLeave = () => {
+        if (wasAutoUnshifted) {
+            setIsPanelShifted(true);
+            setWasAutoUnshifted(false);
+            onToggle(true);
+        } else {
+            setIsManuallyToggled(false);
+        }
+    };
+
     return (
-        <div className="main-side-panel" style={{ transform: isPanelShifted ? "translateX(-236px)" : "translateX(0)", transition: "transform 0.3s ease" }}>
+        <div 
+            className={`main-side-panel ${isPanelShifted ? 'shifted' : ''}`}
+            style={{ transform: isPanelShifted ? "translateX(-236px)" : "translateX(0)", transition: "transform 0.3s ease" }}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+        >
             <button className="main-exp-btn" onClick={handleExpandClick}>
                 <svg rpl="" fill="currentColor" height="16" icon-name="menu" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
                     <path d="M17.1 4.801H2.9a.9.9 0 010-1.8h14.199a.9.9 0 01.001 1.8zM18 10a.9.9 0 00-.9-.9H2.9a.9.9 0 000 1.8h14.199A.9.9 0 0018 10zm0 6.1a.9.9 0 00-.9-.9H2.9a.9.9 0 000 1.8h14.199a.9.9 0 00.901-.9z"></path>
