@@ -62,6 +62,7 @@ function AuthBox() {
       } else {
         // Existing user - log them in
         setToken(response.token);
+        localStorage.setItem("userId", response._id);
         navigate("/app");
       }
     } catch (err) {
@@ -133,6 +134,7 @@ function AuthBox() {
           gender
         );
         setToken(result.token);
+        localStorage.setItem("userId", result._id);
         navigate("/app");
       } else {
         // Regular registration
@@ -144,6 +146,7 @@ function AuthBox() {
         });
 
         setToken(result.token);
+        localStorage.setItem("userId", result._id);
         navigate("/app");
       }
     } catch (err) {

@@ -181,8 +181,21 @@
     color: #ff4500;
 }
 
+.vote-btn.upvote.active {
+    color: #ff4500;
+}
+
 .vote-btn.downvote:hover {
     color: #7193ff;
+}
+
+.vote-btn.downvote.active {
+    color: #7193ff;
+}
+
+.vote-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
 }
 
 .vote-btn svg {
@@ -197,6 +210,14 @@
     padding: 0 4px;
     min-width: 20px;
     text-align: center;
+}
+
+.vote-count.upvoted {
+    color: #ff4500;
+}
+
+.vote-count.downvoted {
+    color: #7193ff;
 }
 
 /* Action Pills */

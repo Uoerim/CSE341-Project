@@ -19,8 +19,9 @@ function ProtectedRoute({ children }) {
       }
 
       try {
-        const isValid = await verifyToken(token);
-        if (isValid) {
+        const user = await verifyToken(token);
+        if (user) {
+          localStorage.setItem("userId", user._id);
           setIsAuthenticated(true);
         } else {
           removeToken();

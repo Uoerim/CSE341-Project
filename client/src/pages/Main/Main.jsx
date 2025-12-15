@@ -23,6 +23,11 @@ function Main() {
         }
     }, [currentPage]);
 
+    const handlePageChange = (page) => {
+        setSelectedPostId(null); // Clear selected post when changing pages
+        setCurrentPage(page);
+    };
+
     const renderPage = () => {
         // If a post is selected, show the post detail page
         if (selectedPostId) {
@@ -47,9 +52,9 @@ function Main() {
 
     return(
         <div className="main-container">
-            <MainNav onCreateClick={() => setCurrentPage("create")} />
+            <MainNav onCreateClick={() => handlePageChange("create")} />
             <div className="main-app-container">
-                <MainSidePanel onToggle={setIsPanelShifted} onPageChange={setCurrentPage} currentPage={currentPage} />
+                <MainSidePanel onToggle={setIsPanelShifted} onPageChange={handlePageChange} currentPage={currentPage} isViewingPost={!!selectedPostId} />
                 <div 
                     ref={mainContentRef}
                     className="main-content" 

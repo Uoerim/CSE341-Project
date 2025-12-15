@@ -77,7 +77,7 @@ export const checkEmail = async (email) => {
 /**
  * Verify authentication token
  * @param {string} token - JWT token to verify
- * @returns {Promise<boolean>} - Token validity
+ * @returns {Promise<object|null>} - User data if valid, null otherwise
  */
 export const verifyToken = async (token) => {
   try {
@@ -87,8 +87,11 @@ export const verifyToken = async (token) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.valid === true;
+    if (response.valid === true && response.user) {
+      return response.user;
+    }
+    return null;
   } catch (error) {
-    return false;
+    return null;
   }
 };

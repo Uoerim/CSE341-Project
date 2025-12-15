@@ -21,12 +21,12 @@ app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
-// Routes (protected)
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", protect, userRoutes);
 app.use("/api/communities", protect, communityRoutes);
 app.use("/api/posts", postRoutes);
-app.use("/api/comments", protect, commentRoutes);
+app.use("/api/comments", commentRoutes);  // Individual routes handle their own auth
 app.use("/api/search", searchRoutes);
 
 

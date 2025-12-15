@@ -132,11 +132,11 @@ export const getFeedPosts = async (req, res, next) => {
 export const getPostById = async (req, res, next) => {
   try {
     const post = await Post.findById(req.params.id)
-      .populate("author", "username email")
+      .populate("author", "username email avatar")
       .populate("community", "name")
       .populate({
         path: "comments",
-        populate: { path: "author", select: "username" },
+        populate: { path: "author", select: "username avatar" },
       });
 
     if (!post) {

@@ -26,6 +26,7 @@ function Login(
     try {
       const result = await loginUser(email, password);
       setToken(result.token);
+      localStorage.setItem("userId", result._id);
       navigate("/app");
     } catch (err) {
       setError("Invalid username or password.");

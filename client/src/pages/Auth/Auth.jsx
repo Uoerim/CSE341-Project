@@ -13,8 +13,9 @@ function Auth() {
       const token = getToken();
       if (token) {
         try {
-          const isValid = await verifyToken(token);
-          if (isValid) {
+          const user = await verifyToken(token);
+          if (user) {
+            localStorage.setItem("userId", user._id);
             navigate("/app", { replace: true });
           }
         } catch (error) {

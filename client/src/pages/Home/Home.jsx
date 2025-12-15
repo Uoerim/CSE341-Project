@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./home.css";
 import Post from "../../components/Post/Post";
+import Spinner from "../../components/Global/Spinner/Spinner";
 import axios from "axios";
 
 function Home({ onPostClick }) {
@@ -96,7 +97,7 @@ function Home({ onPostClick }) {
 
                     {hasMore && (
                         <div ref={observerTarget} className="loading-trigger">
-                            {loading && <div className="loading-spinner">Loading more posts...</div>}
+                            {loading && <Spinner />}
                         </div>
                     )}
 

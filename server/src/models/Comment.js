@@ -21,6 +21,8 @@ const commentSchema = new mongoose.Schema({
     ref: "Comment",
     default: null, // allows nested replies
   },
+  upvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  downvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 }, { timestamps: true });
 
 export default mongoose.model("Comment", commentSchema);

@@ -5,7 +5,7 @@ import { BadRequestError, ForbiddenError, NotFoundError} from "../utils/httpErro
 // CREATE comment
 export const createComment = async (req, res, next) => {
   try {
-    const { content, post } = req.body;
+    const { content, post, parentComment } = req.body;
 
     if (!content || !post) {
       throw new BadRequestError("Content and post are required");
@@ -20,12 +20,17 @@ export const createComment = async (req, res, next) => {
       content,
       author: req.user._id,
       post,
+      parentComment: parentComment || null,
     });
 
     postDoc.comments.push(comment._id);
     await postDoc.save();
 
-    res.status(201).json(comment);
+    // Populate author before returning
+    const populatedComment = await Comment.findById(comment._id)
+      .populate("author", "username avatar");
+
+    res.status(201).json(populatedComment);
   } catch (error) {
     next(error);
   }
@@ -34,11 +39,37 @@ export const createComment = async (req, res, next) => {
 // READ comments for a post
 export const getCommentsByPost = async (req, res, next) => {
   try {
-    const comments = await Comment.find({ post: req.params.postId })
-      .populate("author", "username")
+    // First try to find comments by post field
+    let comments = await Comment.find({ post: req.params.postId })
+      .populate("author", "username avatar")
       .sort({ createdAt: 1 });
 
+    // If no comments found, try to get from Post.comments array (fallback for old data)
+    if (comments.length === 0) {
+      const post = await Post.findById(req.params.postId).populate({
+        path: "comments",
+        populate: { path: "author", select: "username avatar" }
+      });
+      
+      if (post && post.comments) {
+        comments = post.comments;
+      }
+    }
+
     res.json(comments);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET replies for a comment
+export const getRepliesByComment = async (req, res, next) => {
+  try {
+    const replies = await Comment.find({ parentComment: req.params.commentId })
+      .populate("author", "username avatar")
+      .sort({ createdAt: 1 });
+
+    res.json(replies);
   } catch (error) {
     next(error);
   }
@@ -98,6 +129,64 @@ export const getAllComments = async (req, res, next) => {
   try {
     const comments = await Comment.find().populate("author", "username");
     res.json(comments);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// UPVOTE comment (toggle)
+export const upvoteComment = async (req, res, next) => {
+  try {
+    const comment = await Comment.findById(req.params.id);
+    if (!comment) {
+      throw new NotFoundError("Comment not found");
+    }
+
+    const userId = req.user._id.toString();
+
+    if (comment.upvotes.map((u) => u.toString()).includes(userId)) {
+      comment.upvotes.pull(req.user._id);
+    } else {
+      comment.upvotes.push(req.user._id);
+      comment.downvotes.pull(req.user._id);
+    }
+
+    await comment.save();
+
+    res.json({
+      message: "Comment upvoted",
+      upvotes: comment.upvotes.length,
+      downvotes: comment.downvotes.length,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// DOWNVOTE comment (toggle)
+export const downvoteComment = async (req, res, next) => {
+  try {
+    const comment = await Comment.findById(req.params.id);
+    if (!comment) {
+      throw new NotFoundError("Comment not found");
+    }
+
+    const userId = req.user._id.toString();
+
+    if (comment.downvotes.map((u) => u.toString()).includes(userId)) {
+      comment.downvotes.pull(req.user._id);
+    } else {
+      comment.downvotes.push(req.user._id);
+      comment.upvotes.pull(req.user._id);
+    }
+
+    await comment.save();
+
+    res.json({
+      message: "Comment downvoted",
+      upvotes: comment.upvotes.length,
+      downvotes: comment.downvotes.length,
+    });
   } catch (error) {
     next(error);
   }

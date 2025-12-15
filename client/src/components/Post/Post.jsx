@@ -1,11 +1,26 @@
 import React, { useState } from "react";
 import "./post.css";
+import axios from "axios";
 
 function Post({ post, onPostClick }) {
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+    const token = localStorage.getItem("authToken");
+    const userId = localStorage.getItem("userId");
+
+    // Get initial vote state
+    const getUserVoteState = () => {
+        if (!userId) return null;
+        if (post.upvotes?.includes(userId)) return 'up';
+        if (post.downvotes?.includes(userId)) return 'down';
+        return null;
+    };
+
     const [votes, setVotes] = useState({
         upvotes: post.upvotes?.length || 0,
         downvotes: post.downvotes?.length || 0,
     });
+    const [userVote, setUserVote] = useState(getUserVoteState());
+    const [isVoting, setIsVoting] = useState(false);
 
     const formatDate = (date) => {
         const now = new Date();
@@ -31,19 +46,48 @@ function Post({ post, onPostClick }) {
     const firstImage = extractFirstImage(post.content);
     const voteCount = votes.upvotes - votes.downvotes;
 
-    const handleVoteClick = (e, type) => {
+    const handleVoteClick = async (e, type) => {
         e.stopPropagation();
-        // Vote logic here
+        
+        if (!token) {
+            alert("Please log in to vote");
+            return;
+        }
+        
+        if (isVoting) return;
+        
+        try {
+            setIsVoting(true);
+            const endpoint = type === 'up' ? 'upvote' : 'downvote';
+            const response = await axios.put(
+                `${apiUrl}/posts/${post._id}/${endpoint}`,
+                {},
+                {
+                    headers: { Authorization: `Bearer ${token}` }
+                }
+            );
+            
+            setVotes({
+                upvotes: response.data.upvotes,
+                downvotes: response.data.downvotes,
+            });
+            
+            // Update user vote state
+            if (type === 'up') {
+                setUserVote(userVote === 'up' ? null : 'up');
+            } else {
+                setUserVote(userVote === 'down' ? null : 'down');
+            }
+        } catch (err) {
+            console.error("Error voting:", err);
+        } finally {
+            setIsVoting(false);
+        }
     };
 
     const handleJoinClick = (e) => {
         e.stopPropagation();
         // Join logic here
-    };
-
-    const handleMoreClick = (e) => {
-        e.stopPropagation();
-        // More options logic here
     };
 
     const handleShareClick = (e) => {
@@ -68,15 +112,6 @@ function Post({ post, onPostClick }) {
                     <span className="post-header-dot">•</span>
                     <span className="post-timestamp">{formatDate(post.createdAt)}</span>
                 </div>
-                <div className="post-header-actions">
-                    <button className="more-btn" onClick={handleMoreClick}>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <circle cx="12" cy="5" r="2" />
-                            <circle cx="12" cy="12" r="2" />
-                            <circle cx="12" cy="19" r="2" />
-                        </svg>
-                    </button>
-                </div>
             </div>
 
             {/* Post Title */}
@@ -98,19 +133,21 @@ function Post({ post, onPostClick }) {
 
             {/* Action Bar */}
             <div className="post-actions-bar">
-                <div className="vote-pill">
+                <div className={`vote-pill ${userVote ? 'voted' : ''}`}>
                     <button 
-                        className="vote-btn upvote" 
+                        className={`vote-btn upvote ${userVote === 'up' ? 'active' : ''}`}
                         onClick={(e) => handleVoteClick(e, 'up')}
+                        disabled={isVoting}
                     >
                         <svg fill="currentColor" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10 19a3.966 3.966 0 01-3.96-3.962V10.98H2.838a1.731 1.731 0 01-1.605-1.073 1.734 1.734 0 01.377-1.895L9.364.254a.925.925 0 011.272 0l7.754 7.759c.498.499.646 1.242.376 1.894-.27.652-.9 1.073-1.605 1.073h-3.202v4.058A3.965 3.965 0 019.999 19H10zM2.989 9.179H7.84v5.731c0 1.13.81 2.163 1.934 2.278a2.163 2.163 0 002.386-2.15V9.179h4.851L10 2.163 2.989 9.179z"></path>
                         </svg>
                     </button>
-                    <span className="vote-count">{voteCount}</span>
+                    <span className={`vote-count ${userVote === 'up' ? 'upvoted' : ''} ${userVote === 'down' ? 'downvoted' : ''}`}>{voteCount}</span>
                     <button 
-                        className="vote-btn downvote" 
+                        className={`vote-btn downvote ${userVote === 'down' ? 'active' : ''}`}
                         onClick={(e) => handleVoteClick(e, 'down')}
+                        disabled={isVoting}
                     >
                         <svg fill="currentColor" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10 1a3.966 3.966 0 013.96 3.962V9.02h3.202c.706 0 1.335.42 1.605 1.073.27.652.122 1.396-.377 1.895l-7.754 7.759a.925.925 0 01-1.272 0l-7.754-7.76a1.734 1.734 0 01-.376-1.894c.27-.652.9-1.073 1.605-1.073h3.202V4.962A3.965 3.965 0 0110 1zm7.01 9.82h-4.85V5.09c0-1.13-.81-2.163-1.934-2.278a2.163 2.163 0 00-2.386 2.15v5.859H2.989l7.01 7.016 7.012-7.016z"></path>
