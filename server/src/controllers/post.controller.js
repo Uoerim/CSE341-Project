@@ -13,8 +13,12 @@ export const createPost = async (req, res, next) => {
   try {
     const { title, content, community, status } = req.body;
 
-    if (!title) {
+    if (!title || !title.trim()) {
       throw new BadRequestError("Title is required");
+    }
+
+    if (!content || !content.trim()) {
+      throw new BadRequestError("Post content is required");
     }
 
     // Validate status if provided

@@ -436,10 +436,10 @@
     cursor: pointer;
     font-size: 14px;
     font-weight: 600;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover:not(:disabled) {
     background-color: rgba(255, 255, 255, 0.05);
     border-color: #818384;
 }
@@ -450,9 +450,9 @@
 }
 
 .btn-primary {
-    background-color: #818384;
+    background-color: #1E90FF;
     border: none;
-    color: #0a0e0f;
+    color: #ffffff;
     padding: 8px 24px;
     border-radius: 24px;
     cursor: pointer;
@@ -461,8 +461,8 @@
     transition: background-color 0.2s ease;
 }
 
-.btn-primary:hover {
-    background-color: #a8abb1;
+.btn-primary:hover:not(:disabled) {
+    background-color: #1875dd;
 }
 
 .btn-primary:disabled {

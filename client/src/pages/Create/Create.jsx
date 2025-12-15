@@ -391,14 +391,14 @@ function Create({ onNavigateHome }) {
                     <button 
                         className="btn-secondary" 
                         onClick={handleSaveDraft}
-                        disabled={loading}
+                        disabled={loading || !title.trim()}
                     >
                         Save Draft
                     </button>
                     <button 
                         className="btn-primary" 
                         onClick={handlePost}
-                        disabled={loading}
+                        disabled={loading || !title.trim() || !bodyText.trim()}
                     >
                         {loading ? "Posting..." : "Post"}
                     </button>
