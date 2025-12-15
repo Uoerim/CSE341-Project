@@ -177,13 +177,24 @@ function RichTextEditor({ value, onChange, placeholder = "Body text (optional)" 
             reader.onload = (event) => {
                 const imageUrl = event.target?.result;
                 if (imageUrl) {
+                    // Ensure editor is focused before inserting
+                    editorRef.current?.focus();
+                    
                     const imageHTML = `<div class="rte-image-wrapper"><img src="${imageUrl}" alt="Uploaded image" class="rte-inline-image" /><input type="text" class="rte-image-caption" placeholder="Add a caption" /></div><p><br></p>`;
                     document.execCommand("insertHTML", false, imageHTML);
-                    editorRef.current?.focus();
+                    
+                    // Update the onChange callback with new content
+                    setTimeout(() => {
+                        if (editorRef.current) {
+                            onChange(editorRef.current.innerHTML);
+                        }
+                    }, 0);
                 }
             };
             reader.readAsDataURL(file);
         }
+        // Reset the input so the same file can be selected again
+        e.target.value = "";
     };
 
     const handleUnorderedList = (e) => {
