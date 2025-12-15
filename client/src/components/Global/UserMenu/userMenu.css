@@ -9,7 +9,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: transparent;
+    background-color: rgb(177, 177, 177);
     border: none;
     color: #d7dadc;
     cursor: pointer;
@@ -18,10 +18,12 @@
     justify-content: center;
     transition: background-color 0.2s ease, color 0.2s ease;
     flex-shrink: 0;
+
+    overflow: hidden;
 }
 
 .user-menu-trigger:hover {
-    background-color: rgba(255, 69, 0, 0.1);
+    background-color: rgba(143, 143, 143, 0.585);
     color: #ff4500;
 }
 
@@ -29,6 +31,15 @@
     width: 20px;
     height: 20px;
     fill: currentColor;
+}
+
+
+.trigger-avatar {
+    width: 200%;
+    height: 100%;
+    object-fit: cover;
+    transform: translateY(10%) translateX(10%) scale(0.7);
+
 }
 
 .user-menu-dropdown {
@@ -49,6 +60,7 @@
         opacity: 0;
         transform: scale(0.95) translateY(-20px);
     }
+
     to {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -64,6 +76,7 @@
         opacity: 1;
         transform: scale(1) translateY(0);
     }
+
     to {
         opacity: 0;
         transform: scale(0.95) translateY(-20px);
@@ -98,13 +111,15 @@
     border-radius: 50%;
     overflow: hidden;
     flex-shrink: 0;
-    background-color: #26282a;
+    background-color: #6d6d6d;
 }
 
 .profile-avatar img {
     width: 100%;
-    height: 100%;
+    height: 200%;
     object-fit: cover;
+    transform: translateX(20%) translateY(-10%) scaleX(-1);
+
 }
 
 .profile-info {

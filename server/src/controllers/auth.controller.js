@@ -241,7 +241,6 @@ export const completeGoogleRegistration = async (req, res) => {
       email: googleUser.email,
       password: generateSecurePassword(), // Generate a secure password for Google users
       gender: gender || "prefer not to say",
-      avatar: googleUser.picture || "",
       bio: ""
     });
 

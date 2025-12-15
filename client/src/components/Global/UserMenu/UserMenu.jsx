@@ -1,12 +1,47 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./userMenu.css";
+import CONFIG from "../../../config/config";
 
 function UserMenu() {
     const [isOpen, setIsOpen] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(true);
+    const [userData, setUserData] = useState({ username: "User", avatar: "char" });
     const menuRef = useRef(null);
     const triggerRef = useRef(null);
     const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 });
+
+    // Fetch user data on component mount
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const token = localStorage.getItem("authToken");
+                if (!token) {
+                    console.log("No token found");
+                    return;
+                }
+
+                const response = await fetch(`${CONFIG.api.baseURL}/users/me`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setUserData({
+                        username: data.username || "User",
+                        avatar: data.avatar || "char",
+                    });
+                } else {
+                    console.error("Failed to fetch user data:", response.status, response.statusText);
+                }
+            } catch (error) {
+                console.error("Failed to fetch user data:", error);
+            }
+        };
+
+        fetchUserData();
+    }, []);
 
     useEffect(() => {
         if (isOpen && triggerRef.current) {
@@ -47,7 +82,7 @@ function UserMenu() {
             type: "profile",
             icon: "profile",
             label: "View Profile",
-            sublabel: "u/Uoerim",
+            sublabel: `u/${userData.username}`,
         },
         {
             id: 2,
@@ -154,9 +189,7 @@ function UserMenu() {
                 onClick={() => setIsOpen(!isOpen)}
                 title="User Menu"
             >
-                <svg fill="currentColor" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66 5.33-4 8-4z"></path>
-                </svg>
+                <img src={`/character/${userData.avatar}.png`} alt="user avatar" className="trigger-avatar" />
             </button>
 
             {isOpen && (
@@ -176,7 +209,7 @@ function UserMenu() {
                             return (
                                 <div key={item.id} className="menu-item menu-profile">
                                     <div className="profile-avatar">
-                                        <img src="/logo-white-notext.png" alt="avatar" />
+                                        <img src={`/character/${userData.avatar}.png`} alt="avatar" />
                                     </div>
                                     <div className="profile-info">
                                         <div className="profile-name">{item.label}</div>

@@ -1,0 +1,14 @@
+.create-container {
+    padding: 20px;
+    color: #d7dadc;
+}
+
+.create-container h1 {
+    margin: 0 0 20px 0;
+    font-size: 32px;
+}
+
+.create-container p {
+    margin: 0;
+    color: #818384;
+}

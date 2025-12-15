@@ -38,6 +38,15 @@ const userSchema = new mongoose.Schema({
   },
 }, { timestamps: true });
 userSchema.pre("save", async function (next) {
+  // Set avatar based on gender if not already set
+  if (!this.avatar) {
+    if (this.gender === "female") {
+      this.avatar = "char-girl";
+    } else {
+      this.avatar = "char";
+    }
+  }
+  
   if (!this.isModified("password")) return next(); // pass is always hashed so we never store raw passwords
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
