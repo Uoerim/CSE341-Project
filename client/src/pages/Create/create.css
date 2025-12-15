@@ -335,10 +335,22 @@
     padding: 12px 16px;
     font-size: 14px;
     font-weight: 600;
-    border-bottom: 3px solid transparent;
-    transition: color 0.2s ease, border-color 0.2s ease;
+    transition: color 0.2s ease;
     position: relative;
     top: 1px;
+}
+
+.tab::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 16px;
+    right: 16px;
+    height: 3px;
+    background-color: #1E90FF;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s ease;
 }
 
 .tab:hover:not(:disabled) {
@@ -347,7 +359,10 @@
 
 .tab.active {
     color: #ffffff;
-    border-bottom-color: #1E90FF;
+}
+
+.tab.active::after {
+    transform: scaleX(1);
 }
 
 .tab:disabled {
@@ -453,4 +468,49 @@
 .btn-primary:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+/* Title input styling to match RichTextEditor */
+.title-input-wrapper {
+    margin-bottom: 20px;
+}
+
+.title-input-wrapper .textbox-wrapper {
+    border: 1px solid #343536;
+    border-radius: 12px;
+    background-color: transparent;
+    padding: 0;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.title-input-wrapper .textbox-wrapper:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+    border-color: #818384;
+}
+
+.title-input-wrapper .textbox-wrapper:focus-within {
+    border-color: #818384;
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.title-input-wrapper .global-textbox {
+    background-color: transparent;
+    border: none;
+    border-radius: 12px;
+    color: #d7dadc;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.title-input-wrapper .global-textbox:hover {
+    background-color: transparent;
+}
+
+.title-input-wrapper .global-textbox:focus {
+    background-color: transparent;
+    border: none;
+}
+
+.title-input-wrapper .global-textbox.error {
+    background-color: transparent;
+    border-bottom: 2px solid #f44336;
 }

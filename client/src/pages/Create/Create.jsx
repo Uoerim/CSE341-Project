@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./create.css";
 import RichTextEditor from "../../components/Global/RichTextEditor";
+import Textbox from "../../components/Global/textbox/textbox";
 
 function Create({ onNavigateHome }) {
     const placeholderCommunities = [
@@ -368,17 +369,15 @@ function Create({ onNavigateHome }) {
 
                 {activeTab === "text" && (
                     <div className="text-editor">
-                        <input
-                            type="text"
-                            className="title-input"
-                            placeholder="Title *"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            maxLength="300"
-                        />
-                        <div className="title-counter">{title.length}/300</div>
-
-                        <div className="add-tags">Add tags</div>
+                        <div className="title-input-wrapper">
+                            <Textbox
+                                placeholder="Title"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value.substring(0, 300))}
+                                showCheckmark={true}
+                            />
+                            <div className="title-counter">{title.length}/300</div>
+                        </div>
 
                         <RichTextEditor 
                             value={bodyText}

@@ -2,9 +2,20 @@
     display: flex;
     flex-direction: column;
     border: 1px solid #343536;
-    border-radius: 6px;
-    background-color: #0a0a0b;
+    border-radius: 12px;
+    background-color: transparent;
     overflow: hidden;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.rich-text-editor-wrapper:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+    border-color: #818384;
+}
+
+.rich-text-editor-wrapper:focus-within {
+    border-color: #818384;
+    background-color: rgba(255, 255, 255, 0.04);
 }
 
 .rte-toolbar {
@@ -12,8 +23,8 @@
     flex-wrap: wrap;
     gap: 4px;
     padding: 12px;
-    background-color: #1a1a1b;
-    border-bottom: 1px solid #343536;
+    background-color: transparent;
+    border-bottom: none;
     align-items: center;
 }
 
@@ -60,7 +71,7 @@
     min-height: 200px;
     padding: 16px;
     color: #d7dadc;
-    background-color: #0a0a0b;
+    background-color: transparent;
     border: none;
     outline: none;
     font-size: 14px;
