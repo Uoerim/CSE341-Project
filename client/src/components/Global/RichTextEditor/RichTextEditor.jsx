@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import "./richTextEditor.css";
 
 function RichTextEditor({ value, onChange, placeholder = "Body text (optional)" }) {
@@ -7,6 +7,70 @@ function RichTextEditor({ value, onChange, placeholder = "Body text (optional)" 
     const [showLinkModal, setShowLinkModal] = useState(false);
     const [linkText, setLinkText] = useState("");
     const [linkUrl, setLinkUrl] = useState("");
+    const [hoverLinkPopup, setHoverLinkPopup] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    useEffect(() => {
+        const editor = editorRef.current;
+        if (!editor) return;
+
+        const handleClick = (e) => {
+            // Check if click is on delete button or inside the popup
+            if (e.target.closest(".rte-image-delete-popup")) {
+                return;
+            }
+
+            // Remove selection from previous image
+            if (selectedImage?.element) {
+                selectedImage.element.classList.remove("selected");
+            }
+
+            if (e.target.classList.contains("rte-inline-link")) {
+                e.preventDefault();
+                const url = e.target.getAttribute("data-url");
+                const rect = e.target.getBoundingClientRect();
+                setHoverLinkPopup({
+                    element: e.target,
+                    url,
+                    x: rect.left,
+                    y: rect.bottom + 5,
+                });
+                setSelectedImage(null);
+            } else if (e.target.classList.contains("rte-inline-image")) {
+                e.preventDefault();
+                e.target.classList.add("selected");
+                const rect = e.target.getBoundingClientRect();
+                setSelectedImage({
+                    element: e.target,
+                    x: rect.right + 10,
+                    y: rect.top,
+                });
+                setHoverLinkPopup(null);
+            } else {
+                setSelectedImage(null);
+                setHoverLinkPopup(null);
+            }
+        };
+
+        // Also handle clicks outside the editor
+        const handleOutsideClick = (e) => {
+            if (!editorRef.current?.contains(e.target)) {
+                if (selectedImage?.element) {
+                    selectedImage.element.classList.remove("selected");
+                }
+                setSelectedImage(null);
+                setHoverLinkPopup(null);
+            }
+        };
+
+        editor.addEventListener("click", handleClick);
+        document.addEventListener("click", handleOutsideClick);
+
+        return () => {
+            editor.removeEventListener("click", handleClick);
+            document.removeEventListener("click", handleOutsideClick);
+        };
+    }, [selectedImage]);
 
     const handleFormatting = (command, customValue = null) => {
         document.execCommand(command, false, customValue);
@@ -41,11 +105,57 @@ function RichTextEditor({ value, onChange, placeholder = "Body text (optional)" 
     const handleSaveLink = () => {
         if (linkUrl.trim()) {
             const text = linkText.trim() || linkUrl;
-            document.execCommand("createLink", false, linkUrl);
+            const linkHTML = `<a href="${linkUrl}" class="rte-inline-link" data-url="${linkUrl}" target="_blank">${text}</a>`;
+            
+            // Ensure editor is focused before inserting
+            editorRef.current?.focus();
+            
+            // Insert the HTML and update the content
+            document.execCommand("insertHTML", false, linkHTML);
+            
+            // Update the onChange callback with new content
+            setTimeout(() => {
+                if (editorRef.current) {
+                    onChange(editorRef.current.innerHTML);
+                }
+            }, 0);
+            
             setLinkText("");
             setLinkUrl("");
             setShowLinkModal(false);
-            editorRef.current?.focus();
+        }
+    };
+
+    const handleEditLink = () => {
+        if (hoverLinkPopup?.element) {
+            const url = hoverLinkPopup.element.getAttribute("data-url");
+            const text = hoverLinkPopup.element.textContent;
+            setLinkText(text);
+            setLinkUrl(url);
+            setShowLinkModal(true);
+            setHoverLinkPopup(null);
+        }
+    };
+
+    const handleDeleteLink = () => {
+        if (hoverLinkPopup?.element) {
+            const text = hoverLinkPopup.element.textContent;
+            hoverLinkPopup.element.replaceWith(document.createTextNode(text));
+            onChange(editorRef.current.innerHTML);
+            setHoverLinkPopup(null);
+        }
+    };
+
+    const handleDeleteImage = () => {
+        if (selectedImage?.element) {
+            const wrapper = selectedImage.element.closest(".rte-image-wrapper");
+            if (wrapper) {
+                wrapper.remove();
+            } else {
+                selectedImage.element.remove();
+            }
+            onChange(editorRef.current.innerHTML);
+            setSelectedImage(null);
         }
     };
 
@@ -67,7 +177,7 @@ function RichTextEditor({ value, onChange, placeholder = "Body text (optional)" 
             reader.onload = (event) => {
                 const imageUrl = event.target?.result;
                 if (imageUrl) {
-                    const imageHTML = `<img src="${imageUrl}" alt="Uploaded image" class="rte-inline-image" /><br /><input type="text" class="rte-image-caption" placeholder="Add a caption" /><br />`;
+                    const imageHTML = `<div class="rte-image-wrapper"><img src="${imageUrl}" alt="Uploaded image" class="rte-inline-image" /><input type="text" class="rte-image-caption" placeholder="Add a caption" /></div><p><br></p>`;
                     document.execCommand("insertHTML", false, imageHTML);
                     editorRef.current?.focus();
                 }
@@ -290,6 +400,65 @@ function RichTextEditor({ value, onChange, placeholder = "Body text (optional)" 
                             </button>
                         </div>
                     </div>
+                </div>
+            )}
+
+            {/* Link Click Popup */}
+            {hoverLinkPopup && (
+                <div 
+                    className="rte-link-popup"
+                    style={{
+                        left: `${hoverLinkPopup.x}px`,
+                        top: `${hoverLinkPopup.y}px`,
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <a href={hoverLinkPopup.url} target="_blank" rel="noopener noreferrer" className="rte-popup-link">
+                        {hoverLinkPopup.url}
+                    </a>
+                    <button
+                        className="rte-popup-btn rte-popup-edit"
+                        onClick={handleEditLink}
+                        title="Edit"
+                    >
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11.013 1.427a1.75 1.75 0 012.474 0l1.086 1.086a1.75 1.75 0 010 2.474l-10.148 10.148H1v-3.425L11.013 1.427z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M7.5 4.5l2 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                    </button>
+                    <button
+                        className="rte-popup-btn rte-popup-delete"
+                        onClick={handleDeleteLink}
+                        title="Delete"
+                    >
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2.5 3.5h11m-1 0v9a1 1 0 01-1 1h-7a1 1 0 01-1-1v-9m2-2v-1a1 1 0 011-1h2a1 1 0 011 1v1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M6.5 7v3M9.5 7v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            )}
+
+            {/* Image Delete Button */}
+            {selectedImage && (
+                <div 
+                    className="rte-image-delete-popup"
+                    style={{
+                        left: `${selectedImage.x}px`,
+                        top: `${selectedImage.y}px`,
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <button
+                        className="rte-image-delete-btn"
+                        onClick={handleDeleteImage}
+                        title="Delete image"
+                    >
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2.5 3.5h11m-1 0v9a1 1 0 01-1 1h-7a1 1 0 01-1-1v-9m2-2v-1a1 1 0 011-1h2a1 1 0 011 1v1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M6.5 7v3M9.5 7v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                    </button>
                 </div>
             )}
         </div>
