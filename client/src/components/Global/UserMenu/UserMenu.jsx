@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./userMenu.css";
 import CONFIG from "../../../config/config";
 
@@ -70,10 +71,18 @@ function UserMenu() {
         };
     }, [isOpen]);
 
+    const navigate = useNavigate();
+
     const handleDarkModeToggle = () => {
         const newMode = !isDarkMode;
         setIsDarkMode(newMode);
         console.log(newMode ? "dark" : "light");
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userId");
+        navigate("/");
     };
 
     const menuItems = [
@@ -238,7 +247,12 @@ function UserMenu() {
                         }
 
                         return (
-                            <div key={item.id} className="menu-item">
+                            <div 
+                                key={item.id} 
+                                className="menu-item"
+                                onClick={item.icon === "logout" ? handleLogout : undefined}
+                                style={item.icon === "logout" ? { cursor: "pointer" } : {}}
+                            >
                                 <div className="menu-icon">{getIcon(item.icon)}</div>
                                 <div className="menu-text">
                                     <span className="menu-label">{item.label}</span>
