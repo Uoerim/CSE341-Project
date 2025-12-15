@@ -6,6 +6,7 @@
     background-color: transparent;
     overflow: hidden;
     transition: border-color 0.3s ease, background-color 0.3s ease;
+    pointer-events: auto;
 }
 
 .rich-text-editor-wrapper:hover {
@@ -78,6 +79,8 @@
     line-height: 1.6;
     word-wrap: break-word;
     overflow-y: auto;
+    user-select: text;
+    -webkit-user-select: text;
 }
 
 .rte-content:empty::before {
@@ -385,26 +388,9 @@
     border-radius: 4px;
 }
 
+/* Hide any remaining caption inputs from old posts */
 .rte-image-caption {
-    width: 100%;
-    padding: 8px 0;
-    background-color: transparent;
-    border: none;
-    border-bottom: 1px solid #343536;
-    color: #d7dadc;
-    font-size: 13px;
-    outline: none;
-    font-family: inherit;
-    transition: border-color 0.2s ease;
-}
-
-.rte-image-caption:hover {
-    border-bottom-color: #818384;
-}
-
-.rte-image-caption:focus {
-    border-bottom-color: #818384;
-    outline: none;
+    display: none !important;
 }
 
 /* Link Display Styling */

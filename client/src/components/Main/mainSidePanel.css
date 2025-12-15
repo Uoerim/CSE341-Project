@@ -72,6 +72,15 @@
     fill: white;
 }
 
+.side-menu-item.active {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: white;
+}
+
+.side-menu-item.active svg {
+    fill: white;
+}
+
 .side-menu-create {
     margin-top: 4px;
 }

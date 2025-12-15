@@ -9,6 +9,7 @@ function RichTextEditor({ value, onChange, placeholder = "Body text (optional)" 
     const [linkUrl, setLinkUrl] = useState("");
     const [hoverLinkPopup, setHoverLinkPopup] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
+    const [savedSelection, setSavedSelection] = useState(null);
 
     useEffect(() => {
         const editor = editorRef.current;
@@ -99,6 +100,11 @@ function RichTextEditor({ value, onChange, placeholder = "Body text (optional)" 
 
     const handleLink = (e) => {
         e.preventDefault();
+        // Save the current selection before opening modal
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+            setSavedSelection(selection.getRangeAt(0));
+        }
         setShowLinkModal(true);
     };
 
@@ -107,8 +113,14 @@ function RichTextEditor({ value, onChange, placeholder = "Body text (optional)" 
             const text = linkText.trim() || linkUrl;
             const linkHTML = `<a href="${linkUrl}" class="rte-inline-link" data-url="${linkUrl}" target="_blank">${text}</a>`;
             
-            // Ensure editor is focused before inserting
-            editorRef.current?.focus();
+            // Restore the saved selection
+            if (savedSelection) {
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(savedSelection);
+            } else {
+                editorRef.current?.focus();
+            }
             
             // Insert the HTML and update the content
             document.execCommand("insertHTML", false, linkHTML);
@@ -123,6 +135,7 @@ function RichTextEditor({ value, onChange, placeholder = "Body text (optional)" 
             setLinkText("");
             setLinkUrl("");
             setShowLinkModal(false);
+            setSavedSelection(null);
         }
     };
 
@@ -180,7 +193,7 @@ function RichTextEditor({ value, onChange, placeholder = "Body text (optional)" 
                     // Ensure editor is focused before inserting
                     editorRef.current?.focus();
                     
-                    const imageHTML = `<div class="rte-image-wrapper"><img src="${imageUrl}" alt="Uploaded image" class="rte-inline-image" /><input type="text" class="rte-image-caption" placeholder="Add a caption" /></div><p><br></p>`;
+                    const imageHTML = `<div class="rte-image-wrapper"><img src="${imageUrl}" alt="Uploaded image" class="rte-inline-image" /></div><p>&nbsp;</p>`;
                     document.execCommand("insertHTML", false, imageHTML);
                     
                     // Update the onChange callback with new content
@@ -209,17 +222,62 @@ function RichTextEditor({ value, onChange, placeholder = "Body text (optional)" 
 
     const handleCode = (e) => {
         e.preventDefault();
-        handleFormatting("insertHTML", "<code>");
+        // Insert a pre block with proper structure
+        editorRef.current?.focus();
+        document.execCommand("insertHTML", false, "<pre>code here</pre><p>&nbsp;</p>");
+        setTimeout(() => {
+            if (editorRef.current) {
+                onChange(editorRef.current.innerHTML);
+            }
+        }, 0);
     };
 
     const handleQuote = (e) => {
         e.preventDefault();
-        handleFormatting("formatBlock", "<blockquote>");
+        // Insert a blockquote with proper structure
+        editorRef.current?.focus();
+        document.execCommand("insertHTML", false, "<blockquote>quote here</blockquote><p>&nbsp;</p>");
+        setTimeout(() => {
+            if (editorRef.current) {
+                onChange(editorRef.current.innerHTML);
+            }
+        }, 0);
     };
 
     const handleTable = (e) => {
         e.preventDefault();
-        handleFormatting("insertHTML", "<table><tr><td>Cell</td></tr></table>");
+        // Focus editor first
+        editorRef.current?.focus();
+        const tableHTML = `<table><tbody><tr><td>Cell 1</td><td>Cell 2</td></tr><tr><td>Cell 3</td><td>Cell 4</td></tr></tbody></table><p>&nbsp;</p>`;
+        document.execCommand("insertHTML", false, tableHTML);
+        
+        // Update parent state
+        setTimeout(() => {
+            if (editorRef.current) {
+                onChange(editorRef.current.innerHTML);
+            }
+        }, 0);
+    };
+
+    const handleKeyDown = (e) => {
+        // Allow normal Enter behavior in pre, blockquote, and table cells
+        if (e.key === "Enter") {
+            const selection = window.getSelection();
+            const node = selection.anchorNode;
+            
+            // Check if we're inside pre, blockquote, or table
+            let parent = node;
+            while (parent) {
+                if (parent.nodeType === Node.ELEMENT_NODE) {
+                    const tagName = parent.tagName.toLowerCase();
+                    if (["pre", "blockquote", "td", "th", "table"].includes(tagName)) {
+                        // Allow default Enter behavior
+                        return;
+                    }
+                }
+                parent = parent.parentNode;
+            }
+        }
     };
 
     return (
@@ -334,6 +392,7 @@ function RichTextEditor({ value, onChange, placeholder = "Body text (optional)" 
                 contentEditable
                 suppressContentEditableWarning
                 onInput={(e) => onChange(e.currentTarget.innerHTML)}
+                onKeyDown={handleKeyDown}
                 data-placeholder={placeholder}
             />
 
@@ -373,6 +432,7 @@ function RichTextEditor({ value, onChange, placeholder = "Body text (optional)" 
                                     onKeyPress={(e) => {
                                         if (e.key === "Enter") handleSaveLink();
                                     }}
+                                    spellCheck="false"
                                     autoFocus
                                 />
                             </div>
@@ -390,6 +450,7 @@ function RichTextEditor({ value, onChange, placeholder = "Body text (optional)" 
                                     onKeyPress={(e) => {
                                         if (e.key === "Enter") handleSaveLink();
                                     }}
+                                    spellCheck="false"
                                     required
                                 />
                             </div>

@@ -19,6 +19,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     padding-left: 100px;
+    background-color: #0E1113 !important;
 }
 
 .main-content::-webkit-scrollbar {

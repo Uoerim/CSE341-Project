@@ -74,12 +74,55 @@ export const getAllPosts = async (req, res, next) => {
 // FEED posts (home page)
 export const getFeedPosts = async (req, res, next) => {
   try {
-    const posts = await Post.find()
-      .sort({ createdAt: -1 })
-      .populate("author", "username email")
-      .populate("community", "name");
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    
+    // Convert exclude IDs to proper strings for comparison
+    let excludeIds = [];
+    if (req.query.exclude) {
+      excludeIds = req.query.exclude.split(",").filter(id => id.trim());
+    }
 
-    res.json(posts);
+    // Get posts from last 30 days, exclude already loaded posts
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    
+    const query = {
+      status: "published",
+      createdAt: { $gte: thirtyDaysAgo }
+    };
+
+    // Add exclude filter only if there are IDs to exclude
+    if (excludeIds.length > 0) {
+      query._id = { $nin: excludeIds };
+    }
+    
+    const posts = await Post.find(query)
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .skip(skip)
+      .populate("author", "username avatar")
+      .populate("community", "name")
+      .lean();
+
+    // Get total count for pagination info (excluding the already-loaded posts)
+    const total = await Post.countDocuments(query);
+
+    const hasMore = (skip + limit) < total;
+
+    res.json({
+      posts: posts.map(post => ({
+        ...post,
+        _id: post._id.toString() // Ensure _id is a string
+      })),
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit),
+        hasMore
+      }
+    });
   } catch (error) {
     next(error);
   }

@@ -339,53 +339,23 @@ function Create({ onNavigateHome }) {
                     )}
                 </div>
 
-                <div className="create-tabs">
-                    <button 
-                        className={`tab ${activeTab === "text" ? "active" : ""}`}
-                        onClick={() => setActiveTab("text")}
-                    >
-                        Text
-                    </button>
-                    <button 
-                        className={`tab ${activeTab === "images" ? "active" : ""}`}
-                        onClick={() => setActiveTab("images")}
-                    >
-                        Images & Video
-                    </button>
-                    <button 
-                        className={`tab ${activeTab === "link" ? "active" : ""}`}
-                        onClick={() => setActiveTab("link")}
-                    >
-                        Link
-                    </button>
-                    <button 
-                        className={`tab ${activeTab === "poll" ? "active" : ""}`}
-                        onClick={() => setActiveTab("poll")}
-                        disabled
-                    >
-                        Poll
-                    </button>
-                </div>
-
-                {activeTab === "text" && (
-                    <div className="text-editor">
-                        <div className="title-input-wrapper">
-                            <Textbox
-                                placeholder="Title"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value.substring(0, 300))}
-                                showCheckmark={true}
-                            />
-                            <div className="title-counter">{title.length}/300</div>
-                        </div>
-
-                        <RichTextEditor 
-                            value={bodyText}
-                            onChange={setBodyText}
-                            placeholder="Body text (optional)"
+                <div className="text-editor">
+                    <div className="title-input-wrapper">
+                        <Textbox
+                            placeholder="Title"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value.substring(0, 300))}
+                            showCheckmark={true}
                         />
+                        <div className="title-counter">{title.length}/300</div>
                     </div>
-                )}
+
+                    <RichTextEditor 
+                        value={bodyText}
+                        onChange={setBodyText}
+                        placeholder="Body text (optional)"
+                    />
+                </div>
 
                 <div className="create-actions">
                     <button 
