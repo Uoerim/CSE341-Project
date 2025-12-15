@@ -1,7 +1,8 @@
 .create-container {
-    padding: 20px;
+    padding: 0px 40px;
     color: #d7dadc;
-    max-width: 900px;
+    max-width: 700px;
+
 }
 
 .create-header {
@@ -13,23 +14,26 @@
 
 .create-header h1 {
     margin: 0;
-    font-size: 28px;
-    font-weight: 600;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #B7CAD4;
 }
 
 .drafts-btn {
     background: transparent;
     border: none;
-    color: #818384;
+    color: #ffffff;
     cursor: pointer;
     font-size: 14px;
     font-weight: 500;
     transition: color 0.2s ease;
-    padding: 0;
+    padding: 10px 15px;
+    border-radius: 50px;
 }
 
 .drafts-btn:hover {
-    color: #d7dadc;
+    background-color: #333D42;
 }
 
 .error-message {
@@ -157,10 +161,10 @@
 }
 
 .create-body {
-    background-color: #1a1a1b;
-    border: 1px solid #343536;
-    border-radius: 8px;
-    padding: 20px;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
 }
 
 .community-selector {
@@ -171,19 +175,41 @@
 .community-dropdown-btn {
     background-color: #272729;
     border: 1px solid #343536;
-    border-radius: 20px;
+    border-radius: 24px;
     color: #d7dadc;
     padding: 8px 12px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     font-size: 14px;
-    transition: background-color 0.2s ease;
+    font-weight: 500;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    width: fit-content;
+    justify-content: flex-start;
 }
 
 .community-dropdown-btn:hover {
     background-color: #343536;
+}
+
+.selector-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: rgb(177, 177, 177);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.selector-avatar img {
+    width: 200%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1) translateY(30%) translateX(60%) scale(2);
 }
 
 .community-dropdown-btn svg {
@@ -196,30 +222,108 @@
     position: absolute;
     top: 100%;
     left: 0;
+    background-color: #1a1a1b;
+    border: 1px solid #343536;
+    border-top: 1px solid #343536;
+    border-radius: 8px;
+    min-width: 320px;
+    max-height: 400px;
+    overflow: hidden;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    margin-top: 2px;
+}
+
+.community-dropdown-search {
+    width: fit-content;
+}
+
+.community-dropdown-search input {
+    width: 280px;
     background-color: #272729;
     border: 1px solid #343536;
-    border-top: none;
-    border-radius: 0 0 8px 8px;
-    min-width: 200px;
-    max-height: 300px;
+    border-radius: 24px;
+    color: #d7dadc;
+    padding: 10px 16px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+}
+
+.community-dropdown-search input:focus {
+    border-color: #818384;
+}
+
+.community-dropdown-search input::placeholder {
+    color: #818384;
+}
+
+.community-dropdown-list {
     overflow-y: auto;
-    z-index: 10;
+    flex: 1;
 }
 
 .community-option {
     padding: 12px 16px;
     cursor: pointer;
     transition: background-color 0.2s ease;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border-bottom: 1px solid #272729;
 }
 
 .community-option:hover {
-    background-color: #343536;
+    background-color: #272729;
+}
+
+.option-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: rgb(177, 177, 177);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.option-avatar img {
+    width: 200%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1) translateY(10%) translateX(10%) scale(0.7);
+}
+
+.community-option-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.community-option-name {
+    color: #d7dadc;
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.community-option-meta {
+    color: #818384;
+    font-size: 12px;
+    margin: 0;
 }
 
 .create-tabs {
     display: flex;
     gap: 0;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    margin-top: 24px;
     border-bottom: 1px solid #343536;
 }
 
@@ -230,9 +334,9 @@
     cursor: pointer;
     padding: 12px 16px;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     border-bottom: 3px solid transparent;
-    transition: color 0.2s ease;
+    transition: color 0.2s ease, border-color 0.2s ease;
     position: relative;
     top: 1px;
 }
@@ -242,8 +346,8 @@
 }
 
 .tab.active {
-    color: #1890ff;
-    border-bottom-color: #1890ff;
+    color: #ffffff;
+    border-bottom-color: #1E90FF;
 }
 
 .tab:disabled {
@@ -258,19 +362,25 @@
 }
 
 .title-input {
-    background-color: #272729;
+    background-color: transparent;
     border: 1px solid #343536;
-    border-radius: 8px;
+    border-radius: 12px;
     color: #d7dadc;
-    padding: 12px 16px;
+    padding: 14px 16px;
     font-size: 16px;
     font-family: inherit;
-    transition: border-color 0.2s ease;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.title-input:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+    border-color: #818384;
 }
 
 .title-input:focus {
     outline: none;
     border-color: #818384;
+    background-color: rgba(255, 255, 255, 0.04);
 }
 
 .title-input::placeholder {
@@ -307,7 +417,7 @@
     border: 1px solid #343536;
     color: #d7dadc;
     padding: 8px 24px;
-    border-radius: 20px;
+    border-radius: 24px;
     cursor: pointer;
     font-size: 14px;
     font-weight: 600;
@@ -315,7 +425,7 @@
 }
 
 .btn-secondary:hover {
-    background-color: #272729;
+    background-color: rgba(255, 255, 255, 0.05);
     border-color: #818384;
 }
 
@@ -329,7 +439,7 @@
     border: none;
     color: #0a0e0f;
     padding: 8px 24px;
-    border-radius: 20px;
+    border-radius: 24px;
     cursor: pointer;
     font-size: 14px;
     font-weight: 600;
