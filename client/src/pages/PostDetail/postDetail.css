@@ -364,8 +364,8 @@
     flex-direction: column;
     background-color: #0f1a1c;
     border: 1px solid #2a3f47;
-    border-radius: 8px;
-    padding: 12px;
+    border-radius: 24px;
+    padding: 12px 16px;
     margin-bottom: 16px;
     transition: all 0.2s;
 }
