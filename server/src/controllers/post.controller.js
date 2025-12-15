@@ -11,23 +11,41 @@ const openaiClient = process.env.OPENAI_API_KEY
 // CREATE post
 export const createPost = async (req, res, next) => {
   try {
-    const { title, content, community } = req.body;
+    const { title, content, community, status } = req.body;
 
-    if (!title || !community) {
-      throw new BadRequestError("Title and community are required");
+    if (!title) {
+      throw new BadRequestError("Title is required");
     }
 
-    const communityDoc = await Community.findById(community);
-    if (!communityDoc) {
-      throw new NotFoundError("Community not found");
+    // Validate status if provided
+    if (status && !["draft", "published"].includes(status)) {
+      throw new BadRequestError("Status must be 'draft' or 'published'");
+    }
+
+    // If community is provided, validate it exists
+    let communityDoc = null;
+    if (community) {
+      communityDoc = await Community.findById(community);
+      if (!communityDoc) {
+        throw new NotFoundError("Community not found");
+      }
     }
 
     const author = req.user._id;
 
-    const post = await Post.create({ title, content, author, community });
+    const post = await Post.create({ 
+      title, 
+      content, 
+      author, 
+      community: community || null, 
+      status: status || "published" 
+    });
 
-    communityDoc.posts.push(post._id);
-    await communityDoc.save();
+    // Only add to community if community was provided
+    if (communityDoc) {
+      communityDoc.posts.push(post._id);
+      await communityDoc.save();
+    }
 
     res.status(201).json(post);
   } catch (error) {
@@ -259,3 +277,21 @@ export const summarizePost = async (req, res, next) => {
     next(error);
   }
 };
+
+// GET user's draft posts
+export const getUserDrafts = async (req, res, next) => {
+  try {
+    const posts = await Post.find({ 
+      author: req.user._id, 
+      status: "draft" 
+    })
+      .populate("author", "username email")
+      .populate("community", "name")
+      .sort({ createdAt: -1 });
+
+    res.json(posts);
+  } catch (error) {
+    next(error);
+  }
+};
+

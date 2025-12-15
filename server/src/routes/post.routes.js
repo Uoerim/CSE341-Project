@@ -9,12 +9,14 @@ import {
   downvotePost,
   getFeedPosts,
   summarizePost,
+  getUserDrafts,
 } from "../controllers/post.controller.js";
 import { protect } from "../middleware/auth.js";
 
 const router = express.Router();
 
 router.get("/feed", getFeedPosts);
+router.get("/user/drafts", protect, getUserDrafts);
 router.post("/", protect, createPost);
 router.get("/", getAllPosts);
 router.get("/:id", getPostById);

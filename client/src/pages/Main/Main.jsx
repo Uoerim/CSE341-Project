@@ -12,7 +12,7 @@ function Main() {
     const renderPage = () => {
         switch(currentPage) {
             case "create":
-                return <Create />;
+                return <Create onNavigateHome={() => setCurrentPage("home")} />;
             default:
                 return (
                     <>
@@ -30,7 +30,7 @@ function Main() {
             <MainNav onCreateClick={() => setCurrentPage("create")} />
             <div className="main-app-container">
                 <MainSidePanel onToggle={setIsPanelShifted} />
-                <div className="main-content" style={{ marginLeft: isPanelShifted ? "-236px" : "0", transition: "margin-left 0.3s ease" }}>
+                <div className="main-content" style={{ paddingLeft: isPanelShifted ? "100px" : "330px", transition: "padding-left 0.3s ease" }}>
                     {renderPage()}
                 </div>
             </div>

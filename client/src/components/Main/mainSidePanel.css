@@ -1,5 +1,5 @@
 .main-side-panel {
-    height: calc(100vh - 60px);
+    height: calc(100vh - 58px);
     width: 234px;
     background-color: #0E1113;
     color: white;
@@ -8,7 +8,11 @@
     padding: 15px 18px;
     border-right: 0.5px solid #3E4042;
     overflow: visible;
-    position: relative;
+    position: fixed;
+    left: 0;
+    top: 58px;
+    bottom: 0;
+    z-index: 99;
     transition: transform 0.3s ease;
 }
 

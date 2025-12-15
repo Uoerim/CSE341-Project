@@ -18,6 +18,11 @@ const postSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Community",  // 👈 references the Community model
   },
+  status: {
+    type: String,
+    enum: ["draft", "published"],
+    default: "published",
+  },
   upvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   downvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
