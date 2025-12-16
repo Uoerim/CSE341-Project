@@ -18,7 +18,6 @@ export default function UserProfilePage() {
 
   const mainContentRef = useRef(null);
 
-  /* ================= Load profile header ================= */
   useEffect(() => {
     if (!username) return;
 
@@ -30,16 +29,14 @@ export default function UserProfilePage() {
       .catch(console.error);
   }, [username]);
 
-  /* ================= Load tab content ================= */
   useEffect(() => {
     if (!username) return;
 
     setLoading(true);
-
-    let url = `/users/u/${username}/overview`;
-    if (tab !== "overview") {
-      url = `/users/u/${username}/${tab}`;
-    }
+    const url =
+      tab === "overview"
+        ? `/users/u/${username}/overview`
+        : `/users/u/${username}/${tab}`;
 
     apiGet(url)
       .then((data) => setItems(data))
@@ -48,9 +45,7 @@ export default function UserProfilePage() {
   }, [username, tab]);
 
   useEffect(() => {
-    if (mainContentRef.current) {
-      mainContentRef.current.scrollTop = 0;
-    }
+    mainContentRef.current?.scrollTo(0, 0);
   }, [username, tab]);
 
   if (!user) return <div>Loading profile…</div>;
@@ -76,29 +71,26 @@ export default function UserProfilePage() {
           }}
         >
           <div className="profile-page">
-            {/* ================= MAIN COLUMN ================= */}
+            {/* ================= MAIN ================= */}
             <main className="profile-main">
               <section className="profile-header-card">
-                <div className="profile-banner" />
+                <div className="profile-user-row">
+                  <div className="profile-avatar" />
 
-                <div className="profile-header-body">
-                  <div className="profile-avatar-wrapper">
-                    <div className="profile-avatar" />
+                  <div className="profile-user-text">
+                    <h1 className="profile-username">
+                      u/{user.username}
+                    </h1>
+                    <p className="profile-meta">
+                      {stats?.totalKarma || 0} karma • joined{" "}
+                      {new Date(user.createdAt).toLocaleDateString()}
+                    </p>
                   </div>
-
-                  <h1 className="profile-username">
-                    u/{user.username}
-                  </h1>
-
-                  <p className="profile-meta">
-                    {stats?.totalKarma || 0} karma • joined{" "}
-                    {new Date(user.createdAt).toLocaleDateString()}
-                  </p>
-
-                  {user.bio && (
-                    <p className="profile-bio">{user.bio}</p>
-                  )}
                 </div>
+
+                {user.bio && (
+                  <p className="profile-bio">{user.bio}</p>
+                )}
               </section>
 
               <nav className="profile-tabs">
@@ -160,13 +152,10 @@ export default function UserProfilePage() {
               </section>
             </main>
 
-            {/* ================= RIGHT SIDEBAR ================= */}
+            {/* ================= SIDEBAR ================= */}
             <aside className="profile-sidebar">
               <div className="reddit-side-card dark">
-                <div className="reddit-side-banner">
-                  <button className="reddit-banner-edit"></button>
-                </div>
-
+                <div className="reddit-side-banner" />
                 <div className="reddit-side-body">
                   <h2 className="reddit-side-username">
                     {user.username}
@@ -191,32 +180,12 @@ export default function UserProfilePage() {
                       </strong>
                       <span>Contributions</span>
                     </div>
-                    <div>
-                      <strong>
-                        {Math.floor(
-                          (Date.now() -
-                            new Date(user.createdAt)) /
-                            86400000
-                        )}{" "}
-                        d
-                      </strong>
-                      <span>Reddit Age</span>
-                    </div>
-                    <div className="active-in">
-                      <strong>0</strong>
-                      <span>Active in &gt;</span>
-                    </div>
-                    <div>
-                      <strong>0</strong>
-                      <span>Gold earned</span>
-                    </div>
                   </div>
 
                   <div className="reddit-divider" />
 
                   <div className="reddit-achievements">
                     <h4>ACHIEVEMENTS</h4>
-                    {/* intentionally empty */}
                   </div>
                 </div>
               </div>
@@ -228,14 +197,12 @@ export default function UserProfilePage() {
   );
 }
 
-/* ================= Post Card ================= */
+/* ================= Cards ================= */
 function ProfilePostCard({ post }) {
   return (
     <article className="profile-post-card">
       <div className="profile-post-meta">
-        {post.community && (
-          <span>r/{post.community.name}</span>
-        )}
+        {post.community && <span>r/{post.community.name}</span>}
       </div>
       <h3>{post.title}</h3>
       {post.content && <p>{post.content}</p>}
@@ -243,15 +210,12 @@ function ProfilePostCard({ post }) {
   );
 }
 
-/* ================= Comment Card ================= */
 function ProfileCommentCard({ comment }) {
   return (
     <article className="profile-comment-card">
       <div className="profile-post-meta">
         {comment.post?.title && (
-          <span>
-            Comment on: {comment.post.title}
-          </span>
+          <span>Comment on: {comment.post.title}</span>
         )}
       </div>
       <p>{comment.content}</p>

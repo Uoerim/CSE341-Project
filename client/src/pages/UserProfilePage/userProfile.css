@@ -18,138 +18,46 @@
   width: 312px;
 }
 
-.reddit-side-card.dark {
-  background: #1a1a1b;
-  border: 1px solid #343536;
-  border-radius: 6px;
-  color: #d7dadc;
-}
-
-.reddit-side-banner {
-  height: 96px;
-  background: linear-gradient(180deg, #003f88, #001b3a);
-  position: relative;
-}
-
-.reddit-banner-edit {
-  position: absolute;
-  right: 12px;
-  bottom: 12px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: none;
-  background: #1a1a1b;
-  color: #d7dadc;
-  cursor: pointer;
-}
-
-.reddit-side-body {
-  padding: 16px;
-}
-
-.reddit-side-username {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-
-/* Share */
-.reddit-share-btn {
-  padding: 6px 14px;
-  border-radius: 999px;
-  background: #272729;
-  border: none;
-  color: #d7dadc;
-  font-weight: 600;
-  cursor: pointer;
-  margin-bottom: 12px;
-}
-
-.reddit-followers {
-  font-size: 14px;
-  color: #818384;
-  margin-bottom: 16px;
-}
-
-/* Stats */
-.reddit-stats-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px 24px;
-}
-
-.reddit-stats-grid strong {
-  display: block;
-  font-size: 13px;
-}
-
-.reddit-stats-grid span {
-  font-size: 13px;
-  color: #818384;
-}
-
-.active-in span {
-  color: #4fbcff;
-}
-
-/* Divider */
-.reddit-divider {
-  height: 1px;
-  background: #343536;
-  margin: 20px 0;
-}
-
-/* Achievements */
-.reddit-achievements h4 {
-  font-size: 12px;
-  color: #818384;
-  letter-spacing: 0.04em;
-}
-
 /* ================= Header ================= */
 .profile-header-card {
   background: transparent;
   border: none;
-  border-radius: 0;
-  overflow: visible;
   margin-bottom: 12px;
 }
 
-.profile-banner {
-  height: 128px;
-  background: linear-gradient(90deg, #0079d3, #24a0ed);
-  margin: 0 -16px;
-}
-
-.profile-header-body {
-  padding: 0 16px 16px;
-  background: transparent;
-}
-
-.profile-avatar-wrapper {
-  margin-top: -40px;
+/* Avatar + Name row */
+.profile-user-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0 12px;
 }
 
 .profile-avatar {
-  width: 80px;
-  height: 80px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
-  border: 4px solid #030303;
   background: #444;
+  border: 2px solid #030303;
+  flex-shrink: 0;
+}
+
+.profile-user-text {
+  display: flex;
+  flex-direction: column;
 }
 
 .profile-username {
-  color: #d7dadc;
-  background: transparent;
-  margin: 4px 0 2px;
   font-size: 20px;
   font-weight: 700;
+  color: #d7dadc;
+  margin: 0;
 }
 
 .profile-meta {
   font-size: 12px;
   color: #818384;
+  margin-top: 2px;
 }
 
 .profile-bio {
@@ -165,6 +73,7 @@
   position: sticky;
   top: 56px;
   background: #030303;
+  z-index: 5;
 }
 
 .profile-tab {
@@ -186,7 +95,7 @@
 .profile-comment-card {
   background: #1a1a1b;
   border: 1px solid #343536;
-  border-radius: 6px;
+  border-radius: 10px;
   padding: 12px 14px;
   margin-bottom: 8px;
 }
@@ -200,4 +109,78 @@
   color: #818384;
   text-align: center;
   margin-top: 48px;
+}
+
+/* ================= Sidebar ================= */
+.reddit-side-card.dark {
+  background: #1a1a1b;
+  border: 1px solid #343536;
+  border-radius: 10px;
+  color: #d7dadc;
+}
+
+.reddit-side-banner {
+  height: 96px;
+  background: linear-gradient(180deg, #003f88, #001b3a);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.reddit-side-body {
+  padding: 16px;
+}
+
+.reddit-side-username {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.reddit-share-btn {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #272729;
+  border: none;
+  color: #d7dadc;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+.reddit-followers {
+  font-size: 14px;
+  color: #818384;
+  margin-bottom: 16px;
+}
+
+.reddit-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 24px;
+}
+
+.reddit-stats-grid strong {
+  display: block;
+  font-size: 13px;
+}
+
+.reddit-stats-grid span {
+  font-size: 13px;
+  color: #818384;
+}
+
+.active-in span {
+  color: #4fbcff;
+}
+
+.reddit-divider {
+  height: 1px;
+  background: #343536;
+  margin: 20px 0;
+}
+
+.reddit-achievements h4 {
+  font-size: 12px;
+  color: #818384;
+  letter-spacing: 0.04em;
 }
