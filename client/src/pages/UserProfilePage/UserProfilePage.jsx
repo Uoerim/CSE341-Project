@@ -1,6 +1,6 @@
 import "./userProfile.css";
 import { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { apiGet } from "../../utils/api";
 
 import MainNav from "../../components/Main/MainNav";
@@ -8,6 +8,7 @@ import MainSidePanel from "../../components/Main/MainSidePanel";
 
 export default function UserProfilePage() {
   const { username } = useParams();
+  const navigate = useNavigate();
 
   const [user, setUser] = useState(null);
   const [stats, setStats] = useState(null);
@@ -18,9 +19,9 @@ export default function UserProfilePage() {
 
   const mainContentRef = useRef(null);
 
+  // Load profile header
   useEffect(() => {
     if (!username) return;
-
     apiGet(`/users/u/${username}/profile`)
       .then((data) => {
         setUser(data.user);
@@ -29,6 +30,7 @@ export default function UserProfilePage() {
       .catch(console.error);
   }, [username]);
 
+  // Load tab content
   useEffect(() => {
     if (!username) return;
 
@@ -52,7 +54,7 @@ export default function UserProfilePage() {
 
   return (
     <div className="main-container">
-      <MainNav />
+      <MainNav onLogoClick={() => navigate("/")} />
 
       <div className="main-app-container">
         <MainSidePanel
@@ -88,9 +90,7 @@ export default function UserProfilePage() {
                   </div>
                 </div>
 
-                {user.bio && (
-                  <p className="profile-bio">{user.bio}</p>
-                )}
+                {user.bio && <p className="profile-bio">{user.bio}</p>}
               </section>
 
               <nav className="profile-tabs">
@@ -106,9 +106,7 @@ export default function UserProfilePage() {
                 ].map((t) => (
                   <button
                     key={t}
-                    className={`profile-tab ${
-                      tab === t ? "active" : ""
-                    }`}
+                    className={`profile-tab ${tab === t ? "active" : ""}`}
                     onClick={() => setTab(t)}
                   >
                     {t.charAt(0).toUpperCase() + t.slice(1)}
@@ -120,16 +118,11 @@ export default function UserProfilePage() {
                 {loading ? (
                   <p className="profile-empty">Loading…</p>
                 ) : items.length === 0 ? (
-                  <p className="profile-empty">
-                    You don’t have any posts yet
-                  </p>
+                  <p className="profile-empty">You don’t have any posts yet</p>
                 ) : tab === "overview" ? (
                   items.map((item) =>
                     item.type === "post" ? (
-                      <ProfilePostCard
-                        key={item.data._id}
-                        post={item.data}
-                      />
+                      <ProfilePostCard key={item.data._id} post={item.data} />
                     ) : (
                       <ProfileCommentCard
                         key={item.data._id}
@@ -138,15 +131,10 @@ export default function UserProfilePage() {
                     )
                   )
                 ) : tab === "posts" ? (
-                  items.map((post) => (
-                    <ProfilePostCard key={post._id} post={post} />
-                  ))
+                  items.map((post) => <ProfilePostCard key={post._id} post={post} />)
                 ) : (
                   items.map((comment) => (
-                    <ProfileCommentCard
-                      key={comment._id}
-                      comment={comment}
-                    />
+                    <ProfileCommentCard key={comment._id} comment={comment} />
                   ))
                 )}
               </section>
@@ -157,17 +145,11 @@ export default function UserProfilePage() {
               <div className="reddit-side-card dark">
                 <div className="reddit-side-banner" />
                 <div className="reddit-side-body">
-                  <h2 className="reddit-side-username">
-                    {user.username}
-                  </h2>
+                  <h2 className="reddit-side-username">{user.username}</h2>
 
-                  <button className="reddit-share-btn">
-                    Share
-                  </button>
+                  <button className="reddit-share-btn">Share</button>
 
-                  <p className="reddit-followers">
-                    0 followers
-                  </p>
+                  <p className="reddit-followers">0 followers</p>
 
                   <div className="reddit-stats-grid">
                     <div>
@@ -175,10 +157,22 @@ export default function UserProfilePage() {
                       <span>Karma</span>
                     </div>
                     <div>
-                      <strong>
-                        {stats?.contributions || 0}
-                      </strong>
+                      <strong>{stats?.contributions || 0}</strong>
                       <span>Contributions</span>
+                    </div>
+                    <div>
+                      <strong>
+                        {Math.floor((Date.now() - new Date(user.createdAt)) / 86400000)} d
+                      </strong>
+                      <span>Reddit Age</span>
+                    </div>
+                    <div className="active-in">
+                      <strong>0</strong>
+                      <span>Active in &gt;</span>
+                    </div>
+                    <div>
+                      <strong>0</strong>
+                      <span>Gold earned</span>
                     </div>
                   </div>
 
@@ -201,9 +195,7 @@ export default function UserProfilePage() {
 function ProfilePostCard({ post }) {
   return (
     <article className="profile-post-card">
-      <div className="profile-post-meta">
-        {post.community && <span>r/{post.community.name}</span>}
-      </div>
+      <div className="profile-post-meta">{post.community && <span>r/{post.community.name}</span>}</div>
       <h3>{post.title}</h3>
       {post.content && <p>{post.content}</p>}
     </article>
@@ -213,11 +205,7 @@ function ProfilePostCard({ post }) {
 function ProfileCommentCard({ comment }) {
   return (
     <article className="profile-comment-card">
-      <div className="profile-post-meta">
-        {comment.post?.title && (
-          <span>Comment on: {comment.post.title}</span>
-        )}
-      </div>
+      <div className="profile-post-meta">{comment.post?.title && <span>Comment on: {comment.post.title}</span>}</div>
       <p>{comment.content}</p>
     </article>
   );
