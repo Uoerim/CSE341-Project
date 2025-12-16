@@ -110,6 +110,7 @@ export default function UserProfilePage() {
                   "history",
                   "hidden",
                   "upvoted",
+                  "downvoted",
                 ].map((t) => (
                   <button
                     key={t}
