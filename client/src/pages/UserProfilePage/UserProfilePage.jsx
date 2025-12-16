@@ -27,7 +27,7 @@ export default function UserProfilePage() {
         setUser(data.user);
         setStats(data.stats);
       })
-      .catch((err) => console.error(err));
+      .catch(console.error);
   }, [username]);
 
   /* ================= Load tab content ================= */
@@ -43,7 +43,7 @@ export default function UserProfilePage() {
 
     apiGet(url)
       .then((data) => setItems(data))
-      .catch((err) => console.error(err))
+      .catch(console.error)
       .finally(() => setLoading(false));
   }, [username, tab]);
 
@@ -53,9 +53,7 @@ export default function UserProfilePage() {
     }
   }, [username, tab]);
 
-  if (!user) {
-    return <div className="profile-page">Loading profile...</div>;
-  }
+  if (!user) return <div>Loading profile…</div>;
 
   return (
     <div className="main-container">
@@ -78,9 +76,8 @@ export default function UserProfilePage() {
           }}
         >
           <div className="profile-page">
-            {/* ================= Main Column ================= */}
+            {/* ================= MAIN COLUMN ================= */}
             <main className="profile-main">
-              {/* Header */}
               <section className="profile-header-card">
                 <div className="profile-banner" />
 
@@ -89,7 +86,9 @@ export default function UserProfilePage() {
                     <div className="profile-avatar" />
                   </div>
 
-                  <h1 className="profile-username">u/{user.username}</h1>
+                  <h1 className="profile-username">
+                    u/{user.username}
+                  </h1>
 
                   <p className="profile-meta">
                     {stats?.totalKarma || 0} karma • joined{" "}
@@ -102,7 +101,6 @@ export default function UserProfilePage() {
                 </div>
               </section>
 
-              {/* Tabs */}
               <nav className="profile-tabs">
                 {[
                   "overview",
@@ -125,7 +123,6 @@ export default function UserProfilePage() {
                 ))}
               </nav>
 
-              {/* Content */}
               <section className="profile-content">
                 {loading ? (
                   <p className="profile-empty">Loading…</p>
@@ -162,40 +159,63 @@ export default function UserProfilePage() {
               </section>
             </main>
 
-            {/* ================= Right Sidebar ================= */}
+            {/* ================= RIGHT SIDEBAR ================= */}
             <aside className="profile-sidebar">
-              <div className="profile-side-card">
-                <div className="profile-side-banner" />
+              <div className="reddit-side-card dark">
+                <div className="reddit-side-banner">
+                  <button className="reddit-banner-edit"></button>
+                </div>
 
-                <div className="profile-side-avatar" />
+                <div className="reddit-side-body">
+                  <h2 className="reddit-side-username">
+                    {user.username}
+                  </h2>
 
-                <h2 className="profile-side-username">
-                  {user.username}
-                </h2>
+                  <button className="reddit-share-btn">
+                    Share
+                  </button>
 
-                <button className="profile-share-btn">
-                  Share
-                </button>
+                  <p className="reddit-followers">
+                    0 followers
+                  </p>
 
-                <div className="profile-side-stats">
-                  <div>
-                    <strong>{stats?.totalKarma || 0}</strong>
-                    <span>Karma</span>
+                  <div className="reddit-stats-grid">
+                    <div>
+                      <strong>{stats?.totalKarma || 0}</strong>
+                      <span>Karma</span>
+                    </div>
+                    <div>
+                      <strong>
+                        {stats?.contributions || 0}
+                      </strong>
+                      <span>Contributions</span>
+                    </div>
+                    <div>
+                      <strong>
+                        {Math.floor(
+                          (Date.now() -
+                            new Date(user.createdAt)) /
+                            86400000
+                        )}{" "}
+                        d
+                      </strong>
+                      <span>Reddit Age</span>
+                    </div>
+                    <div className="active-in">
+                      <strong>0</strong>
+                      <span>Active in &gt;</span>
+                    </div>
+                    <div>
+                      <strong>0</strong>
+                      <span>Gold earned</span>
+                    </div>
                   </div>
-                  <div>
-                    <strong>{stats?.contributions || 0}</strong>
-                    <span>Contributions</span>
-                  </div>
-                  <div>
-                    <strong>
-                      {Math.floor(
-                        (Date.now() -
-                          new Date(user.createdAt)) /
-                          86400000
-                      )}
-                      d
-                    </strong>
-                    <span>Reddit Age</span>
+
+                  <div className="reddit-divider" />
+
+                  <div className="reddit-achievements">
+                    <h4>ACHIEVEMENTS</h4>
+                    {/* intentionally empty */}
                   </div>
                 </div>
               </div>

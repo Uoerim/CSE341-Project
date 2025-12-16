@@ -5,11 +5,10 @@
   gap: 24px;
   padding: 24px 16px;
   background: #030303;
-  color: #d7dadc;
   min-height: 100vh;
 }
 
-/* ================= Main Column ================= */
+/* ================= Main ================= */
 .profile-main {
   width: 640px;
 }
@@ -17,65 +16,98 @@
 /* ================= Sidebar ================= */
 .profile-sidebar {
   width: 312px;
-  flex-shrink: 0;
 }
 
-.profile-side-card {
+.reddit-side-card.dark {
   background: #1a1a1b;
   border: 1px solid #343536;
   border-radius: 6px;
-  overflow: hidden;
+  color: #d7dadc;
 }
 
-.profile-side-banner {
-  height: 64px;
-  background: linear-gradient(180deg, #0045ac, #002f6c);
+.reddit-side-banner {
+  height: 96px;
+  background: linear-gradient(180deg, #003f88, #001b3a);
+  position: relative;
 }
 
-.profile-side-avatar {
-  width: 72px;
-  height: 72px;
+.reddit-banner-edit {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  border: 4px solid #1a1a1b;
-  background: #46d160;
-  margin: -36px auto 8px;
-}
-
-.profile-side-username {
-  text-align: center;
-  font-size: 16px;
-  margin: 4px 0 8px;
-}
-
-.profile-share-btn {
-  display: block;
-  margin: 0 auto 12px;
-  padding: 6px 14px;
-  border-radius: 999px;
-  border: 1px solid #343536;
-  background: transparent;
+  border: none;
+  background: #1a1a1b;
   color: #d7dadc;
   cursor: pointer;
 }
 
-.profile-side-stats {
-  display: flex;
-  justify-content: space-around;
-  padding: 12px 0;
-  border-top: 1px solid #343536;
+.reddit-side-body {
+  padding: 16px;
 }
 
-.profile-side-stats strong {
-  display: block;
+.reddit-side-username {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+/* Share */
+.reddit-share-btn {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #272729;
+  border: none;
+  color: #d7dadc;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+.reddit-followers {
   font-size: 14px;
+  color: #818384;
+  margin-bottom: 16px;
 }
 
-.profile-side-stats span {
-  font-size: 12px;
+/* Stats */
+.reddit-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 24px;
+}
+
+.reddit-stats-grid strong {
+  display: block;
+  font-size: 13px;
+}
+
+.reddit-stats-grid span {
+  font-size: 13px;
   color: #818384;
 }
 
-/* ================= Header Card ================= */
+.active-in span {
+  color: #4fbcff;
+}
+
+/* Divider */
+.reddit-divider {
+  height: 1px;
+  background: #343536;
+  margin: 20px 0;
+}
+
+/* Achievements */
+.reddit-achievements h4 {
+  font-size: 12px;
+  color: #818384;
+  letter-spacing: 0.04em;
+}
+
+/* ================= Header ================= */
 .profile-header-card {
   background: #1a1a1b;
   border: 1px solid #343536;
@@ -106,9 +138,9 @@
 }
 
 .profile-username {
+  color: #d7dadc;
   font-size: 20px;
   font-weight: 700;
-  margin: 6px 0 2px;
 }
 
 .profile-meta {
@@ -118,7 +150,7 @@
 
 .profile-bio {
   margin-top: 8px;
-  font-size: 14px;
+  color: #d7dadc;
 }
 
 /* ================= Tabs ================= */
@@ -129,21 +161,15 @@
   position: sticky;
   top: 56px;
   background: #030303;
-  z-index: 5;
 }
 
 .profile-tab {
   padding: 12px 4px;
-  border: none;
   background: none;
-  font-size: 14px;
+  border: none;
   font-weight: 600;
   color: #818384;
   cursor: pointer;
-}
-
-.profile-tab:hover {
-  color: #d7dadc;
 }
 
 .profile-tab.active {
@@ -161,21 +187,13 @@
   margin-bottom: 8px;
 }
 
-.profile-post-card:hover,
-.profile-comment-card:hover {
-  background: #202022;
-}
-
 .profile-post-meta {
   font-size: 12px;
   color: #818384;
-  margin-bottom: 6px;
 }
 
-/* ================= Empty ================= */
 .profile-empty {
-  text-align: center;
   color: #818384;
+  text-align: center;
   margin-top: 48px;
-  font-size: 15px;
 }
