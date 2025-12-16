@@ -74,3 +74,23 @@ export const getToken = () => {
 export const removeToken = () => {
   localStorage.removeItem("authToken");
 };
+
+// added test
+export const apiGet = async (path) => {
+  const token = getToken();
+
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.message || `GET ${path} failed`);
+  }
+
+  return response.json();
+};

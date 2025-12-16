@@ -1,5 +1,7 @@
 import User from "../models/User.js";
 import Community from "../models/Community.js";
+import Post from "../models/Post.js";
+import Comment from "../models/Comment.js";
 import { BadRequestError, ForbiddenError, NotFoundError} from "../utils/httpErrors.js";
 
 

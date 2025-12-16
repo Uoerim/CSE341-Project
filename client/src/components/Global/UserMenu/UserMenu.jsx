@@ -82,7 +82,8 @@ function UserMenu() {
     const handleLogout = () => {
         localStorage.removeItem("authToken");
         localStorage.removeItem("userId");
-        navigate("/");
+        setIsOpen(false);
+        navigate("/auth/login");
     };
 
     const menuItems = [
@@ -216,7 +217,15 @@ function UserMenu() {
 
                         if (item.type === "profile") {
                             return (
-                                <div key={item.id} className="menu-item menu-profile">
+                                <div
+                                    key={item.id}
+                                    className="menu-item menu-profile"
+                                    onClick={() => {
+                                        setIsOpen(false);
+                                        if (userData?.username) navigate(`/u/${userData.username}`);
+                                    }}
+                                    style={{ cursor: userData?.username ? "pointer" : "default" }}
+                                >
                                     <div className="profile-avatar">
                                         <img src={`/character/${userData.avatar}.png`} alt="avatar" />
                                     </div>

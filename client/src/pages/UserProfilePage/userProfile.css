@@ -1,0 +1,181 @@
+/* ================= Page Layout ================= */
+.profile-page {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  padding: 24px 16px;
+  background: #030303;
+  color: #d7dadc;
+  min-height: 100vh;
+}
+
+/* ================= Main Column ================= */
+.profile-main {
+  width: 640px;
+}
+
+/* ================= Sidebar ================= */
+.profile-sidebar {
+  width: 312px;
+  flex-shrink: 0;
+}
+
+.profile-side-card {
+  background: #1a1a1b;
+  border: 1px solid #343536;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.profile-side-banner {
+  height: 64px;
+  background: linear-gradient(180deg, #0045ac, #002f6c);
+}
+
+.profile-side-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 4px solid #1a1a1b;
+  background: #46d160;
+  margin: -36px auto 8px;
+}
+
+.profile-side-username {
+  text-align: center;
+  font-size: 16px;
+  margin: 4px 0 8px;
+}
+
+.profile-share-btn {
+  display: block;
+  margin: 0 auto 12px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid #343536;
+  background: transparent;
+  color: #d7dadc;
+  cursor: pointer;
+}
+
+.profile-side-stats {
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 0;
+  border-top: 1px solid #343536;
+}
+
+.profile-side-stats strong {
+  display: block;
+  font-size: 14px;
+}
+
+.profile-side-stats span {
+  font-size: 12px;
+  color: #818384;
+}
+
+/* ================= Header Card ================= */
+.profile-header-card {
+  background: #1a1a1b;
+  border: 1px solid #343536;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.profile-banner {
+  height: 128px;
+  background: linear-gradient(90deg, #0079d3, #24a0ed);
+}
+
+.profile-header-body {
+  padding: 12px 16px 16px;
+}
+
+.profile-avatar-wrapper {
+  margin-top: -40px;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 4px solid #1a1a1b;
+  background: #444;
+}
+
+.profile-username {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 6px 0 2px;
+}
+
+.profile-meta {
+  font-size: 12px;
+  color: #818384;
+}
+
+.profile-bio {
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+/* ================= Tabs ================= */
+.profile-tabs {
+  display: flex;
+  gap: 16px;
+  border-bottom: 1px solid #343536;
+  position: sticky;
+  top: 56px;
+  background: #030303;
+  z-index: 5;
+}
+
+.profile-tab {
+  padding: 12px 4px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: #818384;
+  cursor: pointer;
+}
+
+.profile-tab:hover {
+  color: #d7dadc;
+}
+
+.profile-tab.active {
+  color: #d7dadc;
+  border-bottom: 2px solid #d7dadc;
+}
+
+/* ================= Content ================= */
+.profile-post-card,
+.profile-comment-card {
+  background: #1a1a1b;
+  border: 1px solid #343536;
+  border-radius: 6px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+}
+
+.profile-post-card:hover,
+.profile-comment-card:hover {
+  background: #202022;
+}
+
+.profile-post-meta {
+  font-size: 12px;
+  color: #818384;
+  margin-bottom: 6px;
+}
+
+/* ================= Empty ================= */
+.profile-empty {
+  text-align: center;
+  color: #818384;
+  margin-top: 48px;
+  font-size: 15px;
+}
