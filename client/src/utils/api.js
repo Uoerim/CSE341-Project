@@ -89,7 +89,9 @@ export const apiGet = async (path) => {
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new Error(error.message || `GET ${path} failed`);
+    const err = new Error(error.message || `GET ${path} failed`);
+    err.status = response.status;
+    throw err;
   }
 
   return response.json();

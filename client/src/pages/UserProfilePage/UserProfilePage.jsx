@@ -20,6 +20,7 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isPanelShifted, setIsPanelShifted] = useState(false);
+  const [userNotFound, setUserNotFound] = useState(false);
 
   const [showBannerModal, setShowBannerModal] = useState(false);
 
@@ -39,12 +40,19 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
   // Load profile header
   useEffect(() => {
     if (!currentUsername) return;
+    
+    setUserNotFound(false);
     apiGet(`/users/u/${currentUsername}/profile`)
       .then((data) => {
         setUser(data.user);
         setStats(data.stats);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        if (error.status === 404) {
+          setUserNotFound(true);
+        }
+      });
   }, [currentUsername]);
 
   // Load tab content
@@ -76,6 +84,24 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
     if (diffDays < 365) return `${Math.floor(diffDays / 30)}mo`;
     return `${Math.floor(diffDays / 365)}y`;
   };
+
+  // Show user not found page
+  if (userNotFound) {
+    return (
+      <div className="user-profile-not-found">
+        <div className="user-profile-not-found-content">
+          <svg className="user-profile-not-found-icon" fill="currentColor" height="80" width="80" viewBox="0 0 20 20">
+            <path d="M10 0a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zm-1-13a1 1 0 012 0v6a1 1 0 01-2 0V5zm1 10a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
+          </svg>
+          <h2>User Not Found</h2>
+          <p>The user u/{currentUsername} does not exist.</p>
+          <button className="user-profile-not-found-btn" onClick={() => navigate(-1)}>
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (!user) return <div className="user-profile-loading">Loading profile...</div>;
 

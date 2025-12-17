@@ -15,6 +15,56 @@
   min-height: 100vh;
 }
 
+/* ================= Not Found Page ================= */
+.user-profile-not-found {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: transparent;
+  color: #d7dadc;
+}
+
+.user-profile-not-found-content {
+  text-align: center;
+  padding: 48px;
+  max-width: 400px;
+}
+
+.user-profile-not-found-icon {
+  color: #818384;
+  margin-bottom: 24px;
+}
+
+.user-profile-not-found-content h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #d7dadc;
+}
+
+.user-profile-not-found-content p {
+  font-size: 14px;
+  color: #818384;
+  margin-bottom: 24px;
+}
+
+.user-profile-not-found-btn {
+  background: #0079d3;
+  color: white;
+  border: none;
+  padding: 8px 24px;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.user-profile-not-found-btn:hover {
+  background: #1484d6;
+}
+
 /* ================= Main ================= */
 .user-profile-main {
   width: 69==700px;

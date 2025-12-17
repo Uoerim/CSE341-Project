@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import "./main.css";
 
 import MainNav from "../../components/Main/MainNav";
@@ -13,17 +14,21 @@ import UserProfilePage from "../UserProfilePage/UserProfilePage";
 import { PageProvider } from "../../context/PageContext";
 
 function Main() {
+    const [searchParams] = useSearchParams();
     const [isPanelShifted, setIsPanelShifted] = useState(false);
     const [currentPage, setCurrentPage] = useState("home");
     const [selectedPostId, setSelectedPostId] = useState(null);
     const mainContentRef = useRef(null);
+
+    // Check for username query parameter
+    const usernameParam = searchParams.get("u");
 
     // Fix scroll position on route change
     useEffect(() => {
         if (mainContentRef.current) {
             mainContentRef.current.scrollTop = 0;
         }
-    }, [currentPage]);
+    }, [currentPage, usernameParam]);
 
     const handlePageChange = (page) => {
         setSelectedPostId(null); // Clear selected post when changing pages
@@ -31,6 +36,11 @@ function Main() {
     };
 
     const renderPage = () => {
+        // If username parameter exists, show user profile
+        if (usernameParam) {
+            return <UserProfilePage username={usernameParam} embedded={true} onPostClick={setSelectedPostId} />;
+        }
+
         // If a post is selected, show the post detail page
         if (selectedPostId) {
             return <PostDetail postId={selectedPostId} onClose={() => setSelectedPostId(null)} />;
