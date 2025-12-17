@@ -9,6 +9,7 @@ import MainSidePanel from "../../components/Main/MainSidePanel";
 export default function UserProfilePage() {
   const { username } = useParams();
   const navigate = useNavigate();
+  const [showAvatarModal, setShowAvatarModal] = useState(false);
 
   const [user, setUser] = useState(null);
   const [stats, setStats] = useState(null);
@@ -77,8 +78,15 @@ export default function UserProfilePage() {
             <main className="profile-main">
               <section className="profile-header-card">
                 <div className="profile-user-row">
-                  <div className="profile-avatar" />
-
+                  <div className="profile-avatar clickable" onClick={() => setShowAvatarModal(true)}>
+                      <div className="avatar-circle">
+                        {(user.avatarUrl || user.avatar) ? (
+                          <img src={user.avatarUrl || user.avatar} alt=" " />
+                        ) : (
+                          <div className="profile-avatar-empty" />
+                        )}
+                      </div>
+                  </div>
                   <div className="profile-user-text">
                     <h1 className="profile-username">
                       u/{user.username}
@@ -186,6 +194,48 @@ export default function UserProfilePage() {
             </aside>
           </div>
         </div>
+        {/* ================= CHANGE AVATAR ================= */}
+          {showAvatarModal && (
+            <div className="modal-overlay" onClick={() => setShowAvatarModal(false)}>
+              <div
+                className="avatar-modal"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Header */}
+                <div className="avatar-modal-header">
+                  <h3>Avatar image</h3>
+                  <button
+                    className="close-btn"
+                    onClick={() => setShowAvatarModal(false)}
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                {/* Content */}
+                <div className="avatar-modal-content">
+                  <div className="avatar-option">
+                    <img src="/reddit-avatar-outline.png" alt="" />
+                    <button>Select avatar</button>
+                  </div>
+
+                  <div className="avatar-option">
+                    <img src={user.avatarUrl || user.avatar || "/default-avatar.png"} alt="" />
+                    <button>
+                      Select a new image
+                      <span className="upload-icon">⬆</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="avatar-modal-footer">
+                  <button onClick={() => setShowAvatarModal(false)}>Cancel</button>
+                  <button className="primary">Save</button>
+                </div>
+              </div>
+            </div>
+          )}
       </div>
     </div>
   );
