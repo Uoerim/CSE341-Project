@@ -9,6 +9,8 @@ import Popular from "../Popular/Popular";
 import Explore from "../Explore/Explore";
 import All from "../All/All";
 import PostDetail from "../PostDetail/PostDetail";
+import UserProfilePage from "../UserProfilePage/UserProfilePage";
+import { PageProvider } from "../../context/PageContext";
 
 function Main() {
     const [isPanelShifted, setIsPanelShifted] = useState(false);
@@ -45,25 +47,29 @@ function Main() {
                 return <All onPostClick={setSelectedPostId} />;
             case "create":
                 return <Create onNavigateHome={() => setCurrentPage("home")} />;
+            case "profile":
+                return <UserProfilePage embedded={true} />;
             default:
                 return <Home onPostClick={setSelectedPostId} />;
         }
     };
 
     return(
-        <div className="main-container">
-            <MainNav onCreateClick={() => handlePageChange("create")} />
-            <div className="main-app-container">
-                <MainSidePanel onToggle={setIsPanelShifted} onPageChange={handlePageChange} currentPage={currentPage} isViewingPost={!!selectedPostId} />
-                <div 
-                    ref={mainContentRef}
-                    className="main-content" 
-                    style={{ paddingLeft: isPanelShifted ? "100px" : "330px", transition: "padding-left 0.3s ease" }}
-                >
-                    {renderPage()}
+        <PageProvider onPageChange={handlePageChange}>
+            <div className="main-container">
+                <MainNav onCreateClick={() => handlePageChange("create")} onHomeClick={() => handlePageChange("home")} />
+                <div className="main-app-container">
+                    <MainSidePanel onToggle={setIsPanelShifted} onPageChange={handlePageChange} currentPage={currentPage} isViewingPost={!!selectedPostId} />
+                    <div 
+                        ref={mainContentRef}
+                        className="main-content" 
+                        style={{ paddingLeft: isPanelShifted ? "100px" : "330px", transition: "padding-left 0.3s ease" }}
+                    >
+                        {renderPage()}
+                    </div>
                 </div>
             </div>
-        </div>
+        </PageProvider>
     );
 };
 

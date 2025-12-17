@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./userMenu.css";
 import CONFIG from "../../../config/config";
+import { usePageNavigation } from "../../../context/PageContext";
 
 function UserMenu() {
     const [isOpen, setIsOpen] = useState(false);
@@ -72,6 +73,7 @@ function UserMenu() {
     }, [isOpen]);
 
     const navigate = useNavigate();
+    const { onPageChange } = usePageNavigation();
 
     const handleDarkModeToggle = () => {
         const newMode = !isDarkMode;
@@ -222,9 +224,9 @@ function UserMenu() {
                                     className="menu-item menu-profile"
                                     onClick={() => {
                                         setIsOpen(false);
-                                        if (userData?.username) navigate(`/u/${userData.username}`);
+                                        onPageChange("profile");
                                     }}
-                                    style={{ cursor: userData?.username ? "pointer" : "default" }}
+                                    style={{ cursor: "pointer" }}
                                 >
                                     <div className="profile-avatar">
                                         <img src={`/character/${userData.avatar}.png`} alt="avatar" />

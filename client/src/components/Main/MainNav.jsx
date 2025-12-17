@@ -2,14 +2,12 @@ import React from "react";
 import "./mainNav.css";
 import SearchBox from "../Global/searchBox/SearchBox";
 import UserMenu from "../Global/UserMenu/UserMenu";
-import { useNavigate } from "react-router-dom";
 
-function MainNav({ onCreateClick }) {
-    const navigate = useNavigate();
+function MainNav({ onCreateClick, onHomeClick }) {
     return (
         <div className="main-nav">
             <img src="/logo-white.png" alt="Loopify" className="main-nav-logo"
-             onClick={() => navigate("/")} style={{ cursor: "pointer"}}/>
+             onClick={onHomeClick} style={{ cursor: "pointer"}}/>
             
             <div className="nav-search">
                 <SearchBox />

@@ -1,5 +1,5 @@
 /* ================= Page Layout ================= */
-.profile-page {
+.user-profile-page {
   display: flex;
   justify-content: center;
   gap: 24px;
@@ -9,23 +9,23 @@
 }
 
 /* ================= Main ================= */
-.profile-main {
+.user-profile-main {
   width: 640px;
 }
 
 /* ================= Sidebar ================= */
-.profile-sidebar {
+.user-profile-sidebar {
   width: 312px;
 }
 
-.reddit-side-card.dark {
+.user-profile-reddit-side-card.dark {
   background: #1a1a1b;
   border: 1px solid #343536;
   border-radius: 12px; /* rounded edges */
   color: #d7dadc;
 }
 
-.reddit-side-banner {
+.user-profile-reddit-side-banner {
   height: 96px;
   background-size: cover;
   background-position: center;
@@ -36,11 +36,11 @@
   cursor: pointer;
 }
 
-.reddit-side-banner:hover .edit-banner-text {
+.user-profile-reddit-side-banner:hover .user-profile-edit-banner-text {
   opacity: 1;
 }
 
-.edit-banner-text {
+.user-profile-edit-banner-text {
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.45);
@@ -54,18 +54,18 @@
   transition: opacity 0.2s ease;
 }
 
-.reddit-side-body {
+.user-profile-reddit-side-body {
   padding: 16px;
 }
 
-.reddit-side-username {
+.user-profile-reddit-side-username {
   font-size: 20px;
   font-weight: 700;
   margin-bottom: 12px;
 }
 
 /* Share */
-.reddit-share-btn {
+.user-profile-reddit-share-btn {
   padding: 6px 14px;
   border-radius: 999px;
   background: #272729;
@@ -76,60 +76,60 @@
   margin-bottom: 12px;
 }
 
-.reddit-followers {
+.user-profile-reddit-followers {
   font-size: 14px;
   color: #818384;
   margin-bottom: 16px;
 }
 
 /* Stats */
-.reddit-stats-grid {
+.user-profile-reddit-stats-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px 24px;
 }
 
-.reddit-stats-grid strong {
+.user-profile-reddit-stats-grid strong {
   display: block;
   font-size: 13px;
 }
 
-.reddit-stats-grid span {
+.user-profile-reddit-stats-grid span {
   font-size: 13px;
   color: #818384;
 }
 
-.active-in span {
+.user-profile-active-in span {
   color: #4fbcff;
 }
 
 /* Divider */
-.reddit-divider {
+.user-profile-reddit-divider {
   height: 1px;
   background: #343536;
   margin: 20px 0;
 }
 
 /* Achievements */
-.reddit-achievements h4 {
+.user-profile-reddit-achievements h4 {
   font-size: 12px;
   color: #818384;
   letter-spacing: 0.04em;
 }
 
 /* ================= Header ================= */
-.profile-header-card {
+.user-profile-header-card {
   background: transparent;
   margin-bottom: 12px;
 }
 
-.profile-user-row {
+.user-profile-user-row {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.profile-avatar {
+.user-profile-avatar {
   width: 80px;
   height: 80px;
   border-radius: 50%;
@@ -141,39 +141,39 @@
   position: relative;
 }
 
-.profile-avatar img {
+.user-profile-avatar img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-.profile-avatar.clickable:hover {
+.user-profile-avatar.clickable:hover {
   opacity: 0.85;
 }
 
-.profile-user-text {
+.user-profile-user-text {
   display: flex;
   flex-direction: column;
 }
 
-.profile-username {
+.user-profile-username {
   color: #d7dadc;
   font-size: 20px;
   font-weight: 700;
 }
 
-.profile-meta {
+.user-profile-meta {
   font-size: 12px;
   color: #818384;
 }
 
-.profile-bio {
+.user-profile-bio {
   margin-top: 8px;
   color: #d7dadc;
 }
 
 /* Empty avatar placeholder (no image file used) */
-.profile-avatar-empty {
+.user-profile-avatar-empty {
   width: 100%;
   height: 100%;
   border-radius: 50%;
@@ -181,7 +181,7 @@
 }
 
 /* ================= Tabs ================= */
-.profile-tabs {
+.user-profile-tabs {
   display: flex;
   gap: 16px;
   border-bottom: 1px solid #343536;
@@ -190,7 +190,7 @@
   background: #030303;
 }
 
-.profile-tab {
+.user-profile-tab {
   padding: 12px 4px;
   background: none;
   border: none;
@@ -199,14 +199,24 @@
   cursor: pointer;
 }
 
-.profile-tab.active {
+.user-profile-tab.active {
   color: #d7dadc;
   border-bottom: 2px solid #d7dadc;
 }
 
 /* ================= Content ================= */
-.profile-post-card,
-.profile-comment-card {
+.user-profile-content {
+  margin-top: 16px;
+}
+
+.user-profile-loading {
+  color: #818384;
+  text-align: center;
+  margin-top: 48px;
+}
+
+.user-profile-post-card,
+.user-profile-comment-card {
   background: #1a1a1b;
   border: 1px solid #343536;
   border-radius: 6px;
@@ -214,19 +224,19 @@
   margin-bottom: 8px;
 }
 
-.profile-post-meta {
+.user-profile-post-meta {
   font-size: 12px;
   color: #818384;
 }
 
-.profile-empty {
+.user-profile-empty {
   color: #818384;
   text-align: center;
   margin-top: 48px;
 }
 
 /* Overlay */
-.modal-overlay {
+.user-profile-modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
@@ -237,7 +247,7 @@
 }
 
 /* Modal - dark theme */
-.avatar-modal {
+.user-profile-avatar-modal {
   width: 440px;
   max-width: calc(100% - 32px);
   min-height: 335px;
@@ -250,7 +260,7 @@
 }
 
 /* Header */
-.avatar-modal-header {
+.user-profile-avatar-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start; /* keep title at top */
@@ -258,7 +268,7 @@
   margin-bottom: 10px;
 }
 
-.avatar-modal-header h3 {
+.user-profile-avatar-modal-header h3 {
   font-size: 20px;
   font-weight: 700;
   color: #e6e6e6;
@@ -266,7 +276,7 @@
   padding-top: 4px;
 }
 
-.close-btn {
+.user-profile-close-btn {
   background: #1f1f1f;
   border: 1px solid #2f2f2f;
   width: 32px;
@@ -277,13 +287,13 @@
 }
 
 /* Content */
-.avatar-modal-content {
+.user-profile-avatar-modal-content {
   display: flex;
   gap: 18px;
   margin-top: 8px; /* tighten content to be closer under the header */
 }
 
-.avatar-option {
+.user-profile-avatar-option {
   flex: 1;
   border: 1px dashed #2f3133;
   background: rgba(255,255,255,0.02);
@@ -298,7 +308,7 @@
   min-height: 180px; /* ensure tiles are tall enough and centered */
 }
 
-.avatar-option img {
+.user-profile-avatar-option img {
   width: 120px;
   height: 120px;
   border-radius: 50%;
@@ -308,7 +318,7 @@
   display: block;
 }
 
-.avatar-option button {
+.user-profile-avatar-option button {
   background: #161718;
   border: 1px solid #2b2b2b;
   color: #d7dadc;
@@ -319,14 +329,14 @@
 }
 
 /* Footer */
-.avatar-modal-footer {
+.user-profile-avatar-modal-footer {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
   margin-top: 18px;
 }
 
-.avatar-modal-footer button {
+.user-profile-avatar-modal-footer button {
   padding: 8px 16px;
   border-radius: 999px;
   border: 1px solid #2b2b2b;
@@ -336,16 +346,16 @@
   color: #d7dadc;
 }
 
-.avatar-modal-footer .primary {
+.user-profile-avatar-modal-footer .user-profile-primary {
   background: linear-gradient(180deg,#0079d3,#0064b0);
   color: white;
   border: none;
 }
 
-.upload-icon { margin-left: 8px; }
+.user-profile-upload-icon { margin-left: 8px; }
 
 /* New: option-specific layout to match screenshot */
-.avatar-preview {
+.user-profile-avatar-preview {
   position: relative;
   display: flex;
   align-items: center;
@@ -357,10 +367,10 @@
   border: 1px solid rgba(255,255,255,0.03);
 }
 
-.avatar-option.option-sample .avatar-preview { background: rgba(0,0,0,0.35); }
-.avatar-option.option-upload .avatar-preview { border: 1px dashed rgba(255,255,255,0.04); }
+.user-profile-avatar-option.option-sample .user-profile-avatar-preview { background: rgba(0,0,0,0.35); }
+.user-profile-avatar-option.option-upload .user-profile-avatar-preview { border: 1px dashed rgba(255,255,255,0.04); }
 
-.avatar-circle {
+.user-profile-avatar-circle {
   width: 100%;
   height: 100%;
   border-radius: 50%;
@@ -370,7 +380,7 @@
   justify-content: center;
 }
 
-.option-btn {
+.user-profile-option-btn {
   margin-top: 12px;
   background: #1f1f21;
   color: #d7dadc;
@@ -381,7 +391,7 @@
   cursor: pointer;
 }
 
-.upload-badge {
+.user-profile-upload-badge {
   position: absolute;
   right: 12px;
   top: 50%;
@@ -399,10 +409,10 @@
 }
 
 /* Make modal backdrop slightly blurred like the screenshot */
-.modal-overlay { backdrop-filter: blur(6px); }
+.user-profile-modal-overlay { backdrop-filter: blur(6px); }
 
 /* Banner modal (dropzone) */
-.banner-modal {
+.user-profile-banner-modal {
   width: 520px; /* reduced to match Reddit's smaller modal */
   max-width: calc(100% - 32px);
   min-height: 220px;
@@ -416,9 +426,9 @@
   flex-direction: column;
 }
 
-.banner-modal-content { margin-top: 8px; }
+.user-profile-banner-modal-content { margin-top: 8px; }
 
-.banner-dropzone {
+.user-profile-banner-dropzone {
   width: 100%;
   height: 120px; /* reduced height to match Reddit's compact dropzone */
   border-radius: 12px;
@@ -432,7 +442,7 @@
   box-sizing: border-box;
 }
 
-.banner-dropzone .drop-inner {
+.user-profile-banner-dropzone .user-profile-drop-inner {
   display: flex;
   gap: 12px;
   align-items: center;
@@ -440,7 +450,7 @@
   font-weight: 600;
 }
 
-.banner-dropzone .drop-icon {
+.user-profile-banner-dropzone .user-profile-drop-icon {
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -452,9 +462,9 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
 
-.banner-dropzone .drop-text { color: #9aa1a3; }
+.user-profile-banner-dropzone .user-profile-drop-text { color: #9aa1a3; }
 
-.banner-dropzone .drop-footer {
+.user-profile-banner-dropzone .user-profile-drop-footer {
   width: 100%;
   display: flex;
   justify-content: space-between;

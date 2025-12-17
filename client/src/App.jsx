@@ -1,9 +1,8 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Auth from "./pages/Auth/Auth";
 import Main from "./pages/Main/Main";
 import ProtectedRoute from "./components/ProtectedRoute";
-import UserProfilePage from "./pages/UserProfilePage/UserProfilePage";
 
 function App() {
   return (
@@ -18,8 +17,6 @@ function App() {
             </ProtectedRoute>
           } 
         />
-        <Route path="*" element={<Navigate to="/" replace />} />
-        <Route path="/u/:username" element={<UserProfilePage />} />
       </Routes>
     </Router>
   );
