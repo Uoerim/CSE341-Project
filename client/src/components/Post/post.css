@@ -1,9 +1,10 @@
 /* Post Card - Exact Reddit Style */
 .post-card {
     background-color: transparent;
-    padding: 16px 0;
+    padding: 16px 12px 24px 12px;
     cursor: pointer;
     border-bottom: 1px solid #2a3f47;
+    margin: 8px 0;
 }
 
 .post-card:last-child {
@@ -11,7 +12,8 @@
 }
 
 .post-card:hover {
-    background-color: transparent;
+    background-color: #181C1F;
+    border-radius: 8px;
 }
 
 /* Hide any remaining caption inputs from old posts */
@@ -155,24 +157,102 @@
     line-height: 1.3;
 }
 
-/* Post Image */
+/* Post Image Carousel */
 .post-image-container {
+    position: relative;
     width: 100%;
     max-width: 600px;
+    max-height: 512px;
     margin: 0 auto 12px auto;
     border-radius: 12px;
     overflow: hidden;
+    background: #000;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.post-image {
+.post-image-blur-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    filter: blur(20px);
+    transform: scale(1.1);
+    opacity: 0.6;
+    z-index: 0;
+}
+
+.post-image {
+    position: relative;
+    max-width: 100%;
+    max-height: 512px;
     height: auto;
     display: block;
     object-fit: contain;
-    border-radius: 12px;
+    border-radius: 0;
+    z-index: 1;
+}
+
+.post-image-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    transition: background 0.2s;
+}
+
+.post-image-nav:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.post-image-nav.prev {
+    left: 12px;
+}
+
+.post-image-nav.next {
+    right: 12px;
+}
+
+.post-image-dots {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 2;
+}
+
+.post-image-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.post-image-dot.active {
+    background: white;
+    width: 24px;
+    border-radius: 4px;
+}
+
+.post-image-dot:hover {
+    background: rgba(255, 255, 255, 0.8);
 }
 
 /* Action Bar */

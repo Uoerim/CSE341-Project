@@ -37,14 +37,30 @@ function Post({ post, onPostClick }) {
         return postDate.toLocaleDateString();
     };
 
-    const extractFirstImage = (html) => {
-        if (!html) return null;
-        const imgMatch = html.match(/<img[^>]+src=["']([^"']+)["'][^>]*>/);
-        return imgMatch ? imgMatch[1] : null;
+    const extractAllImages = (html) => {
+        if (!html) return [];
+        const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/g;
+        const images = [];
+        let match;
+        while ((match = imgRegex.exec(html)) !== null) {
+            images.push(match[1]);
+        }
+        return images;
     };
 
-    const firstImage = extractFirstImage(post.content);
+    const images = extractAllImages(post.content);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const voteCount = votes.upvotes - votes.downvotes;
+
+    const handlePrevImage = (e) => {
+        e.stopPropagation();
+        setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+    };
+
+    const handleNextImage = (e) => {
+        e.stopPropagation();
+        setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+    };
 
     const handleVoteClick = async (e, type) => {
         e.stopPropagation();
@@ -137,17 +153,44 @@ function Post({ post, onPostClick }) {
             {/* Post Title */}
             <h2 className="post-title">{post.title}</h2>
 
-            {/* Post Image */}
-            {firstImage && (
+            {/* Post Image Carousel */}
+            {images.length > 0 && (
                 <div className="post-image-container">
+                    <div className="post-image-blur-bg" style={{ backgroundImage: `url(${images[currentImageIndex]})` }}></div>
                     <img 
-                        src={firstImage} 
+                        src={images[currentImageIndex]} 
                         alt="Post content" 
                         className="post-image"
                         onError={(e) => {
                             e.target.style.display = 'none';
                         }}
                     />
+                    {images.length > 1 && (
+                        <>
+                            <button className="post-image-nav prev" onClick={handlePrevImage}>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                                </svg>
+                            </button>
+                            <button className="post-image-nav next" onClick={handleNextImage}>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                                </svg>
+                            </button>
+                            <div className="post-image-dots">
+                                {images.map((_, index) => (
+                                    <span 
+                                        key={index} 
+                                        className={`post-image-dot ${index === currentImageIndex ? 'active' : ''}`}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setCurrentImageIndex(index);
+                                        }}
+                                    ></span>
+                                ))}
+                            </div>
+                        </>
+                    )}
                 </div>
             )}
 

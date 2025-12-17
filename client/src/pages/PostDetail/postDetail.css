@@ -186,11 +186,15 @@
 }
 
 .post-content-area img {
-    max-width: 100%;
+    max-width: 600px;
+    max-height: 512px;
+    width: 100%;
     height: auto;
-    border-radius: 8px;
+    border-radius: 12px;
     display: block;
-    margin: 0 auto;
+    margin: 12px auto;
+    object-fit: contain;
+    background: #000;
 }
 
 .post-content-area p {
