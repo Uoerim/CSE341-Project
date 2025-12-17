@@ -23,6 +23,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  banner: {
+    type: String, // GridFS file ID
+  },
   bio: {
     type: String,
     default: "",

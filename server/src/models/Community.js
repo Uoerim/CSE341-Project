@@ -12,6 +12,20 @@ const communitySchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  type: {
+    type: String,
+    enum: ["public", "restricted", "private", "mature"],
+    default: "public",
+  },
+  topics: [{
+    type: String,
+  }],
+  banner: {
+    type: String, // GridFS file ID
+  },
+  icon: {
+    type: String, // GridFS file ID
+  },
   creator: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

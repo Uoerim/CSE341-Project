@@ -8,6 +8,7 @@ import communityRoutes from "./routes/community.routes.js";
 import postRoutes from "./routes/post.routes.js";
 import commentRoutes from "./routes/comment.routes.js";
 import searchRoutes from "./routes/search.routes.js";
+import uploadRoutes from "./routes/upload.routes.js";
 
 import { protect } from "./middleware/auth.js";
 import { errorHandler } from "./middleware/error.js";
@@ -28,6 +29,7 @@ app.use("/api/communities", protect, communityRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);  // Individual routes handle their own auth
 app.use("/api/search", searchRoutes);
+app.use("/api/uploads", uploadRoutes);
 
 
 // Health check route

@@ -6,7 +6,7 @@ import { BadRequestError, ForbiddenError, NotFoundError} from "../utils/httpErro
 // CREATE community
 export const createCommunity = async (req, res, next) => {
   try {
-    const { name, description } = req.body;
+    const { name, description, type, topics, banner, icon } = req.body;
 
     if (!name) {
       throw new BadRequestError("Community name is required");
@@ -22,6 +22,10 @@ export const createCommunity = async (req, res, next) => {
     const community = await Community.create({
       name,
       description,
+      type: type || "public",
+      topics: topics || [],
+      banner,
+      icon,
       creator,
       members: [creator],
     });

@@ -1,5 +1,6 @@
 import "./createCommunityModal.css";
 import { useState } from "react";
+import { uploadImage, getImageUrl } from "../../../services/uploadService";
 
 const TOPICS = [
   { emoji: '🕹️', name: 'Gaming', tags: ['PC Gaming', 'Console Gaming', 'Mobile Gaming', 'Esports'] },
@@ -49,6 +50,8 @@ export default function CreateCommunityModal({ onClose, onCommunityCreated }) {
   const [description, setDescription] = useState('');
   const [banner, setBanner] = useState(null);
   const [icon, setIcon] = useState(null);
+  const [bannerPreview, setBannerPreview] = useState(null);
+  const [iconPreview, setIconPreview] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -107,6 +110,21 @@ export default function CreateCommunityModal({ onClose, onCommunityCreated }) {
 
     try {
       const token = localStorage.getItem("authToken");
+      
+      // Upload banner and icon if provided
+      let bannerFileId = null;
+      let iconFileId = null;
+      
+      if (banner) {
+        const bannerResult = await uploadImage(banner);
+        bannerFileId = bannerResult.fileId;
+      }
+      
+      if (icon) {
+        const iconResult = await uploadImage(icon);
+        iconFileId = iconResult.fileId;
+      }
+      
       const response = await fetch("http://localhost:5000/api/communities", {
         method: "POST",
         headers: {
@@ -117,7 +135,9 @@ export default function CreateCommunityModal({ onClose, onCommunityCreated }) {
           name,
           description,
           type: communityType,
-          topics: selectedTopics
+          topics: selectedTopics,
+          banner: bannerFileId,
+          icon: iconFileId
         }),
       });
 
@@ -140,8 +160,19 @@ export default function CreateCommunityModal({ onClose, onCommunityCreated }) {
   const handleFileChange = (e, type) => {
     const file = e.target.files[0];
     if (file) {
-      if (type === 'banner') setBanner(file);
-      else setIcon(file);
+      if (type === 'banner') {
+        setBanner(file);
+        // Create preview URL
+        const reader = new FileReader();
+        reader.onload = (e) => setBannerPreview(e.target.result);
+        reader.readAsDataURL(file);
+      } else {
+        setIcon(file);
+        // Create preview URL
+        const reader = new FileReader();
+        reader.onload = (e) => setIconPreview(e.target.result);
+        reader.readAsDataURL(file);
+      }
     }
   };
 
@@ -333,10 +364,10 @@ export default function CreateCommunityModal({ onClose, onCommunityCreated }) {
               </div>
 
               <div className="preview-card large">
-                <div className="preview-banner"></div>
+                <div className="preview-banner" style={bannerPreview ? { backgroundImage: `url(${bannerPreview})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}></div>
                 <div className="preview-content">
-                  <div className="preview-icon-large">
-                    {icon ? '📷' : 'r/'}
+                  <div className="preview-icon-large" style={iconPreview ? { backgroundImage: `url(${iconPreview})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}>
+                    {!iconPreview && 'r/'}
                   </div>
                   <div className="preview-details">
                     <h3>r/{name || 'communityname'}</h3>

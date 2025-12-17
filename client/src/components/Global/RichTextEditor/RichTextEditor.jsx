@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import "./richTextEditor.css";
+import { uploadImage, getImageUrl } from "../../../services/uploadService";
 
 function RichTextEditor({ value, onChange, placeholder = "Body text (optional)" }) {
     const editorRef = useRef(null);
@@ -183,17 +184,19 @@ function RichTextEditor({ value, onChange, placeholder = "Body text (optional)" 
         imageInputRef.current?.click();
     };
 
-    const handleImageSelect = (e) => {
+    const handleImageSelect = async (e) => {
         const file = e.target.files?.[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const imageUrl = event.target?.result;
+            try {
+                // Show loading state (optional - could add a loading indicator)
+                editorRef.current?.focus();
+                
+                // Upload to GridFS
+                const uploadResult = await uploadImage(file);
+                const imageUrl = getImageUrl(uploadResult.fileId);
+                
                 if (imageUrl) {
-                    // Ensure editor is focused before inserting
-                    editorRef.current?.focus();
-                    
-                    const imageHTML = `<div class="rte-image-wrapper"><img src="${imageUrl}" alt="Uploaded image" class="rte-inline-image" /></div><p>&nbsp;</p>`;
+                    const imageHTML = `<div class="rte-image-wrapper"><img src="${imageUrl}" alt="Uploaded image" class="rte-inline-image" data-file-id="${uploadResult.fileId}" /></div><p>&nbsp;</p>`;
                     document.execCommand("insertHTML", false, imageHTML);
                     
                     // Update the onChange callback with new content
@@ -203,8 +206,10 @@ function RichTextEditor({ value, onChange, placeholder = "Body text (optional)" 
                         }
                     }, 0);
                 }
-            };
-            reader.readAsDataURL(file);
+            } catch (error) {
+                console.error("Failed to upload image:", error);
+                alert("Failed to upload image. Please try again.");
+            }
         }
         // Reset the input so the same file can be selected again
         e.target.value = "";
