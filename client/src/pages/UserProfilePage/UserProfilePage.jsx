@@ -175,13 +175,14 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
                 <button className="user-profile-empty-button">Update Settings</button>
               </div>
             ) : tab === "overview" ? (
-              items.map((item) =>
-                item.type === "post" ? (
-                  <Post key={item.data._id} post={item.data} onPostClick={handlePostClick} />
+              items.map((item) => {
+                if (!item || !item.data) return null;
+                return item.type === "post" ? (
+                  <Post key={`post-${item.data._id}`} post={item.data} onPostClick={handlePostClick} />
                 ) : (
-                  <ProfileComment key={item.data._id} comment={item.data} />
-                )
-              )
+                  <ProfileComment key={`comment-${item.data._id}`} comment={item.data} />
+                );
+              })
             ) : tab === "posts" || tab === "upvoted" || tab === "downvoted" || tab === "saved" || tab === "hidden" || tab === "history" ? (
               items.map((post) => (
                 <Post key={post._id} post={post} onPostClick={handlePostClick} />
