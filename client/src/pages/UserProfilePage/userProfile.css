@@ -3,124 +3,28 @@
   display: flex;
   justify-content: center;
   gap: 24px;
-  padding: 24px 16px;
+  padding: 20px 16px;
+  min-height: 100vh;
+}
+
+.user-profile-loading {
+  color: #818384;
+  text-align: center;
+  padding: 48px;
   background: #030303;
   min-height: 100vh;
 }
 
 /* ================= Main ================= */
 .user-profile-main {
-  width: 640px;
+  width: 69==700px;
+  max-width: 100%;
 }
 
-/* ================= Sidebar ================= */
-.user-profile-sidebar {
-  width: 312px;
-}
-
-.user-profile-reddit-side-card.dark {
-  background: #1a1a1b;
-  border: 1px solid #343536;
-  border-radius: 12px; /* rounded edges */
-  color: #d7dadc;
-}
-
-.user-profile-reddit-side-banner {
-  height: 96px;
-  background-size: cover;
-  background-position: center;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-  margin-bottom: 0;
-  position: relative;
-  cursor: pointer;
-}
-
-.user-profile-reddit-side-banner:hover .user-profile-edit-banner-text {
-  opacity: 1;
-}
-
-.user-profile-edit-banner-text {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 600;
-  color: #d7dadc;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.user-profile-reddit-side-body {
-  padding: 16px;
-}
-
-.user-profile-reddit-side-username {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-
-/* Share */
-.user-profile-reddit-share-btn {
-  padding: 6px 14px;
-  border-radius: 999px;
-  background: #272729;
-  border: none;
-  color: #d7dadc;
-  font-weight: 600;
-  cursor: pointer;
-  margin-bottom: 12px;
-}
-
-.user-profile-reddit-followers {
-  font-size: 14px;
-  color: #818384;
-  margin-bottom: 16px;
-}
-
-/* Stats */
-.user-profile-reddit-stats-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px 24px;
-}
-
-.user-profile-reddit-stats-grid strong {
-  display: block;
-  font-size: 13px;
-}
-
-.user-profile-reddit-stats-grid span {
-  font-size: 13px;
-  color: #818384;
-}
-
-.user-profile-active-in span {
-  color: #4fbcff;
-}
-
-/* Divider */
-.user-profile-reddit-divider {
-  height: 1px;
-  background: #343536;
-  margin: 20px 0;
-}
-
-/* Achievements */
-.user-profile-reddit-achievements h4 {
-  font-size: 12px;
-  color: #818384;
-  letter-spacing: 0.04em;
-}
-
-/* ================= Header ================= */
+/* ================= Header Card ================= */
 .user-profile-header-card {
   background: transparent;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .user-profile-user-row {
@@ -130,141 +34,539 @@
 }
 
 .user-profile-avatar {
+  position: relative;
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  border: 4px solid #030303;
-  background: #444;
-  overflow: hidden;
+  overflow: visible;
   cursor: pointer;
-  box-sizing: border-box;
-  position: relative;
 }
 
-.user-profile-avatar img {
-  display: block;
+.user-profile-avatar-circle {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  border-radius: 50%;
 }
+
+.user-profile-avatar-circle img {
+  width: 100%;
+  height: 130%;
+  object-fit: cover;
+  transform: translateX(-35%) translateY(-10%) scaleX(-1);
+
+}
+
 .user-profile-avatar.clickable:hover {
-  opacity: 0.85;
+  opacity: 0.9;
+}
+
+.user-profile-avatar-edit-badge {
+  position: absolute;
+  bottom: 0;
+  right: -4px;
+  width: 24px;
+  height: 24px;
+  background: #1a1a1b;
+  border: 2px solid #030303;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #d7dadc;
 }
 
 .user-profile-user-text {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
-.user-profile-username {
+.user-profile-display-name {
   color: #d7dadc;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
+  margin: 0;
 }
 
-.user-profile-meta {
-  font-size: 12px;
+.user-profile-handle {
   color: #818384;
-}
-
-.user-profile-bio {
-  margin-top: 8px;
-  color: #d7dadc;
-}
-
-/* Empty avatar placeholder (no image file used) */
-.user-profile-avatar-empty {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: #444;
+  font-size: 14px;
+  margin: 0;
 }
 
 /* ================= Tabs ================= */
 .user-profile-tabs {
   display: flex;
-  gap: 16px;
-  border-bottom: 1px solid #343536;
-  position: sticky;
-  top: 56px;
-  background: #030303;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 12px 0;
 }
 
 .user-profile-tab {
-  padding: 12px 4px;
-  background: none;
-  border: none;
-  font-weight: 600;
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
   color: #818384;
   cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.user-profile-tab:hover {
+  color: #d7dadc;
 }
 
 .user-profile-tab.active {
+  border-color: #d7dadc;
   color: #d7dadc;
-  border-bottom: 2px solid #d7dadc;
+}
+
+/* ================= Filter Bar ================= */
+.user-profile-filter-bar {
+  margin-bottom: 12px;
+}
+
+.user-profile-filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #1a1a1b;
+  border: 1px solid #343536;
+  border-radius: 999px;
+  color: #d7dadc;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.user-profile-filter-btn:hover {
+  border-color: #4a4a4c;
+}
+
+.user-profile-filter-btn svg {
+  color: #818384;
+}
+
+/* ================= Create Bar ================= */
+.user-profile-create-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.user-profile-create-post-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #1a1a1b;
+  border: 1px solid #343536;
+  border-radius: 999px;
+  color: #d7dadc;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.user-profile-create-post-btn:hover {
+  border-color: #4a4a4c;
+}
+
+.user-profile-options-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: #1a1a1b;
+  border: 1px solid #343536;
+  border-radius: 50%;
+  color: #818384;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.user-profile-options-btn:hover {
+  background: #272729;
+  color: #d7dadc;
 }
 
 /* ================= Content ================= */
 .user-profile-content {
-  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.user-profile-loading {
-  color: #818384;
+.user-profile-loading-content {
+  display: flex;
+  justify-content: center;
+  padding: 48px;
+}
+
+.user-profile-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #343536;
+  border-top-color: #d7dadc;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Empty State */
+.user-profile-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 32px;
   text-align: center;
-  margin-top: 48px;
 }
 
-.user-profile-post-card,
-.user-profile-comment-card {
+.user-profile-empty-icon {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 24px;
+  color: #d7dadc;
+}
+
+.user-profile-empty-icon svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+}
+
+.user-profile-empty-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #d7dadc;
+  margin: 0 0 12px 0;
+}
+
+.user-profile-empty-subtitle {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #818384;
+  max-width: 420px;
+  margin: 0 0 24px 0;
+}
+
+.user-profile-empty-button {
+  padding: 10px 24px;
+  background: #0079d3;
+  border: none;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.user-profile-empty-button:hover {
+  background: #1484d6;
+}
+
+/* ================= Sidebar ================= */
+.user-profile-sidebar {
+  width: 312px;
+}
+
+.user-profile-side-card {
   background: #1a1a1b;
   border: 1px solid #343536;
-  border-radius: 6px;
-  padding: 12px 14px;
-  margin-bottom: 8px;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-.user-profile-post-meta {
+.user-profile-side-banner {
+  height: 96px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.user-profile-side-banner:hover .user-profile-banner-edit-icon {
+  opacity: 1;
+}
+
+.user-profile-banner-edit-icon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.user-profile-side-body {
+  padding: 16px;
+}
+
+.user-profile-side-username {
+  font-size: 18px;
+  font-weight: 700;
+  color: #d7dadc;
+  margin: 0 0 12px 0;
+}
+
+.user-profile-share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: #272729;
+  border: none;
+  border-radius: 999px;
+  color: #d7dadc;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.user-profile-share-btn:hover {
+  background: #3a3a3c;
+}
+
+.user-profile-followers {
+  font-size: 14px;
+  color: #818384;
+  margin: 12px 0 16px 0;
+}
+
+/* Stats Grid */
+.user-profile-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 24px;
+}
+
+.user-profile-stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.user-profile-stat-item strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: #d7dadc;
+}
+
+.user-profile-stat-item span {
   font-size: 12px;
   color: #818384;
 }
 
-.user-profile-empty {
-  color: #818384;
-  text-align: center;
-  margin-top: 48px;
+.user-profile-active-icons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-/* Overlay */
+.user-profile-community-count {
+  font-size: 14px;
+  font-weight: 600;
+  color: #d7dadc;
+}
+
+.user-profile-divider {
+  height: 1px;
+  background: #343536;
+  margin: 16px 0;
+}
+
+/* Achievements Section */
+.user-profile-achievements-section h4 {
+  font-size: 11px;
+  font-weight: 700;
+  color: #818384;
+  letter-spacing: 0.05em;
+  margin: 0 0 12px 0;
+}
+
+.user-profile-achievements-row {
+  display: flex;
+  gap: 12px;
+}
+
+.user-profile-achievement-icons {
+  display: flex;
+  gap: -4px;
+}
+
+.user-profile-achievement-icon {
+  width: 32px;
+  height: 32px;
+  background: #272729;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  margin-left: -4px;
+}
+
+.user-profile-achievement-icon:first-child {
+  margin-left: 0;
+}
+
+.user-profile-achievements-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.user-profile-achievements-names {
+  font-size: 12px;
+  color: #d7dadc;
+}
+
+.user-profile-achievements-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-profile-achievements-footer span {
+  font-size: 12px;
+  color: #818384;
+}
+
+.user-profile-view-all-btn {
+  background: #0079d3;
+  border: none;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.user-profile-view-all-btn:hover {
+  background: #1484d6;
+}
+
+/* Settings Section */
+.user-profile-settings-section h4 {
+  font-size: 11px;
+  font-weight: 700;
+  color: #818384;
+  letter-spacing: 0.05em;
+  margin: 0 0 12px 0;
+}
+
+.user-profile-setting-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.user-profile-setting-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #818384;
+}
+
+.user-profile-setting-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-profile-setting-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.user-profile-setting-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #d7dadc;
+}
+
+.user-profile-setting-subtitle {
+  font-size: 12px;
+  color: #818384;
+}
+
+.user-profile-update-btn {
+  background: #272729;
+  border: none;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #d7dadc;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.user-profile-update-btn:hover {
+  background: #3a3a3c;
+}
+
+/* ================= Modals ================= */
 .user-profile-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
 }
 
-/* Modal - dark theme */
 .user-profile-avatar-modal {
   width: 440px;
   max-width: calc(100% - 32px);
   min-height: 335px;
-  background: #0f0f10; /* dark card */
+  background: #0f0f10;
   border-radius: 12px;
-  padding: 12px 16px 16px; /* slightly smaller top padding so header is nearer the top */
+  padding: 12px 16px 16px;
   border: 1px solid #242526;
   color: #d7dadc;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.6);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
 }
 
-/* Header */
 .user-profile-avatar-modal-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start; /* keep title at top */
-  padding: 0 8px; /* bring header content closer to modal edges */
+  align-items: flex-start;
+  padding: 0 8px;
   margin-bottom: 10px;
 }
 
@@ -272,7 +574,7 @@
   font-size: 20px;
   font-weight: 700;
   color: #e6e6e6;
-  margin: 0; /* remove default margin so it sits flush */
+  margin: 0;
   padding-top: 4px;
 }
 
@@ -284,19 +586,26 @@
   border-radius: 50%;
   cursor: pointer;
   color: #d7dadc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
 }
 
-/* Content */
+.user-profile-close-btn:hover {
+  background: #2a2a2a;
+}
+
 .user-profile-avatar-modal-content {
   display: flex;
   gap: 18px;
-  margin-top: 8px; /* tighten content to be closer under the header */
+  margin-top: 8px;
 }
 
 .user-profile-avatar-option {
   flex: 1;
   border: 1px dashed #2f3133;
-  background: rgba(255,255,255,0.02);
+  background: rgba(255, 255, 255, 0.02);
   border-radius: 12px;
   padding: 18px;
   text-align: center;
@@ -304,8 +613,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: relative; /* for upload-badge */
-  min-height: 180px; /* ensure tiles are tall enough and centered */
+  min-height: 180px;
 }
 
 .user-profile-avatar-option img {
@@ -314,8 +622,7 @@
   border-radius: 50%;
   margin-bottom: 14px;
   object-fit: cover;
-  border: 2px solid rgba(255,255,255,0.03);
-  display: block;
+  border: 2px solid rgba(255, 255, 255, 0.03);
 }
 
 .user-profile-avatar-option button {
@@ -328,7 +635,10 @@
   cursor: pointer;
 }
 
-/* Footer */
+.user-profile-avatar-option button:hover {
+  background: #1f1f20;
+}
+
 .user-profile-avatar-modal-footer {
   display: flex;
   justify-content: flex-end;
@@ -346,94 +656,49 @@
   color: #d7dadc;
 }
 
-.user-profile-avatar-modal-footer .user-profile-primary {
-  background: linear-gradient(180deg,#0079d3,#0064b0);
-  color: white;
-  border: none;
+.user-profile-avatar-modal-footer button:hover {
+  background: #1a1a1b;
 }
 
-.user-profile-upload-icon { margin-left: 8px; }
-
-/* New: option-specific layout to match screenshot */
-.user-profile-avatar-preview {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 220px;
-  height: 120px;
-  border-radius: 12px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border: 1px solid rgba(255,255,255,0.03);
+.user-profile-primary {
+  background: linear-gradient(180deg, #0079d3, #0064b0) !important;
+  color: white !important;
+  border: none !important;
 }
 
-.user-profile-avatar-option.option-sample .user-profile-avatar-preview { background: rgba(0,0,0,0.35); }
-.user-profile-avatar-option.option-upload .user-profile-avatar-preview { border: 1px dashed rgba(255,255,255,0.04); }
-
-.user-profile-avatar-circle {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.user-profile-primary:hover {
+  background: linear-gradient(180deg, #1484d6, #0070c2) !important;
 }
 
-.user-profile-option-btn {
-  margin-top: 12px;
-  background: #1f1f21;
-  color: #d7dadc;
-  border: 1px solid rgba(255,255,255,0.04);
-  padding: 8px 16px;
-  border-radius: 999px;
-  font-weight: 600;
-  cursor: pointer;
+.user-profile-upload-icon {
+  margin-left: 8px;
 }
 
-.user-profile-upload-badge {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-10%); /* slightly overlapping the avatar */
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: linear-gradient(180deg,#2b2b2b,#1a1a1a);
-  color: #d7dadc;
-  border: 1px solid rgba(255,255,255,0.06);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-/* Make modal backdrop slightly blurred like the screenshot */
-.user-profile-modal-overlay { backdrop-filter: blur(6px); }
-
-/* Banner modal (dropzone) */
+/* Banner Modal */
 .user-profile-banner-modal {
-  width: 520px; /* reduced to match Reddit's smaller modal */
+  width: 520px;
   max-width: calc(100% - 32px);
   min-height: 220px;
   background: #0f0f10;
   border-radius: 12px;
-  padding: 12px 22px 14px; /* slightly tighter padding */
+  padding: 12px 22px 14px;
   border: 1px solid #242526;
   color: #d7dadc;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.6);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
   display: flex;
   flex-direction: column;
 }
 
-.user-profile-banner-modal-content { margin-top: 8px; }
+.user-profile-banner-modal-content {
+  margin-top: 8px;
+}
 
 .user-profile-banner-dropzone {
   width: 100%;
-  height: 120px; /* reduced height to match Reddit's compact dropzone */
+  height: 120px;
   border-radius: 12px;
-  border: 1px dashed rgba(255,255,255,0.06);
-  background: rgba(255,255,255,0.01);
+  border: 1px dashed rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.01);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -442,7 +707,7 @@
   box-sizing: border-box;
 }
 
-.user-profile-banner-dropzone .user-profile-drop-inner {
+.user-profile-drop-inner {
   display: flex;
   gap: 12px;
   align-items: center;
@@ -450,7 +715,7 @@
   font-weight: 600;
 }
 
-.user-profile-banner-dropzone .user-profile-drop-icon {
+.user-profile-drop-icon {
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -459,12 +724,14 @@
   align-items: center;
   justify-content: center;
   color: #d7dadc;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
-.user-profile-banner-dropzone .user-profile-drop-text { color: #9aa1a3; }
+.user-profile-drop-text {
+  color: #9aa1a3;
+}
 
-.user-profile-banner-dropzone .user-profile-drop-footer {
+.user-profile-drop-footer {
   width: 100%;
   display: flex;
   justify-content: space-between;

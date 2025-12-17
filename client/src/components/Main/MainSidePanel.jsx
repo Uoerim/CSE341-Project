@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "./mainSidePanel.css";
 
 function MainSidePanel({ onToggle, onPageChange, currentPage, isViewingPost }) {
-    const navigate = useNavigate();
     const [isPanelShifted, setIsPanelShifted] = useState(false);
     const [isManuallyToggled, setIsManuallyToggled] = useState(false);
     const [wasAutoUnshifted, setWasAutoUnshifted] = useState(false);
@@ -52,7 +50,7 @@ function MainSidePanel({ onToggle, onPageChange, currentPage, isViewingPost }) {
                 </svg>
             </button>
             <div className="side-menu">
-                <button className={`side-menu-item ${currentPage === "home" && !isViewingPost ? "active" : ""}`} onClick={() => { onPageChange("home"); navigate("/")}}>
+                <button className={`side-menu-item ${currentPage === "home" && !isViewingPost ? "active" : ""}`} onClick={() => onPageChange("home")}>
                     <svg rpl="" fill="currentColor" height="20" icon-name="home" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"> <path d="M17.877 8.525a1.584 1.584 0 00-.35-.52l-6.395-6.352a1.602 1.602 0 00-1.13-.467h-.003a1.6 1.6 0 00-1.13.467L2.473 8.005A1.604 1.604 0 002 9.14v6.374a3.3 3.3 0 003.3 3.3h9.4a3.3 3.3 0 003.3-3.3V9.14c0-.211-.042-.42-.123-.615zM16.2 15.514c0 .827-.673 1.5-1.5 1.5H11v-5.575H9v5.575H5.3c-.827 0-1.5-.673-1.5-1.5v-6.29L10 3.066l6.2 6.158v6.29z"></path></svg>
                     <span>Home</span>
                 </button>

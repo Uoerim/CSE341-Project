@@ -10,6 +10,11 @@ import {
   getUserPostsByUsername,
   getUserCommentsByUsername,
   getUserOverviewByUsername,
+  getUserUpvotedByUsername,
+  getUserDownvotedByUsername,
+  getUserSavedByUsername,
+  getUserHistoryByUsername,
+  getUserHiddenByUsername,
 } from "../controllers/user.controller.js";
 import { protect } from "../middleware/auth.js";
 
@@ -27,6 +32,11 @@ router.get("/u/:username/profile", getUserProfileByUsername);
 router.get("/u/:username/overview", getUserOverviewByUsername);
 router.get("/u/:username/posts", getUserPostsByUsername);
 router.get("/u/:username/comments", getUserCommentsByUsername);
+router.get("/u/:username/upvoted", protect, getUserUpvotedByUsername);
+router.get("/u/:username/downvoted", protect, getUserDownvotedByUsername);
+router.get("/u/:username/saved", protect, getUserSavedByUsername);
+router.get("/u/:username/history", protect, getUserHistoryByUsername);
+router.get("/u/:username/hidden", protect, getUserHiddenByUsername);
 
 // admin / generic
 router.get("/", getUsers);

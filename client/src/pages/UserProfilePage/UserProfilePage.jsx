@@ -5,8 +5,10 @@ import { apiGet } from "../../utils/api";
 
 import MainNav from "../../components/Main/MainNav";
 import MainSidePanel from "../../components/Main/MainSidePanel";
+import Post from "../../components/Post/Post";
+import ProfileComment from "../../components/Comment/ProfileComment";
 
-export default function UserProfilePage({ username: propUsername, embedded = false }) {
+export default function UserProfilePage({ username: propUsername, embedded = false, onPostClick }) {
   const { username: paramUsername } = useParams();
   const [currentUsername, setCurrentUsername] = useState(propUsername || paramUsername);
   const navigate = useNavigate();
@@ -50,10 +52,7 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
     if (!currentUsername) return;
 
     setLoading(true);
-    const url =
-      tab === "overview"
-        ? `/users/u/${currentUsername}/overview`
-        : `/users/u/${currentUsername}/${tab}`;
+    const url = `/users/u/${currentUsername}/${tab}`;
 
     apiGet(url)
       .then((data) => setItems(data))
@@ -65,46 +64,57 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
     mainContentRef.current?.scrollTo(0, 0);
   }, [currentUsername, tab]);
 
+  const handlePostClick = (postId) => {
+    if (onPostClick) {
+      onPostClick(postId);
+    }
+  };
+
+  const formatRedditAge = (createdAt) => {
+    const diffDays = Math.floor((Date.now() - new Date(createdAt)) / 86400000);
+    if (diffDays < 30) return `${diffDays}d`;
+    if (diffDays < 365) return `${Math.floor(diffDays / 30)}mo`;
+    return `${Math.floor(diffDays / 365)}y`;
+  };
+
   if (!user) return <div className="user-profile-loading">Loading profile...</div>;
+
+  const tabs = ["overview", "posts", "comments", "saved", "history", "hidden", "upvoted", "downvoted"];
 
   const profileContent = (
     <>
       <div className="user-profile-page">
         {/* ================= MAIN ================= */}
         <main className="user-profile-main">
+          {/* Profile Header */}
           <section className="user-profile-header-card">
             <div className="user-profile-user-row">
               <div className="user-profile-avatar clickable" onClick={() => setShowAvatarModal(true)}>
                 <div className="user-profile-avatar-circle">
-                  {(user.avatarUrl || user.avatar) ? (
-                    <img src={user.avatarUrl || user.avatar} alt=" " />
-                  ) : (
-                    <div className="user-profile-avatar-empty" />
-                  )}
+                  <img 
+                    src={`/character/${user.avatar || 'char'}.png`} 
+                    alt={user.username}
+                    onError={(e) => {
+                      e.target.src = '/character/char.png';
+                    }}
+                  />
+                </div>
+                <div className="user-profile-avatar-edit-badge">
+                  <svg fill="currentColor" height="12" width="12" viewBox="0 0 20 20">
+                    <path d="M18.85 3.15a2.89 2.89 0 00-4.08 0L3.46 14.46a.5.5 0 00-.12.2l-1.3 4.34a.5.5 0 00.63.63l4.34-1.3a.5.5 0 00.2-.12L18.52 6.9a2.89 2.89 0 00.33-4.08v.33zM5.83 17.52l-2.68.8.8-2.68L14.52 5.07l1.88 1.88-10.57 10.57zm12.1-12.1l-.83.83-1.88-1.88.83-.83a1.39 1.39 0 011.88 0 1.33 1.33 0 010 1.88z"></path>
+                  </svg>
                 </div>
               </div>
               <div className="user-profile-user-text">
-                <h1 className="user-profile-username">u/{user.username}</h1>
-                <p className="user-profile-meta">
-                  {stats?.totalKarma || 0} karma • joined{" "}
-                  {new Date(user.createdAt).toLocaleDateString()}
-                </p>
+                <h1 className="user-profile-display-name">{user.username}</h1>
+                <p className="user-profile-handle">u/{user.username}</p>
               </div>
             </div>
-            {user.bio && <p className="user-profile-bio">{user.bio}</p>}
           </section>
 
-          <nav className="user-profile-tabs">
-            {[
-              "overview",
-              "posts",
-              "comments",
-              "saved",
-              "history",
-              "hidden",
-              "upvoted",
-              "downvoted",
-            ].map((t) => (
+          {/* Tabs */}
+          <div className="user-profile-tabs">
+            {tabs.map((t) => (
               <button
                 key={t}
                 className={`user-profile-tab ${tab === t ? "active" : ""}`}
@@ -113,26 +123,46 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
                 {t.charAt(0).toUpperCase() + t.slice(1)}
               </button>
             ))}
-          </nav>
+          </div>
 
+          {/* Posts/Comments Content */}
           <section className="user-profile-content">
             {loading ? (
-              <p className="user-profile-empty">Loading...</p>
+              <div className="user-profile-loading-content">
+                <div className="user-profile-spinner"></div>
+              </div>
             ) : items.length === 0 ? (
-              <p className="user-profile-empty">You don't have any posts yet</p>
+              <div className="user-profile-empty-state">
+                <div className="user-profile-empty-icon">
+                  <svg viewBox="0 0 100 100" fill="currentColor">
+                    <circle cx="50" cy="45" r="35" fill="#fff"/>
+                    <circle cx="50" cy="38" r="8" fill="#1a1a1b"/>
+                    <ellipse cx="35" cy="45" rx="5" ry="8" fill="#ff4500"/>
+                    <ellipse cx="65" cy="45" rx="5" ry="8" fill="#ff4500"/>
+                    <path d="M 30 60 Q 50 70 70 60" stroke="#d7dadc" strokeWidth="3" fill="none" strokeLinecap="round"/>
+                  </svg>
+                </div>
+                <h2 className="user-profile-empty-title">You don't have any {tab} yet</h2>
+                <p className="user-profile-empty-subtitle">
+                  Once you {tab === "posts" ? "post to a community" : tab === "comments" ? "comment on posts" : "vote on posts"}, it'll show up here. If you'd rather hide your {tab}, update your settings.
+                </p>
+                <button className="user-profile-empty-button">Update Settings</button>
+              </div>
             ) : tab === "overview" ? (
               items.map((item) =>
                 item.type === "post" ? (
-                  <ProfilePostCard key={item.data._id} post={item.data} />
+                  <Post key={item.data._id} post={item.data} onPostClick={handlePostClick} />
                 ) : (
-                  <ProfileCommentCard key={item.data._id} comment={item.data} />
+                  <ProfileComment key={item.data._id} comment={item.data} />
                 )
               )
-            ) : tab === "posts" ? (
-              items.map((post) => <ProfilePostCard key={post._id} post={post} />)
+            ) : tab === "posts" || tab === "upvoted" || tab === "downvoted" || tab === "saved" || tab === "hidden" || tab === "history" ? (
+              items.map((post) => (
+                <Post key={post._id} post={post} onPostClick={handlePostClick} />
+              ))
             ) : (
               items.map((comment) => (
-                <ProfileCommentCard key={comment._id} comment={comment} />
+                <ProfileComment key={comment._id} comment={comment} />
               ))
             )}
           </section>
@@ -140,9 +170,10 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
 
         {/* ================= SIDEBAR ================= */}
         <aside className="user-profile-sidebar">
-          <div className="user-profile-reddit-side-card dark">
+          <div className="user-profile-side-card">
+            {/* Banner */}
             <div
-              className="user-profile-reddit-side-banner clickable"
+              className="user-profile-side-banner clickable"
               onClick={() => setShowBannerModal(true)}
               style={{
                 backgroundImage: user.banner
@@ -150,46 +181,57 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
                   : "linear-gradient(180deg, #003f88, #001b3a)",
               }}
             >
-              <span className="user-profile-edit-banner-text">Edit banner</span>
+              <div className="user-profile-banner-edit-icon">
+                <svg fill="currentColor" height="16" width="16" viewBox="0 0 20 20">
+                  <path d="M18.85 3.15a2.89 2.89 0 00-4.08 0L3.46 14.46a.5.5 0 00-.12.2l-1.3 4.34a.5.5 0 00.63.63l4.34-1.3a.5.5 0 00.2-.12L18.52 6.9a2.89 2.89 0 00.33-4.08v.33z"></path>
+                </svg>
+              </div>
             </div>
-            <div className="user-profile-reddit-side-body">
-              <h2 className="user-profile-reddit-side-username">{user.username}</h2>
-              <button className="user-profile-reddit-share-btn">Share</button>
-              <p className="user-profile-reddit-followers">0 followers</p>
-              <div className="user-profile-reddit-stats-grid">
-                <div>
+
+            {/* Sidebar Body */}
+            <div className="user-profile-side-body">
+              <h2 className="user-profile-side-username">{user.username}</h2>
+              
+              <button className="user-profile-share-btn">
+                <svg fill="currentColor" height="16" width="16" viewBox="0 0 20 20">
+                  <path d="M12.8 17.524l6.89-6.887a.9.9 0 000-1.273L12.8 2.477a1.64 1.64 0 00-1.782-.349 1.64 1.64 0 00-1.014 1.518v2.593C4.054 6.728 1.192 12.075 1 17.376a1.353 1.353 0 00.862 1.32 1.35 1.35 0 001.531-.364l.334-.381c1.705-1.944 3.323-3.791 6.277-4.103v2.509c0 .667.398 1.262 1.014 1.518a1.638 1.638 0 001.783-.349v-.002z"></path>
+                </svg>
+                <span>Share</span>
+              </button>
+
+              <p className="user-profile-followers">0 followers</p>
+
+              {/* Stats Grid */}
+              <div className="user-profile-stats-grid">
+                <div className="user-profile-stat-item">
                   <strong>{stats?.totalKarma || 0}</strong>
                   <span>Karma</span>
                 </div>
-                <div>
-                  <strong>{stats?.contributions || 0}</strong>
+                <div className="user-profile-stat-item">
+                  <strong>{(stats?.postCount || 0) + (stats?.commentCount || 0)}</strong>
                   <span>Contributions</span>
                 </div>
-                <div>
-                  <strong>
-                    {Math.floor((Date.now() - new Date(user.createdAt)) / 86400000)} d
-                  </strong>
+                <div className="user-profile-stat-item">
+                  <strong>{formatRedditAge(user.createdAt)}</strong>
                   <span>Reddit Age</span>
                 </div>
-                <div className="user-profile-active-in">
-                  <strong>0</strong>
+                <div className="user-profile-stat-item">
+                  <div className="user-profile-active-icons">
+                    <span className="user-profile-community-count">2</span>
+                  </div>
                   <span>Active in &gt;</span>
                 </div>
-                <div>
+                <div className="user-profile-stat-item">
                   <strong>0</strong>
                   <span>Gold earned</span>
                 </div>
-              </div>
-              <div className="user-profile-reddit-divider" />
-              <div className="user-profile-reddit-achievements">
-                <h4>ACHIEVEMENTS</h4>
               </div>
             </div>
           </div>
         </aside>
       </div>
 
-      {/* ================= CHANGE AVATAR ================= */}
+      {/* ================= CHANGE AVATAR MODAL ================= */}
       {showAvatarModal && (
         <div className="user-profile-modal-overlay" onClick={() => setShowAvatarModal(false)}>
           <div className="user-profile-avatar-modal" onClick={(e) => e.stopPropagation()}>
@@ -205,7 +247,7 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
                 <button>Select avatar</button>
               </div>
               <div className="user-profile-avatar-option">
-                <img src={user.avatarUrl || user.avatar || "/default-avatar.png"} alt="" />
+                <img src={`/character/${user.avatar || 'char'}.png`} alt="" />
                 <button>
                   Select a new image
                   <span className="user-profile-upload-icon">⬆</span>
@@ -220,7 +262,7 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
         </div>
       )}
 
-      {/* ================= CHANGE BANNER ================= */}
+      {/* ================= CHANGE BANNER MODAL ================= */}
       {showBannerModal && (
         <div className="user-profile-modal-overlay" onClick={() => setShowBannerModal(false)}>
           <div className="user-profile-banner-modal" onClick={(e) => e.stopPropagation()}>
@@ -282,25 +324,5 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
         </div>
       </div>
     </div>
-  );
-}
-
-/* ================= Cards ================= */
-function ProfilePostCard({ post }) {
-  return (
-    <article className="user-profile-post-card">
-      <div className="user-profile-post-meta">{post.community && <span>r/{post.community.name}</span>}</div>
-      <h3>{post.title}</h3>
-      {post.content && <p>{post.content}</p>}
-    </article>
-  );
-}
-
-function ProfileCommentCard({ comment }) {
-  return (
-    <article className="user-profile-comment-card">
-      <div className="user-profile-post-meta">{comment.post?.title && <span>Comment on: {comment.post.title}</span>}</div>
-      <p>{comment.content}</p>
-    </article>
   );
 }
