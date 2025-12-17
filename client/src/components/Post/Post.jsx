@@ -100,17 +100,37 @@ function Post({ post, onPostClick }) {
             {/* Header Row */}
             <div className="post-header-row">
                 <div className="post-community-info">
-                    <div className="post-community-icon">
-                        <img 
-                            src={`/character/${post.author?.avatar || 'char'}.png`} 
-                            alt={post.author?.username} 
-                        />
-                    </div>
-                    <span className="post-subreddit">
-                        u/{post.author?.username || "user"}
-                    </span>
-                    <span className="post-header-dot">•</span>
-                    <span className="post-timestamp">{formatDate(post.createdAt)}</span>
+                    {post.community ? (
+                        <>
+                            <div className="post-community-icon">
+                                <div className="community-icon-placeholder">
+                                    r/
+                                </div>
+                            </div>
+                            <div className="post-community-details">
+                                <span className="post-community-name">r/{post.community.name}</span>
+                                <div className="post-author-row">
+                                    <span className="post-author">u/{post.author?.username || "user"}</span>
+                                    <span className="post-header-dot">•</span>
+                                    <span className="post-timestamp">{formatDate(post.createdAt)}</span>
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="post-community-icon">
+                                <img 
+                                    src={`/character/${post.author?.avatar || 'char'}.png`} 
+                                    alt={post.author?.username} 
+                                />
+                            </div>
+                            <span className="post-subreddit">
+                                u/{post.author?.username || "user"}
+                            </span>
+                            <span className="post-header-dot">•</span>
+                            <span className="post-timestamp">{formatDate(post.createdAt)}</span>
+                        </>
+                    )}
                 </div>
             </div>
 

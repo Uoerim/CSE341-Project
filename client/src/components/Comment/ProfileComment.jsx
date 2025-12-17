@@ -84,23 +84,27 @@ function ProfileComment({ comment }) {
             {/* Header Row */}
             <div className="profile-comment-header">
                 <div className="profile-comment-community">
-                    {comment.post?.community?.icon ? (
-                        <img 
-                            src={comment.post.community.icon} 
-                            alt="" 
-                            className="profile-comment-community-icon"
-                        />
-                    ) : (
-                        <div className="profile-comment-community-icon-placeholder">
-                            <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
-                                <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0ZM8.016 8.633a1.616 1.616 0 0 0-.2.806v6.527c-2.966-.076-5.556-2.66-5.556-5.951a5.81 5.81 0 0 1 9.489-4.488l-3.733 3.107Zm2.024 3.227 3.733-3.107a5.754 5.754 0 0 1 .49 2.262c0 3.275-2.554 5.875-5.463 5.951V9.561a1.616 1.616 0 0 0-.76-2.701Z" />
-                            </svg>
-                        </div>
+                    {comment.post?.community && (
+                        <>
+                            {comment.post.community.icon ? (
+                                <img 
+                                    src={comment.post.community.icon} 
+                                    alt="" 
+                                    className="profile-comment-community-icon"
+                                />
+                            ) : (
+                                <div className="profile-comment-community-icon-placeholder">
+                                    <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+                                        <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0ZM8.016 8.633a1.616 1.616 0 0 0-.2.806v6.527c-2.966-.076-5.556-2.66-5.556-5.951a5.81 5.81 0 0 1 9.489-4.488l-3.733 3.107Zm2.024 3.227 3.733-3.107a5.754 5.754 0 0 1 .49 2.262c0 3.275-2.554 5.875-5.463 5.951V9.561a1.616 1.616 0 0 0-.76-2.701Z" />
+                                    </svg>
+                                </div>
+                            )}
+                            <span className="profile-comment-subreddit">
+                                r/{comment.post.community.name}
+                            </span>
+                            <span className="profile-comment-dot">•</span>
+                        </>
                     )}
-                    <span className="profile-comment-subreddit">
-                        r/{comment.post?.community?.name || "community"}
-                    </span>
-                    <span className="profile-comment-dot">•</span>
                     <span className="profile-comment-post-title">
                         {comment.post?.title || "[deleted]"}
                     </span>

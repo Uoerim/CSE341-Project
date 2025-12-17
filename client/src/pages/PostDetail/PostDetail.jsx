@@ -399,15 +399,35 @@ function PostDetail({ postId, onClose }) {
                     {/* Header with community info */}
                     <div className="post-header-row">
                         <div className="community-info">
-                            <div className="community-icon">
-                                <img 
-                                    src={`/character/${post.author.avatar || 'char'}.png`} 
-                                    alt="" 
-                                />
-                            </div>
-                            <span className="community-name">u/{post.author.username}</span>
-                            <span className="header-dot">•</span>
-                            <span className="post-time-header">{formatDate(post.createdAt)}</span>
+                            {post.community ? (
+                                <>
+                                    <div className="community-icon">
+                                        <div className="community-icon-placeholder">
+                                            r/
+                                        </div>
+                                    </div>
+                                    <div className="community-details">
+                                        <span className="community-name-text">r/{post.community.name}</span>
+                                        <div className="author-row">
+                                            <span className="author-username">u/{post.author.username}</span>
+                                            <span className="header-dot">•</span>
+                                            <span className="post-time-header">{formatDate(post.createdAt)}</span>
+                                        </div>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div className="community-icon">
+                                        <img 
+                                            src={`/character/${post.author.avatar || 'char'}.png`} 
+                                            alt="" 
+                                        />
+                                    </div>
+                                    <span className="community-name">u/{post.author.username}</span>
+                                    <span className="header-dot">•</span>
+                                    <span className="post-time-header">{formatDate(post.createdAt)}</span>
+                                </>
+                            )}
                         </div>
                     </div>
 

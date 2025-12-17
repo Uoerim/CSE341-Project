@@ -82,6 +82,11 @@
     height: 20px;
     border-radius: 50%;
     background: #272729;
+    overflow: hidden;
+    flex-shrink: 0;
+    object-fit: cover;
+    object-position: center top;
+    transform: scaleX(-1);
 }
 
 .profile-comment-author-name {

@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import "./mainSidePanel.css";
+import CreateCommunityModal from "../Global/CreateCommunityModal/CreateCommunityModal";
 
 function MainSidePanel({ onToggle, onPageChange, currentPage, isViewingPost }) {
     const [isPanelShifted, setIsPanelShifted] = useState(false);
+    const [showCommunityModal, setShowCommunityModal] = useState(false);
     const [isManuallyToggled, setIsManuallyToggled] = useState(false);
     const [wasAutoUnshifted, setWasAutoUnshifted] = useState(false);
 
@@ -37,6 +39,15 @@ function MainSidePanel({ onToggle, onPageChange, currentPage, isViewingPost }) {
         }
     };
 
+    const handleCreateCommunityClick = () => {
+        setShowCommunityModal(true);
+    };
+
+    const handleCommunityCreated = (community) => {
+        console.log("Community created:", community);
+        // Could add logic to navigate to the new community or refresh communities list
+    };
+
     return (
         <div 
             className={`main-side-panel ${isPanelShifted ? 'shifted' : ''}`}
@@ -66,7 +77,7 @@ function MainSidePanel({ onToggle, onPageChange, currentPage, isViewingPost }) {
                     <svg rpl="" class="rpl-rtl-icon" fill="currentColor" height="20" icon-name="all" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M10 1a9 9 0 10.001 18.001A9 9 0 0010 1zm4.9 14.26V7.04h-1.8v9.45c-.68.33-1.42.55-2.2.65V10H9.1v7.14c-.78-.1-1.52-.32-2.2-.65v-3.46H5.1v2.23C3.69 13.94 2.8 12.08 2.8 10c0-3.97 3.23-7.2 7.2-7.2s7.2 3.23 7.2 7.2c0 2.08-.89 3.95-2.3 5.26z"></path> </svg>
                     <span>All</span>
                 </button>
-                <button className="side-menu-item side-menu-create">
+                <button className="side-menu-item side-menu-create" onClick={handleCreateCommunityClick}>
                     <svg rpl="" fill="currentColor" height="20" icon-name="add" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
                         <path d="M17.1 9.1h-6.2V2.9c0-.5-.4-.9-.9-.9s-.9.4-.9.9v6.2H2.9c-.5 0-.9.4-.9.9s.4.9.9.9h6.2v6.2c0 .5.4.9.9.9s.9-.4.9-.9v-6.2h6.2c.5 0 .9-.4.9-.9s-.4-.9-.9-.9z"></path>
                     </svg>
@@ -118,6 +129,13 @@ function MainSidePanel({ onToggle, onPageChange, currentPage, isViewingPost }) {
             <div className="side-panel-footer">
                 Loopify, Inc. © 2025. All rights reserved.
             </div>
+
+            {showCommunityModal && (
+                <CreateCommunityModal
+                    onClose={() => setShowCommunityModal(false)}
+                    onCommunityCreated={handleCommunityCreated}
+                />
+            )}
         </div>
     );
 };
