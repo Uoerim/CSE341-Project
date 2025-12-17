@@ -128,6 +128,25 @@ export const getFeedPosts = async (req, res, next) => {
   }
 };
 
+// Get recent posts for sidebar
+export const getRecentPosts = async (req, res, next) => {
+  try {
+    const limit = parseInt(req.query.limit) || 5;
+    
+    const posts = await Post.find({ status: "published" })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .populate("author", "username avatar")
+      .populate("community", "name icon")
+      .select("title content createdAt upvotes downvotes comments")
+      .lean();
+
+    res.json(posts);
+  } catch (error) {
+    next(error);
+  }
+};
+
 // READ single post by ID
 export const getPostById = async (req, res, next) => {
   try {

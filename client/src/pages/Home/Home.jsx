@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./home.css";
 import Post from "../../components/Post/Post";
 import Spinner from "../../components/Global/Spinner/Spinner";
+import RecentPosts from "../../components/RecentPosts/RecentPosts";
 import axios from "axios";
 
 function Home({ onPostClick }) {
@@ -109,6 +110,7 @@ function Home({ onPostClick }) {
                 </div>
 
                 <div className="home-sidebar">
+                    <RecentPosts onPostClick={onPostClick} />
                     <div className="sidebar-footer">
                         <div className="footer-links">
                             <a href="/rules">Loopify Rules</a>

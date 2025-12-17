@@ -8,6 +8,7 @@ import {
   upvotePost,
   downvotePost,
   getFeedPosts,
+  getRecentPosts,
   summarizePost,
   getUserDrafts,
 } from "../controllers/post.controller.js";
@@ -16,6 +17,7 @@ import { protect } from "../middleware/auth.js";
 const router = express.Router();
 
 router.get("/feed", getFeedPosts);
+router.get("/recent", getRecentPosts);
 router.get("/user/drafts", protect, getUserDrafts);
 router.post("/", protect, createPost);
 router.get("/", getAllPosts);
