@@ -72,6 +72,45 @@ export const getCommunityById = async (req, res, next) => {
   }
 };
 
+// READ one community by NAME
+export const getCommunityByName = async (req, res, next) => {
+  try {
+    const community = await Community.findOne({ name: req.params.name })
+      .populate("creator", "username email avatar")
+      .populate("members", "username avatar")
+      .lean();
+
+    if (!community) {
+      throw new NotFoundError("Community not found");
+    }
+
+    res.json(community);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET posts of a community by NAME
+export const getCommunityPostsByName = async (req, res, next) => {
+  try {
+    const community = await Community.findOne({ name: req.params.name });
+    
+    if (!community) {
+      throw new NotFoundError("Community not found");
+    }
+
+    const posts = await Post.find({ community: community._id, status: "published" })
+      .populate("author", "username email avatar")
+      .populate("community", "name")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    res.json(posts);
+  } catch (error) {
+    next(error);
+  }
+};
+
 // UPDATE community (only creator)
 export const updateCommunity = async (req, res, next) => {
   try {

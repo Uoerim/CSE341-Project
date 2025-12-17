@@ -4,6 +4,8 @@ import {
   createCommunity,
   getAllCommunities,
   getCommunityById,
+  getCommunityByName,
+  getCommunityPostsByName,
   updateCommunity,
   deleteCommunity,
   joinCommunity,
@@ -16,11 +18,13 @@ const router = express.Router();
 
 router.post("/", protect, createCommunity);
 router.get("/", getAllCommunities);
+router.get("/r/:name", getCommunityByName);
+router.get("/r/:name/posts", getCommunityPostsByName);
 router.get("/:id", getCommunityById);
 router.put("/:id", protect, updateCommunity);
 router.delete("/:id", protect, deleteCommunity);
-router.post("/:id/join", protect, joinCommunity);
-router.post("/:id/leave", protect, leaveCommunity);
+router.get("/:id/join", protect, joinCommunity);
+router.get("/:id/leave", protect, leaveCommunity);
 router.get("/:id/posts", getCommunityPosts);
 
 export default router;

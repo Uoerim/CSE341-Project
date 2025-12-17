@@ -11,6 +11,7 @@ import Explore from "../Explore/Explore";
 import All from "../All/All";
 import PostDetail from "../PostDetail/PostDetail";
 import UserProfilePage from "../UserProfilePage/UserProfilePage";
+import CommunityPage from "../CommunityPage/CommunityPage";
 import { PageProvider } from "../../context/PageContext";
 
 function Main() {
@@ -20,15 +21,16 @@ function Main() {
     const [selectedPostId, setSelectedPostId] = useState(null);
     const mainContentRef = useRef(null);
 
-    // Check for username query parameter
+    // Check for username and community query parameters
     const usernameParam = searchParams.get("u");
+    const communityParam = searchParams.get("r");
 
     // Fix scroll position on route change
     useEffect(() => {
         if (mainContentRef.current) {
             mainContentRef.current.scrollTop = 0;
         }
-    }, [currentPage, usernameParam]);
+    }, [currentPage, usernameParam, communityParam]);
 
     const handlePageChange = (page) => {
         setSelectedPostId(null); // Clear selected post when changing pages
@@ -36,6 +38,11 @@ function Main() {
     };
 
     const renderPage = () => {
+        // If community parameter exists, show community page
+        if (communityParam) {
+            return <CommunityPage communityName={communityParam} embedded={true} onPostClick={setSelectedPostId} />;
+        }
+
         // If username parameter exists, show user profile
         if (usernameParam) {
             return <UserProfilePage username={usernameParam} embedded={true} onPostClick={setSelectedPostId} />;
