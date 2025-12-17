@@ -1,5 +1,7 @@
 import User from "../models/User.js";
 import Community from "../models/Community.js";
+import Post from "../models/Post.js";
+import Comment from "../models/Comment.js";
 import { BadRequestError, ForbiddenError, NotFoundError} from "../utils/httpErrors.js";
 
 
@@ -102,6 +104,136 @@ export const searchUsersAndCommunities = async (req, res, next) => {
     );
 
     res.json({ users, communities });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// PUBLIC PROFILE ENDPOINTS BY USERNAME
+const calcScore = (docs) => 
+  docs.reduce(
+    (sum, d) => sum + d.upvotes.length - d.downvotes.length, 0
+  );
+
+// GET public profule header + stats by username
+export const getUserProfileByUsername = async (req, res, next) => {
+  try {
+    const { username } = req.params;
+
+    const user = await User.findOne({ username }).select("-password");
+    if (!user) {
+      throw new NotFoundError("User not found");
+    }
+
+    const [posts, comments] = await Promise.all([
+      Post.find({ author: user._id }).select("upvotes downvotes"),
+      Comment.find({ author: user._id }).select("upvotes downvotes"),
+    ]);
+
+    const postKarma = calcScore(posts);
+    const commentKarma = calcScore(comments);
+    const totalKarma = postKarma + commentKarma;
+
+    res.json({
+      user,
+      stats: {
+        postKarma, commentKarma, totalKarma, postCount: posts.length, commentCount: comments.length,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+//GET posts for username/posts
+export const getUserPostsByUsername = async (req, res, next) => {
+  try {
+    const { username } = req.params;
+    const user = await User.findOne({ username }).select("_id");
+
+    if (!user) {
+      throw new NotFoundError("User not found");
+    }
+
+    const posts = await Post.find({
+      author: user._id,
+      status: "published",
+    })
+      .sort({ createdAt: -1 })
+      .populate("community", "name")
+      .populate("author", "username avatar")
+      .lean();
+
+    res.json(posts);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// GET comments for username/comments
+export const getUserCommentsByUsername = async (req, res, next) => {
+  try {
+    const { username } = req.params;
+    const user = await User.findOne({ username }).select("_id");
+
+    if (!user) {
+      throw new NotFoundError("User not found");
+    }
+
+    const comments = await Comment.find({ author: user._id })
+      .sort({ createdAt: -1 })
+      .populate("post", "title community")
+      .populate("author", "username avatar")
+      .lean();
+
+    res.json(comments);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// GET overview (mixed posts + comments) for username/overview
+export const getUserOverviewByUsername = async (req, res, next) => {
+  try {
+    const { username } = req.params;
+    const user = await User.findOne({ username }).select("_id");
+
+    if (!user) {
+      throw new NotFoundError("User not found");
+    }
+
+    const [posts, comments] = await Promise.all([
+      Post.find({
+        author: user._id,
+        status: "published",
+      })
+        .sort({ createdAt: -1 })
+        .populate("community", "name")
+        .populate("author", "username avatar")
+        .lean(),
+      Comment.find({ author: user._id })
+        .sort({ createdAt: -1 })
+        .populate("post", "title community")
+        .populate("author", "username avatar")
+        .lean(),
+    ]);
+
+    const items = [
+      ...posts.map((p) => ({
+        type: "post",
+        createdAt: p.createdAt,
+        data: p,
+      })),
+      ...comments.map((c) => ({
+        type: "comment",
+        createdAt: c.createdAt,
+        data: c,
+      })),
+    ].sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+
+    res.json(items);
   } catch (err) {
     next(err);
   }
