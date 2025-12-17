@@ -18,6 +18,8 @@ export default function UserProfilePage() {
   const [loading, setLoading] = useState(true);
   const [isPanelShifted, setIsPanelShifted] = useState(false);
 
+  const [showBannerModal, setShowBannerModal] = useState(false);
+
   const mainContentRef = useRef(null);
 
   // Load profile header
@@ -149,9 +151,19 @@ export default function UserProfilePage() {
             </main>
 
             {/* ================= SIDEBAR ================= */}
-            <aside className="profile-sidebar">
+              <aside className="profile-sidebar">
               <div className="reddit-side-card dark">
-                <div className="reddit-side-banner" />
+                <div
+                  className="reddit-side-banner clickable"
+                  onClick={() => setShowBannerModal(true)}
+                  style={{
+                    backgroundImage: user.banner
+                      ? `url(${user.banner})`
+                      : "linear-gradient(180deg, #003f88, #001b3a)",
+                  }}
+                >
+                  <span className="edit-banner-text">Edit banner</span>
+                </div>
                 <div className="reddit-side-body">
                   <h2 className="reddit-side-username">{user.username}</h2>
 
@@ -231,6 +243,43 @@ export default function UserProfilePage() {
                 {/* Footer */}
                 <div className="avatar-modal-footer">
                   <button onClick={() => setShowAvatarModal(false)}>Cancel</button>
+                  <button className="primary">Save</button>
+                </div>
+              </div>
+            </div>
+          )}
+        {/* ================= CHANGE BANNER ================= */}
+          {showBannerModal && (
+            <div className="modal-overlay" onClick={() => setShowBannerModal(false)}>
+              <div
+                className="banner-modal"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="avatar-modal-header">
+                  <h3>Banner image</h3>
+                  <button
+                    className="close-btn"
+                    onClick={() => setShowBannerModal(false)}
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div className="banner-modal-content">
+                  <div className="banner-dropzone">
+                    <div className="drop-inner">
+                      <div className="drop-icon">⬆</div>
+                      <div className="drop-text">Drop file or</div>
+                    </div>
+                    <div className="drop-footer">
+                      <span>Formats: JPG, PNG</span>
+                      <span>Max size: 500 KB</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="avatar-modal-footer">
+                  <button onClick={() => setShowBannerModal(false)}>Cancel</button>
                   <button className="primary">Save</button>
                 </div>
               </div>
