@@ -12,7 +12,10 @@ export const createCommunity = async (req, res, next) => {
       throw new BadRequestError("Community name is required");
     }
 
-    const existing = await Community.findOne({ name });
+    // Check for duplicate community name (case-insensitive)
+    const existing = await Community.findOne({ 
+      name: { $regex: new RegExp(`^${name}$`, 'i') }
+    });
     if (existing) {
       throw new BadRequestError("Community already exists");
     }
