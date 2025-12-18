@@ -7,6 +7,7 @@ function MainSidePanel({ onToggle, onPageChange, currentPage, isViewingPost }) {
     const [showCommunityModal, setShowCommunityModal] = useState(false);
     const [isManuallyToggled, setIsManuallyToggled] = useState(false);
     const [wasAutoUnshifted, setWasAutoUnshifted] = useState(false);
+    const [isGamesExpanded, setIsGamesExpanded] = useState(false);
 
     const handleExpandClick = () => {
         console.log("Expand button clicked");
@@ -49,17 +50,24 @@ function MainSidePanel({ onToggle, onPageChange, currentPage, isViewingPost }) {
     };
 
     return (
-        <div 
-            className={`main-side-panel ${isPanelShifted ? 'shifted' : ''}`}
-            style={{ transform: isPanelShifted ? "translateX(-236px)" : "translateX(0)", transition: "transform 0.3s ease" }}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-        >
-            <button className="main-exp-btn" onClick={handleExpandClick}>
+        <>
+            <button 
+                className="main-exp-btn" 
+                onClick={handleExpandClick}
+                style={{ 
+                    transform: isPanelShifted ? "translateX(-236px)" : "translateX(0)", 
+                    transition: "transform 0.3s ease" 
+                }}
+            >
                 <svg rpl="" fill="currentColor" height="16" icon-name="menu" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
                     <path d="M17.1 4.801H2.9a.9.9 0 010-1.8h14.199a.9.9 0 01.001 1.8zM18 10a.9.9 0 00-.9-.9H2.9a.9.9 0 000 1.8h14.199A.9.9 0 0018 10zm0 6.1a.9.9 0 00-.9-.9H2.9a.9.9 0 000 1.8h14.199a.9.9 0 00.901-.9z"></path>
                 </svg>
             </button>
+            <div 
+                className={`main-side-panel ${isPanelShifted ? 'shifted' : ''}`}
+                style={{ transform: isPanelShifted ? "translateX(-236px)" : "translateX(0)", transition: "transform 0.3s ease" }}
+            >
+            <div className="side-panel-scrollable" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
             <div className="side-menu">
                 <button className={`side-menu-item ${currentPage === "home" && !isViewingPost ? "active" : ""}`} onClick={() => onPageChange("home")}>
                     <svg rpl="" fill="currentColor" height="20" icon-name="home" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"> <path d="M17.877 8.525a1.584 1.584 0 00-.35-.52l-6.395-6.352a1.602 1.602 0 00-1.13-.467h-.003a1.6 1.6 0 00-1.13.467L2.473 8.005A1.604 1.604 0 002 9.14v6.374a3.3 3.3 0 003.3 3.3h9.4a3.3 3.3 0 003.3-3.3V9.14c0-.211-.042-.42-.123-.615zM16.2 15.514c0 .827-.673 1.5-1.5 1.5H11v-5.575H9v5.575H5.3c-.827 0-1.5-.673-1.5-1.5v-6.29L10 3.066l6.2 6.158v6.29z"></path></svg>
@@ -86,12 +94,45 @@ function MainSidePanel({ onToggle, onPageChange, currentPage, isViewingPost }) {
             </div>
             <div className="side-sections">
                 <div className="side-section">
-                    <div className="side-section-title">
+                    <div className="side-section-title" onClick={() => setIsGamesExpanded(!isGamesExpanded)}>
                         <span>GAMES ON REDDIT</span>
-                        <svg rpl="" className="text-secondary-weak" fill="currentColor" height="20" icon-name="caret-down-outline" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
+                        <svg rpl="" className="text-secondary-weak" fill="currentColor" height="20" icon-name="caret-down-outline" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg" style={{ transform: isGamesExpanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
                             <path d="M10 13.7a.897.897 0 01-.636-.264l-4.6-4.6a.9.9 0 111.272-1.273L10 11.526l3.964-3.963a.9.9 0 011.272 1.273l-4.6 4.6A.897.897 0 0110 13.7z"></path>
                         </svg>
                     </div>
+                    {isGamesExpanded && (
+                        <div className="side-section-items">
+                            <a href="#" className="side-section-item featured-game">
+                                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="32" height="32" rx="8" fill="#FFC107"/>
+                                    <path d="M16 10L18 14L22 15L19 18L19.5 22L16 20L12.5 22L13 18L10 15L14 14L16 10Z" fill="#0E1113"/>
+                                </svg>
+                                <div className="featured-game-info">
+                                    <span className="featured-game-title">Pocket Grids</span>
+                                    <span className="featured-game-subtitle">Mini crosswords</span>
+                                    <span className="featured-game-players">1.8M monthly players</span>
+                                </div>
+                            </a>
+                            <a href="#" className="side-section-item">
+                                <img src="https://styles.redditmedia.com/t5_2qh1i/styles/communityIcon_szox7jt5e1h11.png" width="32" height="32" style={{ borderRadius: '50%' }} alt="" />
+                                <span>Farm Merge Valley</span>
+                            </a>
+                            <a href="#" className="side-section-item">
+                                <img src="https://styles.redditmedia.com/t5_6jgs46/styles/communityIcon_1ujvvtb0jf891.png" width="32" height="32" style={{ borderRadius: '50%' }} alt="" />
+                                <span>Quiz Planet</span>
+                            </a>
+                            <a href="#" className="side-section-item">
+                                <img src="https://styles.redditmedia.com/t5_2qh33/styles/communityIcon_9zl0o2x5k9t11.png" width="32" height="32" style={{ borderRadius: '50%' }} alt="" />
+                                <span>Sword & Supper</span>
+                            </a>
+                            <a href="#" className="side-section-item discover-more">
+                                <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M16 4C9.4 4 4 9.4 4 16s5.4 12 12 12 12-5.4 12-12S22.6 4 16 4zm0 22c-5.5 0-10-4.5-10-10S10.5 6 16 6s10 4.5 10 10-4.5 10-10 10zm5-11h-4V11c0-.6-.4-1-1-1s-1 .4-1 1v4h-4c-.6 0-1 .4-1 1s.4 1 1 1h4v4c0 .6.4 1 1 1s1-.4 1-1v-4h4c.6 0 1-.4 1-1s-.4-1-1-1z"/>
+                                </svg>
+                                <span>Discover More Games</span>
+                            </a>
+                        </div>
+                    )}
                 </div>
                 <div className="side-section">
                     <div className="side-section-title">
@@ -126,8 +167,10 @@ function MainSidePanel({ onToggle, onPageChange, currentPage, isViewingPost }) {
                     </div>
                 </div>
             </div>
+            </div>
             <div className="side-panel-footer">
                 Loopify, Inc. © 2025. All rights reserved.
+            </div>
             </div>
 
             {showCommunityModal && (
@@ -136,7 +179,7 @@ function MainSidePanel({ onToggle, onPageChange, currentPage, isViewingPost }) {
                     onCommunityCreated={handleCommunityCreated}
                 />
             )}
-        </div>
+        </>
     );
 };
 
