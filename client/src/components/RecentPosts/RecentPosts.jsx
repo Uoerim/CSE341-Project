@@ -75,10 +75,10 @@ function RecentPosts({ onPostClick }) {
                     return (
                         <div 
                             key={post._id} 
-                            className="recent-post-item"
+                            className="recent-post-content"
                             onClick={() => onPostClick(post._id)}
                         >
-                            <div className="recent-post-content">
+                            <div className="recent-post-info">
                                 <div className="recent-post-header">
                                     <div className="recent-post-community">
                                         {post.community ? (
@@ -109,15 +109,15 @@ function RecentPosts({ onPostClick }) {
                                     </div>
                                 </div>
                                 <h4 className="recent-post-title">{post.title}</h4>
-                                <div className="recent-post-stats">
-                                    <span className="recent-post-stat">
-                                        {voteCount} upvote{voteCount !== 1 ? 's' : ''}
-                                    </span>
-                                    <span className="recent-post-dot">•</span>
-                                    <span className="recent-post-stat">
-                                        {commentCount} comment{commentCount !== 1 ? 's' : ''}
-                                    </span>
-                                </div>
+                            <div className="recent-post-stats">
+                                <span className="recent-post-stat">
+                                    {voteCount} upvote{voteCount !== 1 ? 's' : ''}
+                                </span>
+                                <span className="recent-post-dot">•</span>
+                                <span className="recent-post-stat">
+                                    {commentCount} comment{commentCount !== 1 ? 's' : ''}
+                                </span>
+                            </div>
                             </div>
                             {thumbnail && (
                                 <div className="recent-post-thumbnail">
