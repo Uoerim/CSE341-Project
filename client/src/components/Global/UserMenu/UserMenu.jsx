@@ -57,7 +57,7 @@ function UserMenu() {
 
     useEffect(() => {
         function handleClickOutside(event) {
-            if (menuRef.current && !menuRef.current.contains(event.target) && 
+            if (menuRef.current && !menuRef.current.contains(event.target) &&
                 triggerRef.current && !triggerRef.current.contains(event.target)) {
                 setIsOpen(false);
             }
@@ -205,7 +205,7 @@ function UserMenu() {
             </button>
 
             {isOpen && (
-                <div 
+                <div
                     className="user-menu-dropdown"
                     style={{
                         top: `${menuPosition.top}px`,
@@ -223,6 +223,7 @@ function UserMenu() {
                                     key={item.id}
                                     className="menu-item menu-profile"
                                     onClick={() => {
+                                        console.log("Profile clicked");
                                         setIsOpen(false);
                                         onPageChange("profile");
                                     }}
@@ -241,8 +242,8 @@ function UserMenu() {
 
                         if (item.type === "toggle") {
                             return (
-                                <div 
-                                    key={item.id} 
+                                <div
+                                    key={item.id}
                                     className="menu-item menu-toggle"
                                     onClick={handleDarkModeToggle}
                                 >
@@ -258,12 +259,27 @@ function UserMenu() {
                         }
 
                         return (
-                            <div 
-                                key={item.id} 
+                            <div
+                                key={item.id}
                                 className="menu-item"
-                                onClick={item.icon === "logout" ? handleLogout : undefined}
-                                style={item.icon === "logout" ? { cursor: "pointer" } : {}}
+                                onClick={
+                                    item.icon === "logout"
+                                        ? handleLogout
+                                        : item.icon === "drafts"
+                                            ? () => {
+                                                console.log("Drafts clicked");
+                                                setIsOpen(false);
+                                                onPageChange("drafts");
+                                            }
+                                            : undefined
+                                }
+                                style={
+                                    item.icon === "logout" || item.icon === "drafts"
+                                        ? { cursor: "pointer" }
+                                        : {}
+                                }
                             >
+
                                 <div className="menu-icon">{getIcon(item.icon)}</div>
                                 <div className="menu-text">
                                     <span className="menu-label">{item.label}</span>
