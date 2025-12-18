@@ -31,9 +31,6 @@
 .home-sidebar {
     width: 312px;
     flex-shrink: 0;
-    position: fixed;
-    right: 60px;
-    bottom: 24px;
     display: flex;
     flex-direction: column;
     gap: 16px;
