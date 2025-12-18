@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import bcrypt from "bcryptjs";
 import Post from "../models/Post.js";
 import User from "../models/User.js";
 import Community from "../models/Community.js";
@@ -172,12 +173,44 @@ const communities = [
   "career", "productivity", "coffee", "gaming", "books", "fitness"
 ];
 
+const dummyUsernames = [
+  "codewizard", "techguru", "devninja", "pixelpusher", "bytebender",
+  "scriptkitty", "debugduck", "asyncawait", "reactqueen", "nodemaster",
+  "pythonista", "jsgeek", "fullstacker", "codeartist", "hackerman",
+  "syntaxsage", "looplegend", "gitgod", "terminalking", "shellshock"
+];
+
 const seedData = async () => {
   try {
     await connectDB();
 
-    // Get existing users and communities
-    const users = await User.find().limit(10);
+    // Get existing users
+    let users = await User.find().limit(10);
+    
+    // Create dummy users if we don't have enough
+    if (users.length < 10) {
+      console.log(`Only ${users.length} users found. Creating dummy users...`);
+      
+      const usersToCreate = [];
+      for (let i = users.length; i < Math.min(20, dummyUsernames.length); i++) {
+        const hashedPassword = await bcrypt.hash("dummypass123", 10);
+        usersToCreate.push({
+          username: dummyUsernames[i],
+          email: `${dummyUsernames[i]}@example.com`,
+          password: hashedPassword,
+          gender: i % 3 === 0 ? "female" : i % 3 === 1 ? "male" : "prefer not to say",
+          bio: "Just a dummy account for testing",
+        });
+      }
+      
+      const createdUsers = await User.insertMany(usersToCreate);
+      console.log(`Created ${createdUsers.length} dummy users`);
+      
+      // Fetch all users again
+      users = await User.find().limit(20);
+    }
+    
+    // Get communities
     const existingCommunities = await Community.find();
 
     if (users.length === 0) {
