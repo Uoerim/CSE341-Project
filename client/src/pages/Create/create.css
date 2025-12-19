@@ -79,7 +79,9 @@
     max-width: 500px;
     width: 90%;
     max-height: 70vh;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* contain header and list; list will scroll */
     position: relative;
 }
 
@@ -125,6 +127,29 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
+    overflow-y: auto;     /* enables scrolling */
+    max-height: 305px;    /* scroll starts once content > 305px */
+    padding-right: 6px;   /* keep if you like */
+}
+/* Chrome / Edge / Safari */
+.drafts-list::-webkit-scrollbar {
+    width: 8px;                 /* keep visible */
+}
+
+.drafts-list::-webkit-scrollbar-track {
+    background: #1a1a1b;        /* same as .drafts-content background */
+}
+
+.drafts-list::-webkit-scrollbar-thumb {
+    background-color: #555;     /* scrollbar color */
+    border-radius: 4px;
+    border: 2px solid #1a1a1b;  /* removes white edge look */
+}
+
+/* Firefox */
+.drafts-list {
+    scrollbar-width: thin;
+    scrollbar-color: #555 #1a1a1b;  /* thumb track */
 }
 
 .draft-item {
