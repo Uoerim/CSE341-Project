@@ -1,3 +1,29 @@
+.search-section {
+    margin-bottom: 18px;
+}
+.search-section-header {
+    font-size: 13px;
+    font-weight: 700;
+    color: #ff4500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0 0 8px 8px;
+}
+.search-dropdown-loading, .search-dropdown-error, .search-dropdown-empty {
+    color: #d7dadc;
+    padding: 18px 20px;
+    text-align: center;
+    font-size: 15px;
+}
+.search-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 8px;
+    border: 2px solid #514b82;
+    background: #232323;
+}
 .search-box-container {
     position: relative;
     width: 100%;
