@@ -14,6 +14,7 @@ function Create({ onNavigateHome }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [userData, setUserData] = useState(null);
+    const [titleTouched, setTitleTouched] = useState(false);
 
     useEffect(() => {
         fetchUserData();
@@ -242,7 +243,7 @@ function Create({ onNavigateHome }) {
                 <div className="text-editor">
                     <div className="title-input-wrapper">
                         <div className="label-container interior-label">
-                            <span className="input-boundary-box">
+                            <span className={`input-boundary-box ${titleTouched && title.length === 0 ? 'error' : ''}`}>
                                 <span className={`input-container ${title ? 'activated' : ''}`}>
                                     <span className="label-text inner-label" id="fp-input-label">
                                         <span>Title</span>
@@ -257,14 +258,20 @@ function Create({ onNavigateHome }) {
                                             maxLength="300"
                                             required
                                             value={title}
-                                            onChange={(e) => setTitle(e.target.value.substring(0, 300))}
+                                            onChange={(e) => {
+                                                const newValue = e.target.value.substring(0, 300);
+                                                setTitle(newValue);
+                                                if (newValue.length > 0) {
+                                                    setTitleTouched(true);
+                                                }
+                                            }}
                                             style={{ height: '20px' }}
                                         />
                                     </div>
                                 </span>
                                 <span id="trailing-icons-container">
                                     <span id="trailing-icons-validation">
-                                        {title && title.length === 0 ? (
+                                        {titleTouched && title.length === 0 ? (
                                             <svg rpl="" className="trailing-icon invalid" fill="currentColor" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M11.21 13.5a1.21 1.21 0 11-2.42 0 1.21 1.21 0 012.42 0zM19 10c0-4.963-4.038-9-9-9s-9 4.037-9 9 4.038 9 9 9 9-4.037 9-9zm-1.801 0c0 3.97-3.229 7.2-7.199 7.2-3.97 0-7.199-3.23-7.199-7.2S6.03 2.8 10 2.8c3.97 0 7.199 3.23 7.199 7.2zm-6.441 1.24l.242-6H9l.242 6h1.516z"></path>
                                             </svg>
@@ -277,7 +284,17 @@ function Create({ onNavigateHome }) {
                                 </span>
                             </span>
                         </div>
-                        <div className="title-counter">{title.length}/300</div>
+                        <div className="title-counter-wrapper">
+                            {titleTouched && title.length === 0 && (
+                                <span className="title-error-message">
+                                    <svg rpl="" className="mr-2xs text-danger-content" fill="currentColor" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11.21 13.5a1.21 1.21 0 11-2.42 0 1.21 1.21 0 012.42 0zM19 10c0-4.963-4.038-9-9-9s-9 4.037-9 9 4.038 9 9 9 9-4.037 9-9zm-1.801 0c0 3.97-3.229 7.2-7.199 7.2-3.97 0-7.199-3.23-7.199-7.2S6.03 2.8 10 2.8c3.97 0 7.199 3.23 7.199 7.2zm-6.441 1.24l.242-6H9l.242 6h1.516z"></path>
+                                    </svg>
+                                    <span>Please fill in this field</span>
+                                </span>
+                            )}
+                            <div className="title-counter">{title.length}/300</div>
+                        </div>
                     </div>
 
                     <RichTextEditor 

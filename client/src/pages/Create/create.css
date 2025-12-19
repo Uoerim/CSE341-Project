@@ -415,10 +415,42 @@
     color: #818384;
 }
 
+.title-counter-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    position: relative;
+    min-height: 20px;
+}
+
 .title-counter {
     text-align: right;
     font-size: 12px;
     color: #818384;
+    margin-left: auto;
+}
+
+.title-error-message {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #FF4F40;
+    position: absolute;
+    left: 0;
+}
+
+.title-error-message svg {
+    flex-shrink: 0;
+}
+
+.title-error-message .mr-2xs {
+    margin-right: 4px;
+}
+
+.title-error-message .text-danger-content {
+    color: #FF4F40;
 }
 
 .add-tags {
@@ -512,6 +544,20 @@
 
 .input-boundary-box:focus-within {
     border-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.input-boundary-box.error {
+    border-color: #FF4F40;
+}
+
+.input-boundary-box.error:hover {
+    border-color: #FF4F40;
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.input-boundary-box.error:focus-within {
+    border-color: #FF4F40;
     background-color: rgba(255, 255, 255, 0.04);
 }
 
