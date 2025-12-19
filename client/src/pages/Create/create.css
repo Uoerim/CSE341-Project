@@ -1,3 +1,16 @@
+.icon-edit svg {
+    width: 16px;
+    height: 16px;
+    fill: white;
+}
+
+.icon-delete svg {
+    width: 16px;
+    height: 16px;
+    fill: white;
+}
+
+
 .create-container {
     padding: 0px 40px 60px 40px;
     color: #d7dadc;
@@ -115,15 +128,13 @@
 }
 
 .draft-item {
-    background-color: #272729;
-    border: 1px solid #343536;
-    border-radius: 6px;
-    padding: 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* text left, icons right */
+  width: 97%;
+  padding-right: 10px;
+  padding-top: 9px;
+  padding-left: 5px;
 }
 
 .draft-item:hover {
@@ -131,21 +142,36 @@
 }
 
 .draft-info {
-    flex: 1;
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
 }
 
 .draft-info h3 {
-    margin: 0 0 8px 0;
+    margin: 0;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
     color: #d7dadc;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .draft-info p {
-    margin: 0 0 6px 0;
+    margin: 0;
     font-size: 12px;
     color: #818384;
     line-height: 1.4;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .draft-info small {
@@ -154,20 +180,91 @@
 }
 
 .load-draft-btn {
-    background-color: #0ad4a5;
+    background: none;
     border: none;
-    color: #ffffff;
-    padding: 8px 16px;
-    border-radius: 20px;
+    color: #d7dadc;
+    padding: 0 8px;
+    border-radius: 6px;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
     white-space: nowrap;
-    transition: background-color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
 }
 
 .load-draft-btn:hover {
-    background-color: #08c597;
+    background-color: #333D42;
+    color: #fff;
+/* Utility classes for draft item */
+.line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+.text-14 {
+    font-size: 14px;
+    line-height: 1.2;
+}
+.text-12 {
+    font-size: 12px;
+    line-height: 1.2;
+}
+.text-secondary-weak {
+    color: #818384;
+}
+.inline-block {
+    display: inline-block;
+}
+.mx-xs {
+    margin-left: 4px;
+    margin-right: 4px;
+}
+.mr-auto {
+    margin-right: auto;
+}
+.pr-md {
+    padding-right: 16px;
+}
+.w-calc {
+    width: calc(100% - 84px);
+}
+.draft-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 8px;
+}
+.mr-auto.pr-md.w-calc {
+  flex: 1;              /* take all remaining space */
+  min-width: 0;         /* allow text to shrink/ellipsis */
+}
+.items-center {
+    align-items: center;
+}
+.justify-center {
+    justify-content: center;
+}
+.button-small {
+    font-size: 13px;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+.button-plain {
+    background: none;
+    border: none;
+    color: #d7dadc;
+}
+.icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
 }
 
 .create-body {
@@ -1062,7 +1159,7 @@
     font-size: 20px;
     font-weight: 600;
     color: #fff;
-    margin-bottom: 0;
+    margin-bottom: 5px;
     margin-top: 0;
  
 
@@ -1086,9 +1183,48 @@
 }
 
 .ml-2xs {
-    margin-left: 4px;
+    margin-left: 8px;
 }
 
 .ml-sm {
-    margin-left: 12px;
+    margin-left: 5px;
+}
+
+/* Draft description styling: smaller, muted, single-line with separator spacing */
+.draft-item [data-testid="desc"] {
+    font-size: 12px;
+    color: #8b9296; /* slightly lighter muted color */
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.draft-item [data-testid="desc"] .inline-block,
+.draft-item [data-testid="desc"] .mx-xs {
+    margin-left: 6px;
+    margin-right: 6px;
+}
+.draft-item [data-testid="desc"] strong {
+    color: #d7dadc;
+    font-weight: 600;
+    margin-left: 4px;
+}
+
+/* Ensure only the draft edit/delete buttons have no background or border */
+.draft-item button[data-testid="edit-button"],
+.draft-item button[data-testid="delete-button"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 2px 6px !important;
+}
+.draft-item button[data-testid="edit-button"]:hover,
+.draft-item button[data-testid="delete-button"]:hover,
+.draft-item button[data-testid="edit-button"]:focus,
+.draft-item button[data-testid="delete-button"]:focus {
+    background: transparent !important;
+    background-color: transparent !important;
 }

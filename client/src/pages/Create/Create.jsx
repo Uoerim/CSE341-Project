@@ -118,6 +118,38 @@ function Create({ onNavigateHome }) {
         setShowDrafts(false);
     };
 
+    const timeAgo = (ts) => {
+        if (!ts) return '';
+        const then = new Date(ts);
+        const diff = Math.floor((Date.now() - then.getTime()) / 1000);
+        if (diff < 60) return `${diff} sec. ago`;
+        if (diff < 3600) return `${Math.floor(diff/60)} min. ago`;
+        if (diff < 86400) return `${Math.floor(diff/3600)} hr. ago`;
+        return `${Math.floor(diff/86400)} d. ago`;
+    };
+
+    const handleEditDraft = (draft) => {
+        // reuse load behavior for editing
+        handleLoadDraft(draft);
+    };
+
+    const handleDeleteDraft = async (draft) => {
+        const confirmed = window.confirm('Delete this draft?');
+        if (!confirmed) return;
+        try {
+            // optimistic removal
+            setDrafts(prev => prev.filter(d => d._id !== draft._id));
+            // try server delete if endpoint exists
+            const token = localStorage.getItem('authToken');
+            await fetch(`http://localhost:5000/api/posts/${draft._id}`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}` },
+            });
+        } catch (err) {
+            console.error('Failed to delete draft', err);
+        }
+    };
+
     const handleSaveDraft = async () => {
         try {
             if (!title.trim()) {
@@ -250,19 +282,31 @@ function Create({ onNavigateHome }) {
                             <div className="drafts-list">
                                 {drafts.map((draft) => (
                                     <div key={draft._id} className="draft-item">
-                                        <div className="draft-info">
-                                            <h3>{draft.title}</h3>
-                                            <p>{draft.content?.substring(0, 100)}...</p>
-                                            <small>
-                                                {draft.community?.name && `in ${draft.community.name}`}
-                                            </small>
+                                        <div className="mr-auto pr-md w-calc">
+                                            <div className="line-clamp-1 text-14" data-testid="title">{draft.title}</div>
+                                            <div className="text-12 text-secondary-weak line-clamp-1" data-testid="desc">
+                                                {draft.community?.name && `r/${draft.community.name}`}
+                                                <span className="inline-block mx-xs">·</span>
+                                                Edited
+                                                <strong className="mx-xs">{draft.updatedAt ? timeAgo(draft.updatedAt) : ''}</strong>
+                                            </div>
                                         </div>
-                                        <button 
-                                            className="load-draft-btn"
-                                            onClick={() => handleLoadDraft(draft)}
-                                        >
-                                            Load
-                                        </button>
+                                        <div className="draft-actions">
+                                            <button className="mr-2xs last:mr-0 button-small button-plain icon items-center justify-center" data-testid="edit-button" onClick={() => handleEditDraft(draft)} title="Edit">
+                                                <span className="icon-edit">
+                                                    <svg rpl="" fill="currentColor" height="16" icon-name="edit" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M14.016 3.8c.583 0 1.132.227 1.545.64.413.413.64.961.64 1.545a2.17 2.17 0 01-.64 1.545l-8.67 8.67-3.079-.01-.01-3.079 8.669-8.671c.413-.413.962-.64 1.545-.64zm0-1.8a3.97 3.97 0 00-2.817 1.167l-8.948 8.947a.858.858 0 00-.251.609l.014 4.408a.858.858 0 00.855.855L7.277 18h.003c.227 0 .446-.09.606-.251l8.947-8.947A3.985 3.985 0 0014.016 2z"></path>
+                                                    </svg>
+                                                </span>
+                                            </button>
+                                            <button className="mr-2xs last:mr-0 button-small button-plain icon items-center justify-center" data-testid="delete-button" onClick={() => handleDeleteDraft(draft)} title="Delete">
+                                                <span className="icon-delete">
+                                                    <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M15.2 15.7c0 .83-.67 1.5-1.5 1.5H6.3c-.83 0-1.5-.67-1.5-1.5V7.6H3v8.1C3 17.52 4.48 19 6.3 19h7.4c1.82 0 3.3-1.48 3.3-3.3V7.6h-1.8v8.1zM17.5 5.8c.5 0 .9-.4.9-.9S18 4 17.5 4h-3.63c-.15-1.68-1.55-3-3.27-3H9.4C7.68 1 6.28 2.32 6.13 4H2.5c-.5 0-.9.4-.9.9s.4.9.9.9h15zM7.93 4c.14-.68.75-1.2 1.47-1.2h1.2c.72 0 1.33.52 1.47 1.2H7.93z"></path>
+                                                    </svg>
+                                                </span>
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
