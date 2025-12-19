@@ -111,6 +111,20 @@ function Post({ post, onPostClick }) {
         // Share logic here
     };
 
+    const handleCommunityClick = (e) => {
+        e.stopPropagation();
+        if (post.community?.name) {
+            window.location.href = `/app?r=${post.community.name}`;
+        }
+    };
+
+    const handleUsernameClick = (e) => {
+        e.stopPropagation();
+        if (post.author?.username) {
+            window.location.href = `/app?u=${post.author.username}`;
+        }
+    };
+
     return (
         <div className="post-card" onClick={() => onPostClick(post._id)}>
             {/* Header Row */}
@@ -124,9 +138,9 @@ function Post({ post, onPostClick }) {
                                 </div>
                             </div>
                             <div className="post-community-details">
-                                <span className="post-community-name">r/{post.community.name}</span>
+                                <span className="post-community-name" onClick={handleCommunityClick}>r/{post.community.name}</span>
                                 <div className="post-author-row">
-                                    <span className="post-author">u/{post.author?.username || "user"}</span>
+                                    <span className="post-author" onClick={handleUsernameClick}>u/{post.author?.username || "user"}</span>
                                     <span className="post-header-dot">•</span>
                                     <span className="post-timestamp">{formatDate(post.createdAt)}</span>
                                 </div>
@@ -140,7 +154,7 @@ function Post({ post, onPostClick }) {
                                     alt={post.author?.username} 
                                 />
                             </div>
-                            <span className="post-subreddit">
+                            <span className="post-subreddit" onClick={handleUsernameClick}>
                                 u/{post.author?.username || "user"}
                             </span>
                             <span className="post-header-dot">•</span>

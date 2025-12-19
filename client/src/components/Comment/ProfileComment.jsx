@@ -79,6 +79,13 @@ function ProfileComment({ comment }) {
         }
     };
 
+    const handleCommunityClick = (e) => {
+        e.stopPropagation();
+        if (comment.post?.community?.name) {
+            window.location.href = `/app?r=${comment.post.community.name}`;
+        }
+    };
+
     return (
         <div className="profile-comment-card">
             {/* Header Row */}
@@ -99,7 +106,7 @@ function ProfileComment({ comment }) {
                                     </svg>
                                 </div>
                             )}
-                            <span className="profile-comment-subreddit">
+                            <span className="profile-comment-subreddit" onClick={handleCommunityClick}>
                                 r/{comment.post.community.name}
                             </span>
                             <span className="profile-comment-dot">•</span>

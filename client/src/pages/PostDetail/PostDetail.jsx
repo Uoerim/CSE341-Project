@@ -259,6 +259,20 @@ function PostDetail({ postId, onClose }) {
         return postVotes.upvotes - postVotes.downvotes;
     };
 
+    const handleCommunityClick = (e) => {
+        e.stopPropagation();
+        if (post?.community?.name) {
+            window.location.href = `/app?r=${post.community.name}`;
+        }
+    };
+
+    const handleUsernameClick = (e) => {
+        e.stopPropagation();
+        if (post?.author?.username) {
+            window.location.href = `/app?u=${post.author.username}`;
+        }
+    };
+
     const getCommentVoteCount = (commentId) => {
         const votes = commentVotes[commentId];
         if (!votes) return 0;
@@ -407,9 +421,9 @@ function PostDetail({ postId, onClose }) {
                                         </div>
                                     </div>
                                     <div className="community-details">
-                                        <span className="community-name-text">r/{post.community.name}</span>
+                                        <span className="community-name-text" onClick={handleCommunityClick}>r/{post.community.name}</span>
                                         <div className="author-row">
-                                            <span className="author-username">u/{post.author.username}</span>
+                                            <span className="author-username" onClick={handleUsernameClick}>u/{post.author.username}</span>
                                             <span className="header-dot">•</span>
                                             <span className="post-time-header">{formatDate(post.createdAt)}</span>
                                         </div>
@@ -423,7 +437,7 @@ function PostDetail({ postId, onClose }) {
                                             alt="" 
                                         />
                                     </div>
-                                    <span className="community-name">u/{post.author.username}</span>
+                                    <span className="community-name" onClick={handleUsernameClick}>u/{post.author.username}</span>
                                     <span className="header-dot">•</span>
                                     <span className="post-time-header">{formatDate(post.createdAt)}</span>
                                 </>
