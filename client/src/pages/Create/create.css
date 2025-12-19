@@ -482,48 +482,120 @@
     opacity: 0.5;
     cursor: not-allowed;
 }
-/* Title input styling to match RichTextEditor */
+/* Reddit-style Title input */
 .title-input-wrapper {
     margin-bottom: 20px;
 }
 
-.title-input-wrapper .textbox-wrapper {
-    border: 1px solid #343536;
-    border-radius: 12px;
+.label-container {
+    display: block;
+    position: relative;
+}
+
+.input-boundary-box {
+    display: flex;
+    align-items: center;
+    position: relative;
     background-color: transparent;
-    padding: 0;
+    border: 2px solid #343536;
+    border-radius: 18px;
+    padding: 8px 16px;
+    height: 57.6px;
+    box-sizing: border-box;
     transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
-.title-input-wrapper .textbox-wrapper:hover {
+.input-boundary-box:hover {
     background-color: rgba(255, 255, 255, 0.02);
     border-color: #818384;
 }
 
-.title-input-wrapper .textbox-wrapper:focus-within {
-    border-color: #818384;
+.input-boundary-box:focus-within {
+    border-color: #ffffff;
     background-color: rgba(255, 255, 255, 0.04);
 }
 
-.title-input-wrapper .global-textbox {
+.input-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    position: relative;
+}
+
+.label-text {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    color: #818384;
+    font-size: 16px;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.input-container.activated .label-text,
+.input-container:focus-within .label-text {
+    top: 0;
+    left: 0;
+    margin-top: 4px;
+    transform: translateY(0);
+    font-size: 12px;
+    color: #999;
+}
+
+.required-asterisk {
+    color: #f31d05;
+}
+
+.text-area-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 18px;
+}
+
+.text-area-wrapper textarea {
+    width: 100%;
+    min-height: var(--textarea-minheight, 20px);
+    padding: 0;
     background-color: transparent;
     border: none;
-    border-radius: 12px;
     color: #d7dadc;
     font-size: 16px;
-    transition: all 0.3s ease;
+    font-family: inherit;
+    resize: none;
+    outline: none;
+    overflow: hidden;
 }
 
-.title-input-wrapper .global-textbox:hover {
-    background-color: transparent;
+.text-area-wrapper textarea::placeholder {
+    color: transparent;
 }
 
-.title-input-wrapper .global-textbox:focus {
-    background-color: transparent;
-    border: none;
+#trailing-icons-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 12px;
 }
 
-.title-input-wrapper .global-textbox.error {
-    background-color: transparent;
-    border-bottom: 2px solid #f44336;
+#trailing-icons-validation {
+    display: flex;
+    align-items: center;
+}
+
+.trailing-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.trailing-icon.invalid {
+    color: #f44336;
+}
+
+.trailing-icon.valid {
+    color: #4CAF50;
 }
