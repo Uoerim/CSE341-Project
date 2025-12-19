@@ -559,3 +559,83 @@ export const getUserDrafts = async (req, res, next) => {
   }
 };
 
+// SAVE post (toggle)
+export const savePost = async (req, res, next) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      throw new NotFoundError("Post not found");
+    }
+
+    const User = (await import("../models/User.js")).default;
+    const user = await User.findById(req.user._id);
+    
+    if (!user) {
+      throw new NotFoundError("User not found");
+    }
+
+    const postId = post._id.toString();
+    const savedIndex = user.savedPosts.findIndex(id => id.toString() === postId);
+
+    if (savedIndex > -1) {
+      // Unsave - remove from array
+      user.savedPosts.splice(savedIndex, 1);
+      await user.save();
+      return res.json({
+        message: "Post unsaved",
+        saved: false,
+      });
+    } else {
+      // Save - add to array
+      user.savedPosts.push(post._id);
+      await user.save();
+      return res.json({
+        message: "Post saved",
+        saved: true,
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// HIDE post (toggle)
+export const hidePost = async (req, res, next) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      throw new NotFoundError("Post not found");
+    }
+
+    const User = (await import("../models/User.js")).default;
+    const user = await User.findById(req.user._id);
+    
+    if (!user) {
+      throw new NotFoundError("User not found");
+    }
+
+    const postId = post._id.toString();
+    const hiddenIndex = user.hiddenPosts.findIndex(id => id.toString() === postId);
+
+    if (hiddenIndex > -1) {
+      // Unhide - remove from array
+      user.hiddenPosts.splice(hiddenIndex, 1);
+      await user.save();
+      return res.json({
+        message: "Post unhidden",
+        hidden: false,
+      });
+    } else {
+      // Hide - add to array
+      user.hiddenPosts.push(post._id);
+      await user.save();
+      return res.json({
+        message: "Post hidden",
+        hidden: true,
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
