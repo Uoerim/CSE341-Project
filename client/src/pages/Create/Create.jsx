@@ -217,12 +217,35 @@ function Create({ onNavigateHome }) {
             {showDrafts && (
                 <div className="drafts-modal">
                     <div className="drafts-content">
-                        <h2>Your Drafts</h2>
-                        <button className="close-drafts" onClick={() => setShowDrafts(false)}>
-                            ✕
-                        </button>
+                        <div className="drafts-modal-header ml-sm" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <span>
+                                Drafts
+                                <span className="text-14 font-normal text-neutral-content ml-2xs">{drafts.length}/20</span>
+                            </span>
+                            <button
+                                className="button-small button-secondary icon items-center justify-center button inline-flex close-drafts mr-sm"
+                                data-testid="close-button"
+                                type="button"
+                                aria-label="Close drafts modal"
+                                onClick={() => setShowDrafts(false)}
+                            >
+                                <span className="flex items-center justify-center">
+                                    <span className="flex">
+                                        <svg fill="currentColor" height="16" icon-name="close" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M11.273 10l5.363-5.363a.9.9 0 10-1.273-1.273L10 8.727 4.637 3.364a.9.9 0 10-1.273 1.273L8.727 10l-5.363 5.363a.9.9 0 101.274 1.273L10 11.273l5.363 5.363a.897.897 0 001.274 0 .9.9 0 000-1.273L11.275 10h-.002z"></path>
+                                        </svg>
+                                    </span>
+                                </span>
+                            </button>
+                        </div>
                         {drafts.length === 0 ? (
-                            <p>No drafts yet</p>
+                            <div className="drafts-empty-state">
+                                <div className="drafts-empty-content">
+                                    <img className="drafts-empty-img" alt="" src="https://www.redditstatic.com/shreddit/assets/posts-and-comments/pencil.svg" />
+                                    <h3 className="drafts-empty-title">Save drafts to post when you’re ready</h3>
+                                    <p className="drafts-empty-desc">When you save a draft, it’ll show up here so you can edit and post it whenever you’d like.</p>
+                                </div>
+                            </div>
                         ) : (
                             <div className="drafts-list">
                                 {drafts.map((draft) => (
@@ -571,7 +594,7 @@ function Create({ onNavigateHome }) {
                     <button 
                         className="btn-primary" 
                         onClick={handlePost}
-                        disabled={loading || !title.trim() || (activeTab === "text" && !bodyText.trim()) || (activeTab === "images" && !selectedFile) || (activeTab === "link" && !isValidUrl(linkUrl))}
+                        disabled={loading || !title.trim() || (activeTab === "images" && !selectedFile) || (activeTab === "link" && !isValidUrl(linkUrl))}
                     >
                         {loading ? "Posting..." : "Post"}
                     </button>

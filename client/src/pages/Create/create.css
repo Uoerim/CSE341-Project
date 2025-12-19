@@ -62,7 +62,7 @@
     background-color: #1a1a1b;
     border: 1px solid #343536;
     border-radius: 8px;
-    padding: 30px;
+    padding: 15px;
     max-width: 500px;
     width: 90%;
     max-height: 70vh;
@@ -78,23 +78,34 @@
 
 .close-drafts {
     position: absolute;
-    top: 15px;
+    top: 1px;
     right: 15px;
-    background: none;
+    background: #272729;
+    border-radius: 50%;
     border: none;
-    color: #818384;
-    font-size: 20px;
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
+    box-shadow: none;
+    padding: 0;
+    margin-bottom: 5px;
+    min-width: unset;
+    min-height: unset;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.2s ease;
+    transition: background 0.2s;
+}
+
+.close-drafts svg {
+    color: #d7dadc;
+    fill: #d7dadc;
+    width: 16px;
+    height: 16px;
+    display: block;
 }
 
 .close-drafts:hover {
-    color: #d7dadc;
+    background: #343536;
 }
 
 .drafts-list {
@@ -998,4 +1009,86 @@
 
 .trailing-icon.valid {
     color: #4CAF50;
+}
+
+.drafts-empty-state {
+    width: 100%;
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0 20px 0;
+    position: relative;
+}
+
+.drafts-empty-header-action {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+}
+
+.drafts-empty-img {
+    width: 70px;
+    margin: 0 auto 24px auto;
+    display: block;
+}
+
+.drafts-empty-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.drafts-empty-desc {
+    font-size: 16px;
+    color: #818384;
+    font-weight: 400;
+    margin-top: 0;
+    text-align: center;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.drafts-modal-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0;
+    margin-top: 0;
+ 
+
+}
+
+.drafts-modal-header .close-drafts {
+    align-self: center;
+    margin: 0;
+}
+
+.text-14 {
+    font-size: 14px;
+}
+
+.font-normal {
+    font-weight: 400;
+}
+
+.text-neutral-content {
+    color: #818384;
+}
+
+.ml-2xs {
+    margin-left: 4px;
+}
+
+.ml-sm {
+    margin-left: 12px;
 }
