@@ -7,7 +7,7 @@ import MainSidePanel from "../../components/Main/MainSidePanel";
 import Create from "../Create/Create";
 import Home from "../Home/Home";
 import Popular from "../Popular/Popular";
-import Explore from "../Explore/Explore";
+import Explore from "../ExplorePage/ExplorePage";
 import All from "../All/All";
 import PostDetail from "../PostDetail/PostDetail";
 import UserProfilePage from "../UserProfilePage/UserProfilePage";

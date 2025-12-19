@@ -3,6 +3,7 @@ import "./App.css";
 import Auth from "./pages/Auth/Auth";
 import Main from "./pages/Main/Main";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ExplorePage from "./pages/ExplorePage/ExplorePage";
 
 function App() {
   return (
@@ -16,6 +17,14 @@ function App() {
               <Main />
             </ProtectedRoute>
           } 
+        />
+        <Route 
+          path="/explore" 
+          element={
+          <ProtectedRoute>
+            <ExplorePage /> 
+          </ProtectedRoute>
+        } 
         />
       </Routes>
     </Router>
