@@ -386,13 +386,6 @@
     flex-shrink: 0;
 }
 
-.selector-avatar img {
-    width: 200%;
-    height: 100%;
-    object-fit: cover;
-    transform: scaleX(-1) translateY(30%) translateX(60%) scale(2);
-}
-
 .community-selector-btn svg {
     width: 16px;
     height: 16px;
@@ -580,7 +573,7 @@
     width: 200%;
     height: 100%;
     object-fit: cover;
-    transform: scaleX(-1) translateY(10%) translateX(10%) scale(0.7);
+    border-radius: 50%;
 }
 
 .community-option-text {
@@ -1252,4 +1245,36 @@
 .draft-item button[data-testid="delete-button"]:focus {
     background: transparent !important;
     background-color: transparent !important;
+}
+
+.community-selector-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-avatar-selector {
+    width: 200%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    transform: translateY(29%) translateX(-69%) scale(2.2);
+}
+
+.flex {
+    display: flex;
+}
+
+.me-xs {
+    margin-right: 0.5rem;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.gap-xs {
+    gap: 0.5rem;
 }

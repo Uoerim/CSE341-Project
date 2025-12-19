@@ -404,14 +404,25 @@ function Create({ onNavigateHome, fromUserProfile = false }) {
             >
               {selectedCommunity ? (
                 <>
-                  <div className="community-selector-icon">
-                    <span>
-                      {selectedCommunity.type === "user" ? "u/" : "r/"}
-                    </span>
-                  </div>
-                  <span>
-                    {selectedCommunity.type === "user" ? "u/" : "r/"}
-                    {selectedCommunity.name}
+                  <span className="flex me-xs">
+                    <div className="community-selector-icon">
+                      {selectedCommunity.type === "user" ? (
+                        <div className="selector-avatar">
+                          <img
+                            src={`/character/${userData?.avatar || "char"}.png`}
+                            alt=""
+                            className="user-avatar-selector"
+                          />
+                        </div>
+                      ) : (
+                        <span>r/</span>
+                      )}
+                    </div>
+                  </span>
+                  <span className="flex items-center gap-xs">
+                    {selectedCommunity.type === "user"
+                      ? selectedCommunity.name
+                      : "r/" + selectedCommunity.name}
                   </span>
                 </>
               ) : (
@@ -533,7 +544,11 @@ function Create({ onNavigateHome, fromUserProfile = false }) {
                         }}
                       >
                         <div className="option-avatar">
-                          <span>u/</span>
+                          <img
+                            src={`/character/${userData.avatar || "char"}.png`}
+                            alt=""
+                            className="user-avatar-selector"
+                          />
                         </div>
                         <div className="community-option-text">
                           <p className="community-option-name">
