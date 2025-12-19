@@ -19,6 +19,26 @@ function Create({ onNavigateHome }) {
     const [communitySearchQuery, setCommunitySearchQuery] = useState("");
     const [communitySearchActive, setCommunitySearchActive] = useState(false);
     const [communityLoading, setCommunityLoading] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [linkUrl, setLinkUrl] = useState("");
+    const [linkTouched, setLinkTouched] = useState(false);
+    const [titleFocused, setTitleFocused] = useState(false);
+    const [linkFocused, setLinkFocused] = useState(false);
+
+    const isValidUrl = (url) => {
+        if (!url || url.trim().length === 0) return false;
+        let testUrl = url;
+        // If URL starts with www., prepend http://
+        if (testUrl.toLowerCase().startsWith('www.')) {
+            testUrl = 'http://' + testUrl;
+        }
+        try {
+            const urlObj = new URL(testUrl);
+            return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+        } catch {
+            return false;
+        }
+    };
 
     useEffect(() => {
         fetchUserData();
@@ -269,10 +289,14 @@ function Create({ onNavigateHome }) {
                                 inputMode=""
                                 value={communitySearchQuery}
                                 onChange={(e) => setCommunitySearchQuery(e.target.value)}
-                                onBlur={() => {
-                                    if (!communitySearchQuery && !selectedCommunity) {
-                                        setTimeout(() => setCommunitySearchActive(false), 200);
-                                    }
+                                onBlur={(e) => {
+                                    // If user didn't select a community, revert to button after blur
+                                    setTimeout(() => {
+                                        if (!selectedCommunity) {
+                                            setCommunitySearchActive(false);
+                                            setCommunitySearchQuery("");
+                                        }
+                                    }, 150);
                                 }}
                                 autoFocus
                             />
@@ -322,10 +346,46 @@ function Create({ onNavigateHome }) {
                     )}
                 </div>
 
+                <div className="create-tabs" role="tablist">
+                    <button
+                        className={`tab ${activeTab === "text" ? "active" : ""}`}
+                        onClick={() => setActiveTab("text")}
+                        role="tab"
+                        aria-selected={activeTab === "text"}
+                        type="button"
+                    >
+                        <span className="tab-content">
+                            <span>Text</span>
+                        </span>
+                    </button>
+                    <button
+                        className={`tab ${activeTab === "images" ? "active" : ""}`}
+                        onClick={() => setActiveTab("images")}
+                        role="tab"
+                        aria-selected={activeTab === "images"}
+                        type="button"
+                    >
+                        <span className="tab-content">
+                            <span>Images &amp; Video</span>
+                        </span>
+                    </button>
+                    <button
+                        className={`tab ${activeTab === "link" ? "active" : ""}`}
+                        onClick={() => setActiveTab("link")}
+                        role="tab"
+                        aria-selected={activeTab === "link"}
+                        type="button"
+                    >
+                        <span className="tab-content">
+                            <span>Link</span>
+                        </span>
+                    </button>
+                </div>
+
                 <div className="text-editor">
                     <div className="title-input-wrapper">
                         <div className="label-container interior-label">
-                            <span className={`input-boundary-box ${titleTouched && title.length === 0 ? 'error' : ''}`}>
+                            <span className={`input-boundary-box ${titleTouched && title.length === 0 && !titleFocused ? 'error' : ''}`}>
                                 <span className={`input-container ${title ? 'activated' : ''}`}>
                                     <span className="label-text inner-label" id="fp-input-label">
                                         <span>Title</span>
@@ -347,6 +407,8 @@ function Create({ onNavigateHome }) {
                                                     setTitleTouched(true);
                                                 }
                                             }}
+                                            onFocus={() => setTitleFocused(true)}
+                                            onBlur={() => setTitleFocused(false)}
                                             style={{ height: '20px' }}
                                         />
                                     </div>
@@ -379,25 +441,137 @@ function Create({ onNavigateHome }) {
                         </div>
                     </div>
 
-                    <RichTextEditor 
-                        value={bodyText}
-                        onChange={setBodyText}
-                        placeholder="Body text (optional)"
-                    />
+                    <div className="add-tags-container">
+                        <button 
+                            className="add-tags-btn" 
+                            disabled={!selectedCommunity}
+                            aria-label="Select a subreddit to enable flair"
+                            type="button"
+                        >
+                            <span className="add-tags-content">
+                                <span className="add-tags-text">Add tags</span>
+                            </span>
+                        </button>
+                    </div>
+
+                    {activeTab === "text" && (
+                        <RichTextEditor 
+                            value={bodyText}
+                            onChange={setBodyText}
+                            placeholder="Body text (optional)"
+                        />
+                    )}
+
+                    {activeTab === "images" && (
+                        <div className="media-upload-section">
+                            <div className="media-upload-container">
+                                <div className="media-upload-info">
+                                    <span>Drag and Drop or upload media</span>
+                                    <input 
+                                        type="file" 
+                                        id="file-upload" 
+                                        accept="image/*,video/*"
+                                        style={{ display: 'none' }}
+                                        onChange={(e) => setSelectedFile(e.target.files[0])}
+                                    />
+                                    <button 
+                                        className="upload-media-btn" 
+                                        type="button"
+                                        onClick={() => document.getElementById('file-upload').click()}
+                                    >
+                                        <span className="upload-icon">
+                                            <svg rpl="" fill="currentColor" height="16" icon-name="upload" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M10.3 16H6c-2.757 0-5-2.243-5-5a5.006 5.006 0 014.827-4.997c1.226-2.516 3.634-4.067 6.348-4.001a6.991 6.991 0 016.823 6.823 6.65 6.65 0 01-.125 1.434l-1.714-1.714c-.229-2.617-2.366-4.678-5.028-4.744-2.161-.059-4.058 1.307-4.892 3.463l-.247.638S6.448 7.798 6 7.798a3.204 3.204 0 00-3.2 3.2c0 1.764 1.436 3.2 3.2 3.2h4.3V16zm6.616-5.152l-3.28-3.28a.901.901 0 00-1.273 0l-3.28 3.28a.898.898 0 000 1.272.898.898 0 001.272 0l1.744-1.743v7.117a.9.9 0 001.8 0v-7.117l1.744 1.743a.898.898 0 001.272 0 .898.898 0 00.001-1.272z"></path>
+                                            </svg>
+                                        </span>
+                                        <span className="sr-only">Upload files</span>
+                                    </button>
+                                </div>
+                                {selectedFile && (
+                                    <div className="selected-file-info">
+                                        <span>{selectedFile.name}</span>
+                                        <button onClick={() => setSelectedFile(null)} className="remove-file-btn">✕</button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === "link" && (
+                        <div className="link-input-wrapper">
+                            <div className="label-container interior-label">
+                                <span className={`input-boundary-box ${linkTouched && !isValidUrl(linkUrl) && !linkFocused ? 'error' : ''}`}>
+                                    <span className={`input-container ${linkUrl ? 'activated' : ''}`}>
+                                        <span className="label-text inner-label" id="link-input-label">
+                                            <span>Link URL</span>
+                                            <span className="required-asterisk" aria-hidden="true">*</span>
+                                        </span>
+                                        <div className="text-area-wrapper" style={{ '--textarea-minheight': '20px' }}>
+                                            <textarea
+                                                aria-labelledby="link-input-label"
+                                                id="linkTextArea"
+                                                className=""
+                                                name="link"
+                                                required
+                                                value={linkUrl}
+                                                onChange={(e) => {
+                                                    let newValue = e.target.value;
+                                                    // Auto-prepend http:// if user types www.
+                                                    if (newValue.toLowerCase().startsWith('www.') && !linkUrl.toLowerCase().startsWith('http')) {
+                                                        newValue = 'http://' + newValue;
+                                                    }
+                                                    setLinkUrl(newValue);
+                                                    if (newValue.length > 0) {
+                                                        setLinkTouched(true);
+                                                    }
+                                                }}
+                                                onFocus={() => setLinkFocused(true)}
+                                                onBlur={() => setLinkFocused(false)}
+                                                style={{ height: '20px' }}
+                                            />
+                                        </div>
+                                    </span>
+                                    <span id="trailing-icons-container">
+                                        <span id="trailing-icons-validation">
+                                            {linkTouched && !isValidUrl(linkUrl) ? (
+                                                <svg rpl="" className="trailing-icon invalid" fill="currentColor" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M11.21 13.5a1.21 1.21 0 11-2.42 0 1.21 1.21 0 012.42 0zM19 10c0-4.963-4.038-9-9-9s-9 4.037-9 9 4.038 9 9 9 9-4.037 9-9zm-1.801 0c0 3.97-3.229 7.2-7.199 7.2-3.97 0-7.199-3.23-7.199-7.2S6.03 2.8 10 2.8c3.97 0 7.199 3.23 7.199 7.2zm-6.441 1.24l.242-6H9l.242 6h1.516z"></path>
+                                                </svg>
+                                            ) : linkUrl && isValidUrl(linkUrl) ? (
+                                                <svg rpl="" className="trailing-icon valid" fill="currentColor" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M7.09 15.84c-.23 0-.46-.09-.64-.26L1.3 10.42a.9.9 0 010-1.27.9.9 0 011.27 0l4.52 4.52L17.5 3.26a.9.9 0 011.27 0 .9.9 0 010 1.27L7.73 15.58c-.18.18-.41.26-.64.26z"></path>
+                                                </svg>
+                                            ) : null}
+                                        </span>
+                                    </span>
+                                </span>
+                            </div>
+                            <div className="url-error-wrapper">
+                                {linkTouched && !isValidUrl(linkUrl) && (
+                                    <span className="url-error-message">
+                                        <svg rpl="" className="mr-2xs text-danger-content" fill="currentColor" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M11.21 13.5a1.21 1.21 0 11-2.42 0 1.21 1.21 0 012.42 0zM19 10c0-4.963-4.038-9-9-9s-9 4.037-9 9 4.038 9 9 9 9-4.037 9-9zm-1.801 0c0 3.97-3.229 7.2-7.199 7.2-3.97 0-7.199-3.23-7.199-7.2S6.03 2.8 10 2.8c3.97 0 7.199 3.23 7.199 7.2zm-6.441 1.24l.242-6H9l.242 6h1.516z"></path>
+                                        </svg>
+                                        <span>{linkUrl.trim().length === 0 ? "Please fill in this field" : "Link doesn't look right"}</span>
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <div className="create-actions">
                     <button 
                         className="btn-secondary" 
                         onClick={handleSaveDraft}
-                        disabled={loading || !title.trim()}
+                        disabled={loading || !title.trim() || (activeTab === "images" && !selectedFile) || (activeTab === "link" && !isValidUrl(linkUrl))}
                     >
                         Save Draft
                     </button>
                     <button 
                         className="btn-primary" 
                         onClick={handlePost}
-                        disabled={loading || !title.trim() || !bodyText.trim()}
+                        disabled={loading || !title.trim() || (activeTab === "text" && !bodyText.trim()) || (activeTab === "images" && !selectedFile) || (activeTab === "link" && !isValidUrl(linkUrl))}
                     >
                         {loading ? "Posting..." : "Post"}
                     </button>

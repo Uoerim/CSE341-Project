@@ -473,38 +473,32 @@
 .create-tabs {
     display: flex;
     gap: 0;
-    margin-bottom: 24px;
-    margin-top: 24px;
-    border-bottom: 1px solid #343536;
+    margin-bottom: 0px;
+    margin-top: 16px;
+    width: 553.6px;
+    color: #B7CAD4;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 .tab {
     background: transparent;
     border: none;
+    border-radius: 0;
     color: #818384;
     cursor: pointer;
-    padding: 12px 16px;
+    padding: 12px 14px;
     font-size: 14px;
     font-weight: 600;
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
     position: relative;
-    top: 1px;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.tab::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 16px;
-    right: 16px;
-    height: 3px;
-    background-color: #1E90FF;
-    transform: scaleX(0);
-    transform-origin: center;
-    transition: transform 0.3s ease;
-}
-
-.tab:hover:not(:disabled) {
+.tab:hover:not(.active) {
+    background-color: rgba(255, 255, 255, 0.05);
     color: #d7dadc;
 }
 
@@ -512,19 +506,167 @@
     color: #ffffff;
 }
 
-.tab.active::after {
-    transform: scaleX(1);
+.tab .tab-content {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
 }
 
-.tab:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
+.tab.active .tab-content::after {
+    content: '';
+    width: 70%;
+    height: 5px;
+    background-color: #7694ff;
+    border-radius: 4px;
+    margin-bottom: 2px;
+    margin-top: 8px;
+    position: absolute;
+    bottom: -1px;
 }
 
 .text-editor {
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 3px;
+}
+
+/* Media Upload Section */
+.media-upload-section {
+    width: 100%;
+    margin-top: 16px;
+}
+
+.media-upload-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: min(20vw, 150px);
+    background-color: transparent;
+    border: 1px dashed #343536;
+    border-radius: 6px;
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+}
+
+.media-upload-container:hover {
+    border-color: #818384;
+}
+
+.media-upload-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    color: #d7dadc;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.upload-media-btn {
+    background-color: transparent;
+    border: 1px solid #343536;
+    border-radius: 20px;
+    padding: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #d7dadc;
+}
+
+.upload-media-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #818384;
+    color: #ffffff;
+}
+
+.upload-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+}
+
+.upload-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+.selected-file-info {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background-color: #272729;
+    border-radius: 4px;
+    color: #D7DADC;
+    font-size: 14px;
+}
+
+.remove-file-btn {
+    background: none;
+    border: none;
+    color: #818384;
+    cursor: pointer;
+    padding: 4px 8px;
+    font-size: 16px;
+    transition: color 0.2s ease;
+}
+
+.remove-file-btn:hover {
+    color: #FF4F40;
+}
+
+/* Link Input Section */
+.link-input-wrapper {
+    margin-top: 16px;
+    width: 100%;
+}
+
+.url-error-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    position: relative;
+    min-height: 20px;
+    margin-top: 8px;
+}
+
+.url-error-message {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #FF4F40 !important;
+}
+
+.url-error-message span {
+    color: #ffffff !important;
+}
+
+.url-error-message svg {
+    flex-shrink: 0;
+    color: #FF4F40 !important;
+    fill: #FF4F40 !important;
 }
 
 .title-input {
@@ -560,6 +702,7 @@
     gap: 12px;
     position: relative;
     min-height: 20px;
+    margin-top: 4px;
 }
 
 .title-counter {
@@ -574,13 +717,19 @@
     align-items: center;
     gap: 4px;
     font-size: 12px;
-    color: #FF4F40;
+    color: #ffffff !important;
     position: absolute;
     left: 0;
 }
 
+.title-error-message span {
+    color: #ffffff !important;
+}
+
 .title-error-message svg {
     flex-shrink: 0;
+    color: #ffffff !important;
+    fill: #FF4F40 !important;
 }
 
 .title-error-message .mr-2xs {
@@ -588,7 +737,7 @@
 }
 
 .title-error-message .text-danger-content {
-    color: #FF4F40;
+    color: #ffffff !important;
 }
 
 .add-tags {
@@ -603,6 +752,55 @@
     color: #d7dadc;
 }
 
+.add-tags-container {
+    display: inline-flex;
+    flex-direction: row;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: center;
+}
+
+.add-tags-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0px 14px;
+    height: 40px;
+    background-color: #2A3236;
+    border: 1px solid transparent;
+    border-radius: 24px;
+    color: #B7CAD4;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.add-tags-btn:hover:not(:disabled) {
+    background-color: #333D42;
+    color: #FFFFFF;
+}
+
+.add-tags-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #FFFFFF0C;
+    color: #FFFFFF3F;
+}
+
+.add-tags-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-tags-text {
+    display: inline-flex;
+    pointer-events: none;
+    max-width: 100%;
+}
+
 .create-actions {
     display: flex;
     gap: 12px;
@@ -611,46 +809,62 @@
 }
 
 .btn-secondary {
-    background-color: transparent;
-    border: 1px solid #343536;
-    color: #d7dadc;
-    padding: 8px 24px;
+    background-color: #2A3236;
+    border: 1px solid transparent;
+    color: #B7CAD4;
+    padding: 0px 14px;
+    height: 40px;
+    min-width: 95.49px;
     border-radius: 24px;
     cursor: pointer;
     font-size: 14px;
     font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-secondary:hover:not(:disabled) {
-    background-color: rgba(255, 255, 255, 0.05);
-    border-color: #818384;
+    background-color: #333D42;
+    color: #FFFFFF;
 }
 
 .btn-secondary:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    background-color: #FFFFFF0C;
+    color: #FFFFFF3F;
 }
 
 .btn-primary {
-    background-color: #1E90FF;
-    border: none;
-    color: #ffffff;
-    padding: 8px 24px;
+    background-color: #115BCA;
+    border: 1px solid transparent;
+    color: #FFFFFF;
+    padding: 0px 14px;
+    min-width: 56.78px;
+    height: 40px;
     border-radius: 24px;
     cursor: pointer;
     font-size: 14px;
     font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     transition: background-color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-primary:hover:not(:disabled) {
-    background-color: #1875dd;
+    background-color: #1870F4;
 }
 
 .btn-primary:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    background-color: #FFFFFF0C;
+    color: #FFFFFF3F;
 }
 /* Reddit-style Title input */
 .title-input-wrapper {
@@ -744,6 +958,7 @@
     width: 100%;
     min-height: var(--textarea-minheight, 20px);
     padding: 0;
+    padding-bottom: 2px;
     background-color: transparent;
     border: none;
     color: #d7dadc;
@@ -752,6 +967,7 @@
     resize: none;
     outline: none;
     overflow: hidden;
+    line-height: 1.4;
 }
 
 .text-area-wrapper textarea::placeholder {
