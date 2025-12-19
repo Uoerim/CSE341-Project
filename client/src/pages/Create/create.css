@@ -8,7 +8,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
 }
 
 .create-header h1 {
@@ -172,24 +172,59 @@
 }
 
 .community-selector-btn {
-    background-color: #272729;
+    background-color: #2A3236;
     border: 1px solid #343536;
     border-radius: 24px;
-    color: #d7dadc;
-    padding: 8px 12px;
+    color: #FFFFFF;
+    padding: 0px 10px;
     cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
+    gap: 0px;
     font-size: 14px;
     font-weight: 500;
     transition: background-color 0.2s ease, border-color 0.2s ease;
-    width: fit-content;
-    justify-content: flex-start;
+    width: 206.33px;
+    height: 40px;
 }
 
 .community-selector-btn:hover {
-    background-color: #343536;
+    background-color: #333D42;
+}
+
+.community-selector-btn .community-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    margin-right: 8px;
+}
+
+.community-selector-btn .caret-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    margin-left: 4px;
+}
+
+.community-selector-btn .flex {
+    display: flex;
+}
+
+.community-selector-btn .items-center {
+    align-items: center;
+}
+
+.community-selector-btn .gap-xs {
+    gap: 0px;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    width: 156.73px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    padding-bottom: 2px;
 }
 
 .community-selector-icon {

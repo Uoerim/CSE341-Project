@@ -216,25 +216,15 @@ function Create({ onNavigateHome }) {
                                 </div>
                                 <span>r/{selectedCommunity.name}</span>
                             </>
-                        ) : userData ? (
-                            <>
-                                <div className="selector-avatar">
-                                    <img 
-                                        src={`/character/${userData.avatar}.png`}
-                                        alt="User"
-                                    />
-                                </div>
-                                <span>u/{userData.username}</span>
-                            </>
                         ) : (
                             <>
-                                <svg fill="currentColor" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M10 1a9 9 0 10.001 18.001A9 9 0 0010 1zm0 16.2a7.2 7.2 0 110-14.4 7.2 7.2 0 010 14.4z"></path>
+                                <svg rpl="" fill="currentColor" height="24" viewBox="0 0 20 20" width="24" xmlns="http://www.w3.org/2000/svg" className="community-icon">
+                                    <path d="M11.977 13.79h-1.955l4.549-10.715a.81.81 0 00-.381-1.032C12.447 1.12 10.37.747 8.179 1.18c-3.612.716-6.471 3.68-7.059 7.316a9.01 9.01 0 0010.409 10.377c3.735-.616 6.741-3.635 7.347-7.371.453-2.8-.388-5.405-2.017-7.322a.505.505 0 00-.853.119l-4.029 9.49zM9.98 8.118a1.752 1.752 0 00-1.148.167 1.664 1.664 0 00-.651.596 1.703 1.703 0 00-.258.948v3.96H5.998V6.322h1.876v1.074h.035c.251-.344.567-.628.948-.851a2.55 2.55 0 011.311-.335c.172 0 .335.014.488.042.153.028.267.058.342.09l-.774 1.849a.766.766 0 00-.244-.073z"></path>
                                 </svg>
-                                <span>Choose a community</span>
+                                <span className="flex items-center gap-xs">Select a Community</span>
                             </>
                         )}
-                        <svg fill="currentColor" height="16" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
+                        <svg rpl="" fill="currentColor" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg" className="caret-icon">
                             <path d="M10 13.7a.897.897 0 01-.636-.264l-4.6-4.6a.9.9 0 111.272-1.273L10 11.526l3.964-3.963a.9.9 0 011.272 1.273l-4.6 4.6A.897.897 0 0110 13.7z"></path>
                         </svg>
                     </button>
