@@ -15,10 +15,35 @@ function Create({ onNavigateHome }) {
     const [error, setError] = useState("");
     const [userData, setUserData] = useState(null);
     const [titleTouched, setTitleTouched] = useState(false);
+    const [communities, setCommunities] = useState([]);
+    const [communitySearchQuery, setCommunitySearchQuery] = useState("");
+    const [communitySearchActive, setCommunitySearchActive] = useState(false);
+    const [communityLoading, setCommunityLoading] = useState(false);
 
     useEffect(() => {
         fetchUserData();
+        fetchCommunities();
     }, []);
+
+    const fetchCommunities = async () => {
+        setCommunityLoading(true);
+        try {
+            const token = localStorage.getItem("authToken");
+            const response = await fetch("http://localhost:5000/api/communities", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setCommunities(data);
+            }
+        } catch (error) {
+            console.error("Failed to fetch communities:", error);
+        } finally {
+            setCommunityLoading(false);
+        }
+    };
 
     useEffect(() => {
         const textarea = document.getElementById('innerTextArea');
@@ -205,29 +230,96 @@ function Create({ onNavigateHome }) {
 
             <div className="create-body">
                 <div className="community-selector">
-                    <button 
-                        className="community-selector-btn"
-                        onClick={() => setShowCommunitySelector(true)}
-                    >
-                        {selectedCommunity ? (
-                            <>
-                                <div className="community-selector-icon">
-                                    <span>r/</span>
-                                </div>
-                                <span>r/{selectedCommunity.name}</span>
-                            </>
-                        ) : (
-                            <>
-                                <svg rpl="" fill="currentColor" height="24" viewBox="0 0 20 20" width="24" xmlns="http://www.w3.org/2000/svg" className="community-icon">
-                                    <path d="M11.977 13.79h-1.955l4.549-10.715a.81.81 0 00-.381-1.032C12.447 1.12 10.37.747 8.179 1.18c-3.612.716-6.471 3.68-7.059 7.316a9.01 9.01 0 0010.409 10.377c3.735-.616 6.741-3.635 7.347-7.371.453-2.8-.388-5.405-2.017-7.322a.505.505 0 00-.853.119l-4.029 9.49zM9.98 8.118a1.752 1.752 0 00-1.148.167 1.664 1.664 0 00-.651.596 1.703 1.703 0 00-.258.948v3.96H5.998V6.322h1.876v1.074h.035c.251-.344.567-.628.948-.851a2.55 2.55 0 011.311-.335c.172 0 .335.014.488.042.153.028.267.058.342.09l-.774 1.849a.766.766 0 00-.244-.073z"></path>
+                    {!communitySearchActive ? (
+                        <button 
+                            className="community-selector-btn"
+                            onClick={() => setCommunitySearchActive(true)}
+                        >
+                            {selectedCommunity ? (
+                                <>
+                                    <div className="community-selector-icon">
+                                        <span>r/</span>
+                                    </div>
+                                    <span>r/{selectedCommunity.name}</span>
+                                </>
+                            ) : (
+                                <>
+                                    <svg rpl="" fill="currentColor" height="24" viewBox="0 0 20 20" width="24" xmlns="http://www.w3.org/2000/svg" className="community-icon">
+                                        <path d="M11.977 13.79h-1.955l4.549-10.715a.81.81 0 00-.381-1.032C12.447 1.12 10.37.747 8.179 1.18c-3.612.716-6.471 3.68-7.059 7.316a9.01 9.01 0 0010.409 10.377c3.735-.616 6.741-3.635 7.347-7.371.453-2.8-.388-5.405-2.017-7.322a.505.505 0 00-.853.119l-4.029 9.49zM9.98 8.118a1.752 1.752 0 00-1.148.167 1.664 1.664 0 00-.651.596 1.703 1.703 0 00-.258.948v3.96H5.998V6.322h1.876v1.074h.035c.251-.344.567-.628.948-.851a2.55 2.55 0 011.311-.335c.172 0 .335.014.488.042.153.028.267.058.342.09l-.774 1.849a.766.766 0 00-.244-.073z"></path>
+                                    </svg>
+                                    <span className="flex items-center gap-xs">Select a community</span>
+                                </>
+                            )}
+                            <svg rpl="" fill="currentColor" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg" className="caret-icon">
+                                <path d="M10 13.7a.897.897 0 01-.636-.264l-4.6-4.6a.9.9 0 111.272-1.273L10 11.526l3.964-3.963a.9.9 0 011.272 1.273l-4.6 4.6A.897.897 0 0110 13.7z"></path>
+                            </svg>
+                        </button>
+                    ) : (
+                        <div className="community-search-input-container">
+                            <span className="leadingIcon">
+                                <svg rpl="" aria-hidden="true" fill="currentColor" height="16" icon-name="search-outline" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18.736 17.464l-3.483-3.483A7.961 7.961 0 0016.999 9 8 8 0 109 17a7.961 7.961 0 004.981-1.746l3.483 3.483a.9.9 0 101.272-1.273zM9 15.2A6.207 6.207 0 012.8 9c0-3.419 2.781-6.2 6.2-6.2s6.2 2.781 6.2 6.2-2.781 6.2-6.2 6.2z"></path>
                                 </svg>
-                                <span className="flex items-center gap-xs">Select a Community</span>
-                            </>
-                        )}
-                        <svg rpl="" fill="currentColor" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg" className="caret-icon">
-                            <path d="M10 13.7a.897.897 0 01-.636-.264l-4.6-4.6a.9.9 0 111.272-1.273L10 11.526l3.964-3.963a.9.9 0 011.272 1.273l-4.6 4.6A.897.897 0 0110 13.7z"></path>
-                        </svg>
-                    </button>
+                            </span>
+                            <input 
+                                type="text" 
+                                name=""
+                                placeholder="Select a community" 
+                                autoComplete="off"
+                                inputMode=""
+                                value={communitySearchQuery}
+                                onChange={(e) => setCommunitySearchQuery(e.target.value)}
+                                onBlur={() => {
+                                    if (!communitySearchQuery && !selectedCommunity) {
+                                        setTimeout(() => setCommunitySearchActive(false), 200);
+                                    }
+                                }}
+                                autoFocus
+                            />
+                            {communitySearchQuery && (
+                                <span className="clear-icon-container" onClick={() => setCommunitySearchQuery("")}>
+                                    <svg rpl="" fill="currentColor" height="16" icon-name="clear" viewBox="0 0 20 20" width="16" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10 1a9 9 0 10.001 18.001A9 9 0 0010 1zm0 16.2c-3.97 0-7.2-3.23-7.2-7.2S6.03 2.8 10 2.8s7.2 3.23 7.2 7.2-3.23 7.2-7.2 7.2z"></path>
+                                        <path d="M12.66 6.06L10 8.73 7.34 6.06 6.06 7.34 8.73 10l-2.67 2.66 1.28 1.28L10 11.27l2.66 2.67 1.28-1.28L11.27 10l2.67-2.66-1.28-1.28z"></path>
+                                    </svg>
+                                </span>
+                            )}
+                            
+                            {communitySearchQuery.length > 0 && (
+                                <div className="community-dropdown-inline">
+                                    <div className="community-dropdown-list">
+                                        {communityLoading ? (
+                                            <div className="community-option">Loading communities...</div>
+                                        ) : communities
+                                            .filter(c => c.name.toLowerCase().startsWith(communitySearchQuery.toLowerCase()))
+                                            .map((community) => (
+                                                <div
+                                                    key={community._id}
+                                                    className="community-option"
+                                                    onClick={() => {
+                                                        setSelectedCommunity(community);
+                                                        setCommunitySearchActive(false);
+                                                        setCommunitySearchQuery("");
+                                                    }}
+                                                >
+                                                    <div className="option-avatar">
+                                                        {community.icon ? (
+                                                            <img src={community.icon} alt="" />
+                                                        ) : (
+                                                            <span>r/</span>
+                                                        )}
+                                                    </div>
+                                                    <div className="community-option-text">
+                                                        <p className="community-option-name">r/{community.name}</p>
+                                                        <p className="community-option-meta">{community.members?.length || 0} members</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 <div className="text-editor">
@@ -311,14 +403,6 @@ function Create({ onNavigateHome }) {
                     </button>
                 </div>
             </div>
-
-            {showCommunitySelector && (
-                <CommunitySelectorModal
-                    onClose={() => setShowCommunitySelector(false)}
-                    onSelect={setSelectedCommunity}
-                    selectedCommunity={selectedCommunity}
-                />
-            )}
         </div>
     );
 }
