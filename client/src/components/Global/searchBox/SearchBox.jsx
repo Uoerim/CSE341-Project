@@ -181,7 +181,7 @@ function SearchBox() {
                         if (query.trim()) handleInputChange({ target: { value: query } });
                     }}
                 >
-                    <div className="search-loader" style={{ visibility: loading ? 'visible' : 'hidden' }}></div>
+                    <div className="search-loader"></div>
                     <span>Ask</span>
                 </button>
             </div>
