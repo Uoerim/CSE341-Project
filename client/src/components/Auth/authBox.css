@@ -70,8 +70,7 @@
 /* CONTENT AREA - SCROLLABLE */
 .authBox-content-area {
     flex: 1;                    /* take all available vertical space */
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
     padding: 0 80px;            /* horizontal padding */
     display: flex;
     flex-direction: column;
