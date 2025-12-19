@@ -574,6 +574,59 @@ export const getUserDrafts = async (req, res, next) => {
   }
 };
 
+// EXPLORE 
+export const getExplorePosts = async (req, res) => {
+  try {
+    const {
+      sort = "hot",
+      page = 1,
+      limit = 10,
+    } = req.query;
+
+    const skip = (page - 1) * limit;
+
+    const pipeline = [
+      { $match: { status: "published" } },
+
+      {
+        $addFields: {
+          score: {
+            $subtract: [
+              { $size: "$upvotes" },
+              { $size: "$downvotes" },
+            ],
+          },
+        },
+      },
+    ];
+
+    // Sorting logic (Reddit-style)
+    if (sort === "new") {
+      pipeline.push({ $sort: { createdAt: -1 } });
+    } else if (sort === "top") {
+      pipeline.push({ $sort: { score: -1 } });
+    } else {
+      // hot
+      pipeline.push({ $sort: { score: -1, createdAt: -1 } });
+    }
+
+    pipeline.push(
+      { $skip: skip },
+      { $limit: Number(limit) }
+    );
+
+    const posts = await Post.aggregate(pipeline);
+
+    // Populate references after aggregation
+    await Post.populate(posts, [
+      { path: "author", select: "username avatar" },
+      { path: "community", select: "name icon" },
+      { path: "comments" },
+    ]);
+
+    res.status(200).json(posts);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
 // SAVE post (toggle)
 export const savePost = async (req, res, next) => {
   try {
