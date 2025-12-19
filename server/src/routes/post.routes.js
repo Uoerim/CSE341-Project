@@ -9,6 +9,8 @@ import {
   downvotePost,
   getFeedPosts,
   getRecentPosts,
+  getPopularPosts,
+  getTrendingPosts,
   summarizePost,
   getUserDrafts,
 } from "../controllers/post.controller.js";
@@ -16,6 +18,8 @@ import { protect } from "../middleware/auth.js";
 
 const router = express.Router();
 
+router.get("/trending", getTrendingPosts);
+router.get("/popular", getPopularPosts);
 // Specific routes (must come before dynamic :id routes)
 router.get("/feed", getFeedPosts);
 router.get("/recent", getRecentPosts);

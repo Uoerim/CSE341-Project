@@ -142,6 +142,204 @@ export const getRecentPosts = async (req, res, next) => {
   }
 };
 
+// TRENDING posts for carousel
+export const getTrendingPosts = async (req, res, next) => {
+  try {
+    const limit = parseInt(req.query.limit) || 6;
+    
+    // Get hot posts from last 12 hours for trending
+    const twelveHoursAgo = new Date(Date.now() - 12 * 60 * 60 * 1000);
+    const query = {
+      status: "published",
+      createdAt: { $gte: twelveHoursAgo }
+    };
+
+    let posts = await Post.find(query)
+      .populate("author", "username avatar")
+      .populate("community", "name")
+      .lean();
+    
+    // Calculate trending score (velocity-based)
+    posts = posts.map(post => {
+      const ageInHours = (Date.now() - new Date(post.createdAt).getTime()) / (1000 * 60 * 60);
+      const upvoteCount = post.upvotes ? post.upvotes.length : 0;
+      const commentCount = post.comments ? post.comments.length : 0;
+      const trendingScore = (upvoteCount * 2 + commentCount) / (ageInHours + 1);
+      return { ...post, trendingScore };
+    });
+    
+    // Sort by trending score and limit
+    posts.sort((a, b) => b.trendingScore - a.trendingScore);
+    posts = posts.slice(0, limit);
+
+    res.json({ posts });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// POPULAR posts with Reddit-style sorting
+export const getPopularPosts = async (req, res, next) => {
+  try {
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const sortBy = req.query.sort || "best";
+    const timeFilter = req.query.time || "today";
+    
+    let excludeIds = [];
+    if (req.query.exclude) {
+      excludeIds = req.query.exclude.split(",").filter(id => id.trim());
+    }
+
+    const query = { status: "published" };
+    
+    if (excludeIds.length > 0) {
+      query._id = { $nin: excludeIds };
+    }
+
+    // Apply time filter for top/hot
+    if (sortBy === "top" || sortBy === "hot") {
+      const now = new Date();
+      let timeThreshold;
+      
+      switch (timeFilter) {
+        case "now":
+          timeThreshold = new Date(now - 1 * 60 * 60 * 1000);
+          break;
+        case "today":
+          timeThreshold = new Date(now - 24 * 60 * 60 * 1000);
+          break;
+        case "week":
+          timeThreshold = new Date(now - 7 * 24 * 60 * 60 * 1000);
+          break;
+        case "month":
+          timeThreshold = new Date(now - 30 * 24 * 60 * 60 * 1000);
+          break;
+        case "year":
+          timeThreshold = new Date(now - 365 * 24 * 60 * 60 * 1000);
+          break;
+        default:
+          timeThreshold = null;
+      }
+      
+      if (timeThreshold) {
+        query.createdAt = { $gte: timeThreshold };
+      }
+    }
+
+    let posts;
+    let sortOptions = {};
+
+    switch (sortBy) {
+      case "hot":
+        posts = await Post.find(query)
+          .populate("author", "username avatar")
+          .populate("community", "name")
+          .lean();
+        
+        posts = posts.map(post => {
+          const ageInHours = (Date.now() - new Date(post.createdAt).getTime()) / (1000 * 60 * 60);
+          const upvoteCount = post.upvotes ? post.upvotes.length : 0;
+          const downvoteCount = post.downvotes ? post.downvotes.length : 0;
+          const score = (upvoteCount - downvoteCount) / Math.pow(ageInHours + 2, 1.5);
+          return { ...post, hotScore: score };
+        });
+        
+        posts.sort((a, b) => b.hotScore - a.hotScore);
+        posts = posts.slice(skip, skip + limit);
+        break;
+
+      case "new":
+        sortOptions = { createdAt: -1 };
+        posts = await Post.find(query)
+          .populate("author", "username avatar")
+          .populate("community", "name")
+          .sort(sortOptions)
+          .skip(skip)
+          .limit(limit)
+          .lean();
+        break;
+
+      case "top":
+        posts = await Post.find(query)
+          .populate("author", "username avatar")
+          .populate("community", "name")
+          .lean();
+        
+        // Sort by upvote count
+        posts.sort((a, b) => {
+          const aUpvotes = a.upvotes ? a.upvotes.length : 0;
+          const bUpvotes = b.upvotes ? b.upvotes.length : 0;
+          if (bUpvotes !== aUpvotes) return bUpvotes - aUpvotes;
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+        
+        posts = posts.slice(skip, skip + limit);
+        break;
+
+      case "rising":
+        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+        query.createdAt = { $gte: twentyFourHoursAgo };
+        
+        posts = await Post.find(query)
+          .populate("author", "username avatar")
+          .populate("community", "name")
+          .lean();
+        
+        posts = posts.map(post => {
+          const ageInHours = (Date.now() - new Date(post.createdAt).getTime()) / (1000 * 60 * 60);
+          const upvoteCount = post.upvotes ? post.upvotes.length : 0;
+          const velocity = upvoteCount / (ageInHours + 1);
+          return { ...post, risingScore: velocity };
+        });
+        
+        posts.sort((a, b) => b.risingScore - a.risingScore);
+        posts = posts.slice(skip, skip + limit);
+        break;
+
+      case "best":
+      default:
+        const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        query.createdAt = { $gte: sevenDaysAgo };
+        
+        posts = await Post.find(query)
+          .populate("author", "username avatar")
+          .populate("community", "name")
+          .lean();
+        
+        posts = posts.map(post => {
+          const ageInDays = (Date.now() - new Date(post.createdAt).getTime()) / (1000 * 60 * 60 * 24);
+          const agePenalty = ageInDays * 0.5;
+          const upvoteCount = post.upvotes ? post.upvotes.length : 0;
+          const commentCount = post.comments ? post.comments.length : 0;
+          const score = (upvoteCount * 0.7) + (commentCount * 0.3) - agePenalty;
+          return { ...post, bestScore: score };
+        });
+        
+        posts.sort((a, b) => b.bestScore - a.bestScore);
+        posts = posts.slice(skip, skip + limit);
+        break;
+    }
+
+    const total = await Post.countDocuments(query);
+    const hasMore = skip + posts.length < total;
+
+    res.json({
+      posts,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit),
+        hasMore
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // READ single post by ID
 export const getPostById = async (req, res, next) => {
   try {

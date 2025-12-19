@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./popular.css";
+import "../../components/RecentPosts/recentPosts.css";
 import Post from "../../components/Post/Post";
 import Spinner from "../../components/Global/Spinner/Spinner";
 import axios from "axios";
 
 function Popular({ onPostClick }) {
     const [posts, setPosts] = useState([]);
+    const [trendingPosts, setTrendingPosts] = useState([]);
+    const [recentPosts, setRecentPosts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [sortBy, setSortBy] = useState("best"); // best, hot, new, top, rising
@@ -21,6 +24,34 @@ function Popular({ onPostClick }) {
     const loadedPostIdsRef = useRef(new Set());
     const observerTarget = useRef(null);
     const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
+    // Fetch trending posts on mount
+    useEffect(() => {
+        const fetchTrending = async () => {
+            try {
+                const response = await axios.get(`${apiUrl}/posts/trending?limit=6`);
+                setTrendingPosts(response.data.posts || []);
+            } catch (error) {
+                console.error("Error fetching trending posts:", error);
+                setTrendingPosts([]);
+            }
+        };
+        fetchTrending();
+    }, [apiUrl]);
+
+    // Fetch recent posts for sidebar
+    useEffect(() => {
+        const fetchRecent = async () => {
+            try {
+                const response = await axios.get(`${apiUrl}/posts/recent?limit=5`);
+                setRecentPosts(response.data || []);
+            } catch (error) {
+                console.error("Error fetching recent posts:", error);
+                setRecentPosts([]);
+            }
+        };
+        fetchRecent();
+    }, [apiUrl]);
 
     // Reset posts when filters change
     useEffect(() => {
@@ -218,19 +249,56 @@ function Popular({ onPostClick }) {
         }
     };
 
-    // Placeholder trending posts
-    const trendingPosts = [
-        { id: 1, title: "Trump labels fentanyl a WMD", subtitle: "Trump declares fentanyl a 'weapon of...", community: "r/news" },
-        { id: 2, title: "Warner Bros. Pictures", subtitle: "Warner Bros. Pictures...", community: "r/movies" },
-        { id: 3, title: "Breaking: Major Update", subtitle: "Latest developments in...", community: "r/worldnews" },
-        { id: 4, title: "Tech Innovation", subtitle: "New breakthrough announced...", community: "r/technology" },
-        { id: 5, title: "Sports Highlight", subtitle: "Record-breaking performance...", community: "r/sports" },
-    ];
+    // Extract first image from post content
+    const extractFirstImage = (html) => {
+        if (!html) return null;
+        const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/;
+        const match = html.match(imgRegex);
+        return match ? match[1] : null;
+    };
+
+    // Truncate text to specified length
+    const truncateText = (text, maxLength) => {
+        if (!text) return '';
+        // Remove HTML tags
+        const plainText = text.replace(/<[^>]*>/g, '');
+        if (plainText.length <= maxLength) return plainText;
+        return plainText.substring(0, maxLength) + '...';
+    };
+
+    // Extract all images from HTML content
+    const extractAllImages = (html) => {
+        if (!html) return [];
+        const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/g;
+        const images = [];
+        let match;
+        while ((match = imgRegex.exec(html)) !== null) {
+            images.push(match[1]);
+        }
+        return images;
+    };
+
+    // Format time ago
+    const formatTime = (date) => {
+        const now = new Date();
+        const postDate = new Date(date);
+        const diffMs = now - postDate;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMs / 3600000);
+        const diffDays = Math.floor(diffMs / 86400000);
+
+        if (diffMins < 60) return `${diffMins}m ago`;
+        if (diffHours < 24) return `${diffHours}h ago`;
+        if (diffDays < 7) return `${diffDays}d ago`;
+        
+        return postDate.toLocaleDateString();
+    };
 
     return (
         <div className="page-container popular-container">
             <div className="popular-layout">
                 {/* Trending Carousel - Full Width */}
+                {trendingPosts.length > 0 && (
                 <div className="trending-carousel-wrapper">
                     {showLeftScroll && (
                         <button className="carousel-scroll-btn left" onClick={() => scrollCarousel('left')}>
@@ -245,17 +313,35 @@ function Popular({ onPostClick }) {
                         onScroll={handleCarouselScroll}
                     >
                             {trendingPosts.map((post) => (
-                                <div key={post.id} className="trending-card">
-                                    <div className="trending-card-image">
+                                <div 
+                                    key={post._id} 
+                                    className="trending-card"
+                                    onClick={() => onPostClick && onPostClick(post._id)}
+                                    style={{ cursor: 'pointer' }}
+                                >
+                                    <div 
+                                        className="trending-card-image"
+                                        style={{
+                                            backgroundImage: extractFirstImage(post.content) 
+                                                ? `url(${extractFirstImage(post.content)})` 
+                                                : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                            backgroundSize: 'cover',
+                                            backgroundPosition: 'center'
+                                        }}
+                                    >
                                         <div className="trending-card-overlay"></div>
                                     </div>
                                     <div className="trending-card-content">
-                                        <h3 className="trending-card-title">{post.title}</h3>
-                                        <p className="trending-card-subtitle">{post.subtitle}</p>
+                                        <h3 className="trending-card-title">{truncateText(post.title, 40)}</h3>
+                                        <p className="trending-card-subtitle">{truncateText(post.content, 45)}</p>
                                         <div className="trending-card-footer">
                                             <div className="trending-card-icon"></div>
-                                            <span className="trending-card-community">{post.community}</span>
-                                            <span className="trending-card-more">and more</span>
+                                            <span className="trending-card-community">
+                                                {post.community?.name ? `r/${post.community.name}` : `u/${post.author?.username || 'user'}`}
+                                            </span>
+                                            <span className="trending-card-more">
+                                                {post.upvotes?.length || 0} upvotes
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -269,6 +355,7 @@ function Popular({ onPostClick }) {
                             </button>
                         )}
                     </div>
+                )}
 
                     {/* Content Wrapper - Two Column Layout */}
                     <div className="content-wrapper">
@@ -543,8 +630,84 @@ function Popular({ onPostClick }) {
 
                         {/* Sidebar */}
                         <aside className="sidebar">
-                            <h3 style={{ color: '#d7dadc', marginBottom: '16px' }}>RECENT POSTS</h3>
-                            {/* Sidebar content will go here */}
+                            {recentPosts.length > 0 && (
+                                <div className="recent-posts-widget">
+                                    <div className="recent-posts-header">
+                                        <h3>RECENT POSTS</h3>
+                                    </div>
+                                    <div className="recent-posts-list">
+                                        {recentPosts.map((post) => {
+                                            const images = extractAllImages(post.content);
+                                            const thumbnail = images[0];
+                                            const voteCount = (post.upvotes?.length || 0) - (post.downvotes?.length || 0);
+                                            const commentCount = post.comments?.length || 0;
+
+                                            return (
+                                                <div 
+                                                    key={post._id} 
+                                                    className="recent-post-content"
+                                                    onClick={() => onPostClick && onPostClick(post._id)}
+                                                >
+                                                    <div className="recent-post-info">
+                                                        <div className="recent-post-header">
+                                                            <div className="recent-post-community">
+                                                                {post.community ? (
+                                                                    <>
+                                                                        <div className="recent-post-icon">
+                                                                            <div className="recent-post-icon-placeholder">
+                                                                                r/
+                                                                            </div>
+                                                                        </div>
+                                                                        <span className="recent-post-community-name">
+                                                                            r/{post.community.name}
+                                                                        </span>
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <div className="recent-post-icon">
+                                                                            <img 
+                                                                                src={`/character/${post.author?.avatar || 'char'}.png`}
+                                                                                alt=""
+                                                                            />
+                                                                        </div>
+                                                                        <span className="recent-post-community-name">
+                                                                            u/{post.author?.username}
+                                                                        </span>
+                                                                    </>
+                                                                )}
+                                                                <span className="recent-post-time">• {formatTime(post.createdAt)}</span>
+                                                            </div>
+                                                        </div>
+                                                        <h4 className="recent-post-title">{post.title}</h4>
+                                                    <div className="recent-post-stats">
+                                                        <span className="recent-post-stat">
+                                                            {voteCount} upvote{voteCount !== 1 ? 's' : ''}
+                                                        </span>
+                                                        <span className="recent-post-dot">•</span>
+                                                        <span className="recent-post-stat">
+                                                            {commentCount} comment{commentCount !== 1 ? 's' : ''}
+                                                        </span>
+                                                    </div>
+                                                    </div>
+                                                    {thumbnail && (
+                                                        <div className="recent-post-thumbnail">
+                                                            <img src={thumbnail} alt="" />
+                                                            {images.length > 1 && (
+                                                                <div className="recent-post-image-count">
+                                                                    <svg width="16" height="16" viewBox="0 0 20 20" fill="white">
+                                                                        <path d="M17 1H3a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V3a2 2 0 00-2-2zm0 16H3V3h14v14zM5 7h10v2H5V7zm0 4h10v2H5v-2z"/>
+                                                                    </svg>
+                                                                    {images.length}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
                         </aside>
                     </div>
                 </div>

@@ -27,11 +27,6 @@
 .sidebar {
     width: 316px;
     flex-shrink: 0;
-    background-color: #1a1a1b;
-    border: 1px solid #343536;
-    border-radius: 4px;
-    padding: 16px;
-    min-height: 400px;
 }
 
 /* Trending Carousel */
