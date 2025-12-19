@@ -1,7 +1,6 @@
-/* ===== PAGE BACKGROUND ===== */
 .explore-root {
   min-height: 100vh;
-  background: #0e1113; /* flat dark background (NO gradient) */
+  background: #0e1113; 
   padding: 0;
 }
 
@@ -25,7 +24,7 @@
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding: 12px 0 20px; /* small controlled spacing */
+  padding: 12px 0 20px; 
 }
 
 .explore-tabs-scroll::-webkit-scrollbar {
@@ -56,7 +55,7 @@
 
 /* ===== SECTION ===== */
 .explore-section {
-  margin-top: 16px; /* reduced */
+  margin-top: 16px;
 }
 
 .explore-section-title {
