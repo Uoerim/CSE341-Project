@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import "./searchBox.css";
 import { globalSearch } from "../../../services/searchService";
+import { getTrendingPosts } from "../../../services/trendingService";
 
+
+
+import { useEffect } from "react";
 
 function SearchBox() {
     const [isOpen, setIsOpen] = useState(false);
@@ -10,7 +14,15 @@ function SearchBox() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [hasTyped, setHasTyped] = useState(false);
+    const [trending, setTrending] = useState([]);
     let searchTimeout = null;
+
+    // Fetch trending posts on mount
+    useEffect(() => {
+        getTrendingPosts().then(res => {
+            setTrending(res.trending || []);
+        }).catch(() => setTrending([]));
+    }, []);
 
     // Debounced search
     const handleInputChange = (e) => {
@@ -58,27 +70,25 @@ function SearchBox() {
             );
         }
         if (!query.trim() && !hasTyped) {
-            // Trending fallback
-            const trendingItems = [
-                { id: 1, title: "iOS 26.2 Release and Features", subtitle: "Based on your interests" },
-                { id: 2, title: "Dota 2 Patch 7.40", subtitle: "Based on your interests" },
-                { id: 3, title: "ChatGPT 5.2 Features", subtitle: "Based on your interests" },
-                { id: 4, title: "Goosemas 2025 Providence", subtitle: "Based on your interests" },
-                { id: 5, title: "Brown University Shooting", subtitle: "Based on your interests" },
-                { id: 6, title: "The Game Awards 2025 Winners", subtitle: "Based on your interests" },
-            ];
+            // Trending fallback: show trending posts from backend
             return (
                 <>
                     <div className="search-dropdown-header">Trending</div>
                     <div className="search-dropdown-content">
-                        {trendingItems.map((item) => (
-                            <div key={item.id} className="search-dropdown-item">
-                                <svg className="item-icon" fill="currentColor" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M3 13h2v8H3zm4-8h2v16H7zm4-2h2v18h-2zm4-2h2v20h-2zm4 4h2v16h-2zm4 2h2v14h-2z"></path>
-                                </svg>
+                        {trending.length === 0 && (
+                            <div className="search-dropdown-item">No trending posts.</div>
+                        )}
+                        {trending.slice(0, 5).map((post) => (
+                            <div key={post._id} className="search-dropdown-item">
+                                {post.images && post.images.length > 0 && post.images[0] ? (
+                                    <img src={post.images[0]} alt="post" style={{ width: 32, height: 32, borderRadius: 8, objectFit: 'cover', marginRight: 10 }} />
+                                ) : (
+                                    <svg rpl="" fill="currentColor" height="20" icon-name="trend" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4.098 17a3.098 3.098 0 01-2.192-5.291l3.647-3.647a3.104 3.104 0 014.385 0l.308.309 1.672-1.672-1.55-1.548a1.254 1.254 0 01-.271-1.373 1.254 1.254 0 011.163-.777h7.84a.9.9 0 01.9.9v7.84c0 .512-.306.968-.777 1.163a1.256 1.256 0 01-1.373-.272l-1.548-1.549-3.861 3.862c-1.172 1.17-3.213 1.17-4.385 0l-.308-.309-1.457 1.458A3.099 3.099 0 014.098 17zm3.647-8.045c-.347 0-.674.135-.92.381L3.18 12.983a1.302 1.302 0 000 1.839 1.302 1.302 0 001.838 0l2.73-2.73 1.58 1.581a1.3 1.3 0 001.839 0L16.3 8.539l1.897 1.899V4.804h-5.634l1.899 1.897-4.218 4.218-1.581-1.581a1.289 1.289 0 00-.92-.381l.002-.002z"></path>
+                                    </svg>
+                                )}
                                 <div className="item-content">
-                                    <div className="item-title">{item.title}</div>
-                                    <div className="item-subtitle">{item.subtitle}</div>
+                                    <div className="item-title">{post.title}</div>
                                 </div>
                             </div>
                         ))}

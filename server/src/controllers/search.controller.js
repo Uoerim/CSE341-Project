@@ -1,3 +1,23 @@
+// Get trending posts (most liked)
+export const trendingPosts = async (req, res, next) => {
+  try {
+    // Top 5 posts by upvotes length, only published
+    const posts = await Post.find({ status: "published" })
+      .sort({ upvotes: -1, createdAt: -1 })
+      .limit(5)
+      .select("title content community author upvotes createdAt images")
+      .populate("community", "name")
+      .populate("author", "username");
+    // Add likeCount for frontend
+    const trending = posts.map(post => ({
+      ...post.toObject(),
+      likeCount: post.upvotes.length
+    }));
+    res.json({ trending });
+  } catch (err) {
+    next(err);
+  }
+};
 // src/controllers/search.controller.js
 import User from "../models/User.js";
 import Community from "../models/Community.js";
