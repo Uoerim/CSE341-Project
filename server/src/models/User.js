@@ -39,6 +39,9 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  savedPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
+  hiddenPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
+  history: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
 }, { timestamps: true });
 userSchema.pre("save", async function (next) {
   // Set avatar based on gender if not already set

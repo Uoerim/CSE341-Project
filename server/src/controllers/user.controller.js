@@ -319,28 +319,37 @@ export const getUserSavedByUsername = async (req, res, next) => {
   }
 };
 
-// GET history posts for username/history (placeholder - returns empty for now)
+// GET history posts for username/history
 export const getUserHistoryByUsername = async (req, res, next) => {
   try {
     const { username } = req.params;
-    const user = await User.findOne({ username }).select("_id viewHistory");
+    const user = await User.findOne({ username }).select("_id history");
 
     if (!user) {
       throw new NotFoundError("User not found");
     }
 
-    // If user has viewHistory field, fetch them; otherwise return empty array
-    if (user.viewHistory && user.viewHistory.length > 0) {
+    // If user has history field, fetch them; otherwise return empty array
+    if (user.history && user.history.length > 0) {
       const posts = await Post.find({
-        _id: { $in: user.viewHistory },
+        _id: { $in: user.history },
         status: "published",
       })
-        .sort({ createdAt: -1 })
         .populate("community", "name")
         .populate("author", "username avatar")
         .lean();
 
-      res.json(posts);
+      // Sort posts in the order they appear in user.history (most recent first)
+      const postMap = {};
+      posts.forEach(post => {
+        postMap[post._id.toString()] = post;
+      });
+      
+      const orderedPosts = user.history
+        .map(id => postMap[id.toString()])
+        .filter(post => post !== undefined);
+
+      res.json(orderedPosts);
     } else {
       res.json([]);
     }
