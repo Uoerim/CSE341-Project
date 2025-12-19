@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import "./searchBox.css";
 import { globalSearch } from "../../../services/searchService";
 import { getTrendingPosts } from "../../../services/trendingService";
-
-
+import { useNavigate } from "react-router-dom";
 
 import { useEffect } from "react";
 
-function SearchBox() {
+const SearchBox = ({ onNavigate }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [query, setQuery] = useState("");
     const [results, setResults] = useState({ users: [], communities: [], posts: [] });
@@ -16,6 +15,7 @@ function SearchBox() {
     const [hasTyped, setHasTyped] = useState(false);
     const [trending, setTrending] = useState([]);
     let searchTimeout = null;
+    const navigate = useNavigate();
 
     // Fetch trending posts on mount
     useEffect(() => {
@@ -79,7 +79,7 @@ function SearchBox() {
                             <div className="search-dropdown-item">No trending posts.</div>
                         )}
                         {trending.slice(0, 5).map((post) => (
-                            <div key={post._id} className="search-dropdown-item">
+                            <div key={post._id} className="search-dropdown-item" onClick={() => onNavigate && onNavigate("post", post._id)} style={{ cursor: "pointer" }}>
                                 {post.images && post.images.length > 0 && post.images[0] ? (
                                     <img src={post.images[0]} alt="post" style={{ width: 32, height: 32, borderRadius: 8, objectFit: 'cover', marginRight: 10 }} />
                                 ) : (
@@ -104,7 +104,7 @@ function SearchBox() {
                         <div className="search-dropdown-header">Users</div>
                         <div className="search-dropdown-content">
                             {results.users.map((user) => (
-                                <div key={user._id} className="search-dropdown-item">
+                                <div key={user._id} className="search-dropdown-item" onClick={() => onNavigate && onNavigate("user", user.username)} style={{ cursor: "pointer" }}>
                                     <img src={user.avatar || "/default-avatar.png"} alt="avatar" style={{ width: 28, height: 28, borderRadius: '50%', marginRight: 10 }} />
                                     <div className="item-content">
                                         <div className="item-title">{user.username}</div>
@@ -120,7 +120,7 @@ function SearchBox() {
                         <div className="search-dropdown-header">Communities</div>
                         <div className="search-dropdown-content">
                             {results.communities.map((community) => (
-                                <div key={community._id} className="search-dropdown-item">
+                                <div key={community._id} className="search-dropdown-item" onClick={() => onNavigate && onNavigate("community", community.name)} style={{ cursor: "pointer" }}>
                                     <svg className="item-icon" fill="#3543ff" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg">
                                         <circle cx="12" cy="12" r="10" />
                                     </svg>
@@ -138,7 +138,7 @@ function SearchBox() {
                         <div className="search-dropdown-header">Posts</div>
                         <div className="search-dropdown-content">
                             {results.posts.map((post) => (
-                                <div key={post._id} className="search-dropdown-item">
+                                <div key={post._id} className="search-dropdown-item" onClick={() => onNavigate && onNavigate("post", post._id)} style={{ cursor: "pointer" }}>
                                     <svg className="item-icon" fill="#ff4500" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg">
                                         <rect x="4" y="4" width="16" height="16" rx="3" />
                                     </svg>

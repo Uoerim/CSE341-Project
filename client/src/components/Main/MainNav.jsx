@@ -3,14 +3,14 @@ import "./mainNav.css";
 import SearchBox from "../Global/searchBox/SearchBox";
 import UserMenu from "../Global/UserMenu/UserMenu";
 
-function MainNav({ onCreateClick, onHomeClick }) {
+function MainNav({ onCreateClick, onHomeClick, searchBoxClick }) {
     return (
         <div className="main-nav">
             <img src="/logo-white.png" alt="Loopify" className="main-nav-logo"
              onClick={onHomeClick} style={{ cursor: "pointer"}}/>
             
             <div className="nav-search">
-                <SearchBox />
+                <SearchBox onNavigate={searchBoxClick} />
             </div>
             
             <div className="nav-data">
