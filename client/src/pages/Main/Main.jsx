@@ -19,6 +19,7 @@ function Main() {
     const [isPanelShifted, setIsPanelShifted] = useState(false);
     const [currentPage, setCurrentPage] = useState("home");
     const [selectedPostId, setSelectedPostId] = useState(null);
+    const [createFromUserProfile, setCreateFromUserProfile] = useState(false);
     const mainContentRef = useRef(null);
 
     // Check for username and community query parameters
@@ -37,6 +38,11 @@ function Main() {
         setCurrentPage(page);
     };
 
+    const handleCreateClick = (fromUser = false) => {
+        setCreateFromUserProfile(fromUser);
+        handlePageChange("create");
+    };
+
     const renderPage = () => {
         // If community parameter exists, show community page
         if (communityParam) {
@@ -45,7 +51,7 @@ function Main() {
 
         // If username parameter exists, show user profile
         if (usernameParam) {
-            return <UserProfilePage username={usernameParam} embedded={true} onPostClick={setSelectedPostId} />;
+            return <UserProfilePage username={usernameParam} embedded={true} onPostClick={setSelectedPostId} onCreateClick={() => handleCreateClick(true)} />;
         }
 
         // If a post is selected, show the post detail page
@@ -63,9 +69,9 @@ function Main() {
             case "all":
                 return <All onPostClick={setSelectedPostId} />;
             case "create":
-                return <Create onNavigateHome={() => setCurrentPage("home")} />;
+                return <Create onNavigateHome={() => setCurrentPage("home")} fromUserProfile={createFromUserProfile} />;
             case "profile":
-                return <UserProfilePage embedded={true} />;
+                return <UserProfilePage embedded={true} onCreateClick={() => handleCreateClick(true)} />;
             default:
                 return <Home onPostClick={setSelectedPostId} />;
         }
@@ -74,7 +80,7 @@ function Main() {
     return(
         <PageProvider onPageChange={handlePageChange}>
             <div className="main-container">
-                <MainNav onCreateClick={() => handlePageChange("create")} onHomeClick={() => handlePageChange("home")} />
+                <MainNav onCreateClick={() => handleCreateClick(false)} onHomeClick={() => handlePageChange("home")} />
                 <div className="main-app-container">
                     <MainSidePanel onToggle={setIsPanelShifted} onPageChange={handlePageChange} currentPage={currentPage} isViewingPost={!!selectedPostId} />
                     <div 

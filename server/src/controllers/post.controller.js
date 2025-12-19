@@ -17,7 +17,7 @@ export const createPost = async (req, res, next) => {
       throw new BadRequestError("Title is required");
     }
 
-    if (!content || !content.trim()) {
+    if (status === "published" && community && (!content || !content.trim())) {
       throw new BadRequestError("Post content is required");
     }
 
