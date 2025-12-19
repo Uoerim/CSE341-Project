@@ -15,11 +15,14 @@ import {
   getUserDrafts,
 } from "../controllers/post.controller.js";
 import { protect } from "../middleware/auth.js";
+import { getExplorePosts } from "../controllers/post.controller.js";
+
 
 const router = express.Router();
 
 router.get("/trending", getTrendingPosts);
 router.get("/popular", getPopularPosts);
+router.get("/explore", getExplorePosts);
 // Specific routes (must come before dynamic :id routes)
 router.get("/feed", getFeedPosts);
 router.get("/recent", getRecentPosts);
