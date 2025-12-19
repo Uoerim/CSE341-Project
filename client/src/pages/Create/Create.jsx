@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./create.css";
+import { useSearchParams } from "react-router-dom";
 import RichTextEditor from "../../components/Global/RichTextEditor";
 import Textbox from "../../components/Global/textbox/textbox";
 import CommunitySelectorModal from "../../components/Global/CommunitySelectorModal/CommunitySelectorModal";
@@ -15,8 +16,11 @@ function Create({ onNavigateHome }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [userData, setUserData] = useState(null);
+    const [searchParams] = useSearchParams();
+    const editId = searchParams.get("edit");
 
     useEffect(() => {
+        console.log("Create component mounted/updated, editId:", editId);
         fetchUserData();
     }, []);
 
@@ -36,6 +40,38 @@ function Create({ onNavigateHome }) {
             console.error("Failed to fetch user data:", error);
         }
     };
+    useEffect(() => {
+  const loadDraftForEdit = async () => {
+    if (!editId) return;
+
+    try {
+      const token = localStorage.getItem("authToken");
+
+      const res = await fetch(`http://localhost:5000/api/posts/${editId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) return;
+
+      const draft = await res.json();
+
+      setTitle(draft.title || "");
+      setBodyText(draft.content || "");
+
+      
+      if (draft.community?._id) {
+        setSelectedCommunity(draft.community);
+      }
+    } catch (e) {
+      console.log("Failed to load draft:", e);
+    }
+  };
+
+  loadDraftForEdit();
+}, [editId]);
+
 
     const fetchDrafts = async () => {
         try {
@@ -75,8 +111,15 @@ function Create({ onNavigateHome }) {
             setLoading(true);
             setError("");
             const token = localStorage.getItem("authToken");
-            const response = await fetch("http://localhost:5000/api/posts", {
-                method: "POST",
+            
+            // If editing an existing post, use PUT; otherwise use POST
+            const method = editId ? "PUT" : "POST";
+            const url = editId 
+                ? `http://localhost:5000/api/posts/${editId}` 
+                : "http://localhost:5000/api/posts";
+            
+            const response = await fetch(url, {
+                method,
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -96,6 +139,7 @@ function Create({ onNavigateHome }) {
                 alert("Draft saved successfully!");
             } else {
                 const data = await response.json();
+                console.error("Draft save failed:", response.status, data);
                 setError(data.message || "Failed to save draft");
             }
         } catch (error) {
@@ -116,8 +160,17 @@ function Create({ onNavigateHome }) {
             setLoading(true);
             setError("");
             const token = localStorage.getItem("authToken");
-            const response = await fetch("http://localhost:5000/api/posts", {
-                method: "POST",
+            
+            // If editing an existing post, use PUT; otherwise use POST
+            const method = editId ? "PUT" : "POST";
+            const url = editId 
+                ? `http://localhost:5000/api/posts/${editId}` 
+                : "http://localhost:5000/api/posts";
+            
+            console.log("handlePost - method:", method, "url:", url, "editId:", editId);
+            
+            const response = await fetch(url, {
+                method,
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -130,6 +183,8 @@ function Create({ onNavigateHome }) {
                 }),
             });
 
+            console.log("handlePost response status:", response.status);
+            
             if (response.ok) {
                 setTitle("");
                 setBodyText("");
@@ -140,6 +195,7 @@ function Create({ onNavigateHome }) {
                 }
             } else {
                 const data = await response.json();
+                console.error("Post creation failed:", response.status, data);
                 setError(data.message || "Failed to create post");
             }
         } catch (error) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import "./main.css";
 
 import MainNav from "../../components/Main/MainNav";
@@ -13,9 +13,12 @@ import PostDetail from "../PostDetail/PostDetail";
 import UserProfilePage from "../UserProfilePage/UserProfilePage";
 import CommunityPage from "../CommunityPage/CommunityPage";
 import { PageProvider } from "../../context/PageContext";
+import Drafts from "../Draft/Drafts";
 
 function Main() {
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const editId = searchParams.get("edit");
     const [isPanelShifted, setIsPanelShifted] = useState(false);
     const [currentPage, setCurrentPage] = useState("home");
     const [selectedPostId, setSelectedPostId] = useState(null);
@@ -33,8 +36,14 @@ function Main() {
     }, [currentPage, usernameParam, communityParam]);
 
     const handlePageChange = (page) => {
+        console.log("handlePageChange called with:", page);
         setSelectedPostId(null); // Clear selected post when changing pages
         setCurrentPage(page);
+        
+        // Clear edit parameter from URL if navigating away from Create
+        if (editId) {
+            navigate("/app", { replace: true });
+        }
     };
 
     const renderPage = () => {
@@ -52,8 +61,19 @@ function Main() {
         if (selectedPostId) {
             return <PostDetail postId={selectedPostId} onClose={() => setSelectedPostId(null)} />;
         }
+        if (editId) {
+            return (
+                <Create 
+                    onNavigateHome={() => {
+                        setCurrentPage("home");
+                        navigate("/app", { replace: true });
+                    }} 
+                />
+            );
+        }
 
-        switch(currentPage) {
+
+        switch (currentPage) {
             case "home":
                 return <Home onPostClick={setSelectedPostId} />;
             case "popular":
@@ -67,19 +87,21 @@ function Main() {
             case "profile":
                 return <UserProfilePage embedded={true} />;
             default:
+            case "drafts":
+                return <Drafts />;
                 return <Home onPostClick={setSelectedPostId} />;
         }
     };
 
-    return(
+    return (
         <PageProvider onPageChange={handlePageChange}>
             <div className="main-container">
                 <MainNav onCreateClick={() => handlePageChange("create")} onHomeClick={() => handlePageChange("home")} />
                 <div className="main-app-container">
                     <MainSidePanel onToggle={setIsPanelShifted} onPageChange={handlePageChange} currentPage={currentPage} isViewingPost={!!selectedPostId} />
-                    <div 
+                    <div
                         ref={mainContentRef}
-                        className="main-content" 
+                        className="main-content"
                         style={{ paddingLeft: isPanelShifted ? "100px" : "330px", transition: "padding-left 0.3s ease" }}
                     >
                         {renderPage()}
