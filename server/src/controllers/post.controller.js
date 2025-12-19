@@ -8,17 +8,12 @@ const openaiClient = process.env.OPENAI_API_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   : null;
 
-// CREATE post
 export const createPost = async (req, res, next) => {
   try {
     const { title, content, community, status } = req.body;
 
     if (!title || !title.trim()) {
       throw new BadRequestError("Title is required");
-    }
-
-    if (!content || !content.trim()) {
-      throw new BadRequestError("Post content is required");
     }
 
     // Validate status if provided
@@ -39,7 +34,7 @@ export const createPost = async (req, res, next) => {
 
     const post = await Post.create({ 
       title, 
-      content, 
+      content: content || "", // Allow empty content
       author, 
       community: community || null, 
       status: status || "published" 
@@ -369,6 +364,8 @@ export const getPostById = async (req, res, next) => {
 // UPDATE post (only author)
 export const updatePost = async (req, res, next) => {
   try {
+    console.log("updatePost called with:", { id: req.params.id, body: req.body, userId: req.user._id });
+    
     const post = await Post.findById(req.params.id);
     if (!post) {
       throw new NotFoundError("Post not found");
@@ -378,13 +375,31 @@ export const updatePost = async (req, res, next) => {
       throw new ForbiddenError("Not allowed to edit this post");
     }
 
-    post.title = req.body.title ?? post.title;
-    post.content = req.body.content ?? post.content;
+    // Update fields if provided
+    if (req.body.title !== undefined) {
+      post.title = req.body.title;
+    }
+    if (req.body.content !== undefined) {
+      post.content = req.body.content;
+    }
+    if (req.body.status !== undefined) {
+      post.status = req.body.status;
+    }
+    // Only update community if explicitly provided and not null
+    if (req.body.community !== undefined && req.body.community !== null) {
+      const communityDoc = await Community.findById(req.body.community);
+      if (!communityDoc) {
+        throw new NotFoundError("Community not found");
+      }
+      post.community = req.body.community;
+    }
 
     await post.save();
+    console.log("Post updated successfully:", post);
 
     res.json(post);
   } catch (error) {
+    console.error("updatePost error:", error);
     next(error);
   }
 };

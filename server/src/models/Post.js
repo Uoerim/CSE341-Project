@@ -1,4 +1,4 @@
-import express from "express";
+
 import mongoose from "mongoose";
 const postSchema = new mongoose.Schema({
   title: {
