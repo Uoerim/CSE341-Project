@@ -85,6 +85,7 @@ export const getCommunityByName = async (req, res, next) => {
     const community = await Community.findOne({ name: req.params.name })
       .populate("creator", "username email avatar")
       .populate("members", "username avatar")
+      .populate("moderators", "username avatar")
       .lean();
 
     if (!community) {

@@ -61,15 +61,21 @@ function Main() {
     };
 
     const handleSearchBoxClick = (type, idOrName) => {
+        // Clear all selections first
         setSelectedPostId(null);
         setSelectedUser(null);
         setSelectedCommunity(null);
+        
+        // Force reset the current page to ensure re-render
         if (type === "post") {
+            setCurrentPage("post");
             setSelectedPostId(idOrName);
         } else if (type === "user") {
+            setCurrentPage("user");
             setSelectedUser(idOrName);
         } else if (type === "community") {
-            setSelectedCommunity(idOrName);
+            // Navigate to community via URL to ensure proper loading
+            navigate(`/app?r=${idOrName}`, { replace: true });
         }
     };
 

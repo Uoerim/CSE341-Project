@@ -18,17 +18,36 @@
 /* ================= Banner ================= */
 .community-page-banner {
   width: 100%;
-  height: 120px;
+  height: 140px;
   background: linear-gradient(135deg, #1a3a4a 0%, #0d2633 100%);
   position: relative;
-  background-size: cover !important;
-  background-position: center !important;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.community-page-banner img {
+.banner-blur-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.2);
   width: 100%;
   height: 100%;
   object-fit: cover;
+  filter: blur(20px);
+  opacity: 0.6;
+  z-index: 0;
+}
+
+.banner-main-img {
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  z-index: 1;
 }
 
 .banner-edit-btn {
@@ -46,6 +65,7 @@
   cursor: pointer;
   color: #fff;
   transition: background 0.2s;
+  z-index: 10;
 }
 
 .banner-edit-btn:hover {
@@ -82,8 +102,8 @@
 }
 
 .community-page-icon {
-  width: 64px;
-  height: 64px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   overflow: hidden;
   background: #1a1a1b;
@@ -91,13 +111,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
 }
 
-.community-page-icon img {
-  height: 100%;
-  width: 100%;
+.community-page-icon .icon-main-img {
+  width: 140%;
+  height: 140%;
   object-fit: cover;
+  object-position: center;
+  transform: translateX(-12%);
 }
 
 .community-page-icon-placeholder {
@@ -106,18 +127,25 @@
 
 .icon-edit-btn {
   position: absolute;
-  bottom: 0;
-  right: 0;
+  bottom: -4px;
+  right: -4px;
   background: #0079d3;
-  border: none;
+  border: 2px solid #0b1416;
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   color: #fff;
+  transition: background 0.2s, transform 0.2s;
+  z-index: 10;
+}
+
+.icon-edit-btn:hover {
+  background: #0066b3;
+  transform: scale(1.1);
 }
 
 .community-page-title-info {

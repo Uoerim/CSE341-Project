@@ -346,7 +346,8 @@ export default function CommunityPage({ communityName: propName, embedded = fals
         body: formData
       });
       const data = await uploadRes.json();
-      const url = data.url;
+      // Construct full URL from the relative path returned by backend
+      const fullUrl = `${apiUrl}${data.url.replace('/api', '')}`;
       
       await fetch(`${apiUrl}/communities/${community._id}/settings`, {
         method: 'PUT',
@@ -354,9 +355,9 @@ export default function CommunityPage({ communityName: propName, embedded = fals
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ icon: url })
+        body: JSON.stringify({ icon: fullUrl })
       });
-      setCommunity({ ...community, icon: url });
+      setCommunity({ ...community, icon: fullUrl });
     } catch (error) {
       console.error("Failed to upload icon:", error);
     }
@@ -376,7 +377,8 @@ export default function CommunityPage({ communityName: propName, embedded = fals
         body: formData
       });
       const data = await uploadRes.json();
-      const url = data.url;
+      // Construct full URL from the relative path returned by backend
+      const fullUrl = `${apiUrl}${data.url.replace('/api', '')}`;
       
       await fetch(`${apiUrl}/communities/${community._id}/settings`, {
         method: 'PUT',
@@ -384,9 +386,9 @@ export default function CommunityPage({ communityName: propName, embedded = fals
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ banner: url })
+        body: JSON.stringify({ banner: fullUrl })
       });
-      setCommunity({ ...community, banner: url });
+      setCommunity({ ...community, banner: fullUrl });
     } catch (error) {
       console.error("Failed to upload banner:", error);
     }
@@ -431,10 +433,13 @@ export default function CommunityPage({ communityName: propName, embedded = fals
   return (
     <div className="community-page">
       {/* Banner with edit option for owner */}
-      <div 
-        className="community-page-banner"
-        style={community.banner ? { backgroundImage: `url(${community.banner})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
-      >
+      <div className="community-page-banner">
+        {community.banner && (
+          <>
+            <img src={community.banner} alt="" className="banner-blur-bg" />
+            <img src={community.banner} alt="" className="banner-main-img" />
+          </>
+        )}
         {(isOwner || isMod) && (
           <button className="banner-edit-btn" onClick={() => bannerInputRef.current?.click()}>
             <svg fill="currentColor" height="16" width="16" viewBox="0 0 20 20">
@@ -454,7 +459,7 @@ export default function CommunityPage({ communityName: propName, embedded = fals
             <div className="community-page-icon-wrapper">
               <div className="community-page-icon">
                 {community.icon ? (
-                  <img src={community.icon} alt="" />
+                  <img src={community.icon} alt="" className="icon-main-img" />
                 ) : (
                   <div className="community-page-icon-placeholder">
                     <svg viewBox="0 0 20 20" fill="currentColor" width="24" height="24">
@@ -462,15 +467,15 @@ export default function CommunityPage({ communityName: propName, embedded = fals
                     </svg>
                   </div>
                 )}
-                {(isOwner || isMod) && (
-                  <button className="icon-edit-btn" onClick={() => iconInputRef.current?.click()}>
-                    <svg fill="currentColor" height="12" width="12" viewBox="0 0 20 20">
-                      <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828zM4 4v12h12v-6l2-2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V4a2 2 0 012-2h8l-2 2H4z"></path>
-                    </svg>
-                  </button>
-                )}
-                <input type="file" ref={iconInputRef} onChange={handleIconUpload} accept="image/*" hidden />
               </div>
+              {(isOwner || isMod) && (
+                <button className="icon-edit-btn" onClick={() => iconInputRef.current?.click()}>
+                  <svg fill="currentColor" height="12" width="12" viewBox="0 0 20 20">
+                    <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828zM4 4v12h12v-6l2-2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V4a2 2 0 012-2h8l-2 2H4z"></path>
+                  </svg>
+                </button>
+              )}
+              <input type="file" ref={iconInputRef} onChange={handleIconUpload} accept="image/*" hidden />
             </div>
             <div className="community-page-title-info">
               <h1 className="community-page-name">{community.name}</h1>
@@ -764,6 +769,7 @@ export default function CommunityPage({ communityName: propName, embedded = fals
               )}
               <label>Description</label>
               <textarea 
+                className="settings-input"
                 value={editDescription}
                 onChange={(e) => setEditDescription(e.target.value)}
                 placeholder="Describe your community..."
