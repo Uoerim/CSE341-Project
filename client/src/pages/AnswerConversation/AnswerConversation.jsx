@@ -143,11 +143,6 @@ const AnswerConversation = ({ question }) => {
             <div className="answer-conversation-content">
                 {/* Header */}
                 <div className="conversation-header">
-                    <button className="back-button" onClick={() => navigate("/app?page=answers")}>
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                            <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                    </button>
                     <div className="header-title">
                         <svg className="ai-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
                             <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="url(#gradient1)"/>
@@ -160,16 +155,6 @@ const AnswerConversation = ({ question }) => {
                         </svg>
                         <span>Loopify AI</span>
                     </div>
-                    <button className="new-chat-button" onClick={() => {
-                        setMessages([]);
-                        setDisplayedResponse("");
-                        navigate("/app?page=answers");
-                    }}>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                            <path d="M8 3V13M3 8H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                        </svg>
-                        New Chat
-                    </button>
                 </div>
 
                 {/* Messages Container */}
