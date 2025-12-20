@@ -14,6 +14,7 @@ import UserProfilePage from "../UserProfilePage/UserProfilePage";
 import CommunityPage from "../CommunityPage/CommunityPage";
 import { PageProvider } from "../../context/PageContext";
 import Drafts from "../Draft/Drafts";
+import Settings from "../Settings/Settings";
 
 function Main() {
     const [searchParams] = useSearchParams();
@@ -41,7 +42,7 @@ function Main() {
         console.log("handlePageChange called with:", page);
         setSelectedPostId(null); // Clear selected post when changing pages
         setCurrentPage(page);
-        
+
         // Clear edit parameter from URL if navigating away from Create
         if (editId) {
             navigate("/app", { replace: true });
@@ -74,11 +75,11 @@ function Main() {
         }
         if (editId) {
             return (
-                <Create 
+                <Create
                     onNavigateHome={() => {
                         setCurrentPage("home");
                         navigate("/app", { replace: true });
-                    }} 
+                    }}
                 />
             );
         }
@@ -97,9 +98,11 @@ function Main() {
                 return <Create onNavigateHome={() => setCurrentPage("home")} />;
             case "profile":
                 return <UserProfilePage embedded={true} />;
-            default:
             case "drafts":
                 return <Drafts />;
+            case "settings":
+                return <Settings />;
+            default:
                 return <Home onPostClick={setSelectedPostId} />;
         }
     };
