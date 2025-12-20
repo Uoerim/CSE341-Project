@@ -15,6 +15,7 @@ import CommunityPage from "../CommunityPage/CommunityPage";
 import Notifications from "../Notifications/Notifications";
 import { PageProvider } from "../../context/PageContext";
 import Drafts from "../Draft/Drafts";
+import Settings from "../Settings/Settings";
 
 function Main() {
     const [searchParams] = useSearchParams();
@@ -96,11 +97,11 @@ function Main() {
         }
         if (editId) {
             return (
-                <Create 
+                <Create
                     onNavigateHome={() => {
                         setCurrentPage("home");
                         navigate("/app", { replace: true });
-                    }} 
+                    }}
                 />
             );
         }
@@ -120,9 +121,12 @@ function Main() {
                 return <UserProfilePage embedded={true} />;
             case "notifications":
                 return <Notifications />;
-            default:
             case "drafts":
                 return <Drafts />;
+            case "settings":
+                return <Settings />;
+            default:
+                return <Home onPostClick={setSelectedPostId} />;
         }
     };
 
