@@ -3,12 +3,14 @@
     background-color: #0E1113;
     color: #d7dadc;
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 40px 24px;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
     margin-top: 0;
     width: 100%;
     box-sizing: border-box;
+    position: relative;
 }
 
 .loopify-answers-content {
@@ -17,6 +19,20 @@
     display: flex;
     flex-direction: column;
     gap: 32px;
+    animation: fadeInUp 0.6s ease-out;
+    padding: 40px 24px;
+    box-sizing: border-box;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .answers-header {
@@ -27,7 +43,6 @@
 .answers-title {
     font-size: 48px;
     font-weight: 700;
-    color: #d7dadc;
     margin: 0 0 16px 0;
     line-height: 1.2;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -35,73 +50,164 @@
         sans-serif;
 }
 
+.title-brand {
+    color: #FFFFFF;
+}
+
+.title-answers {
+    color: #FFFFFF;
+}
+
 .answers-description {
     font-size: 18px;
-    color: #818384;
+    color: #FFFFFF;
     margin: 0;
     line-height: 1.5;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
         'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
         sans-serif;
+    font-weight: 700;
+}
+
+.suggested-topics-wrapper {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    margin-top: 8px;
+    height: 184px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.suggested-topics-row {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    height: calc((184px - 24px) / 4);
+    flex-shrink: 0;
 }
 
 .suggested-topics {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 8px;
-    justify-content: center;
-    margin-top: 8px;
+    width: max-content;
+    height: 100%;
+    animation: scrollHorizontal 100s linear infinite;
+    align-items: center;
+}
+
+@keyframes scrollHorizontal {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
 }
 
 .topic-tag {
-    background-color: #1a1a1b;
-    border: 1px solid #343536;
-    color: #d7dadc;
-    padding: 8px 16px;
-    border-radius: 20px;
+    background-color: #2A3236;
+    border: none;
+    color: #FFFFFF;
+    padding: 8px 8px 8px 24px;
+    border-radius: 4px;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 400;
     cursor: pointer;
     transition: all 0.2s ease;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
         'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
         sans-serif;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    white-space: nowrap;
+    gap: 8px;
+    flex-shrink: 0;
 }
 
 .topic-tag:hover {
-    background-color: #272729;
-    border-color: #818384;
-    color: #ffffff;
+    background-color: #34393D;
+    color: #FFFFFF;
+    transform: scale(1.05);
+}
+
+.topic-icon {
+    font-size: 16px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.topic-text {
+    text-align: left;
+    color: #FFFFFF;
 }
 
 .learn-more-link {
     text-align: center;
-    margin-top: -8px;
+    margin-top: 16px;
+    margin-bottom: 24px;
 }
 
 .learn-link {
-    color: #4fbcff;
+    color: #8BA2AD;
     text-decoration: none;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 400;
     transition: color 0.2s ease;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
         'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
         sans-serif;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .learn-link:hover {
-    color: #6fc8ff;
+    color: #A8BCC5;
     text-decoration: underline;
 }
 
 .question-form {
-    margin-top: 24px;
+    margin-top: 0;
 }
 
 .question-input-wrapper {
     position: relative;
     width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.question-submit-button {
+    position: absolute;
+    right: 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8BA2AD;
+    transition: color 0.2s ease;
+}
+
+.question-submit-button:hover {
+    color: #A8BCC5;
+}
+
+.question-submit-button:active {
+    transform: scale(0.95);
+}
+
+.question-submit-button svg {
+    width: 20px;
+    height: 20px;
 }
 
 .question-input {
@@ -109,7 +215,7 @@
     background-color: #1a1a1b;
     border: 1px solid #343536;
     border-radius: 8px;
-    padding: 16px 20px;
+    padding: 16px 56px 16px 20px;
     font-size: 16px;
     color: #d7dadc;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -134,6 +240,56 @@
     border-color: #818384;
 }
 
+.answers-footer {
+    width: 100%;
+    background-color: #0E1113;
+    margin-top: auto;
+    padding: 32px 16px 48px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+}
+
+.legal-links {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    font-size: 12px;
+    color: #d7dadc;
+    white-space: nowrap;
+}
+
+.footer-link {
+    color: #d7dadc;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.footer-link:hover {
+    color: #FFFFFF;
+    text-decoration: underline;
+}
+
+.footer-separator {
+    color: #818384;
+    margin: 0 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.footer-copyright {
+    color: #d7dadc;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
 @media (max-width: 768px) {
     .answers-title {
         font-size: 36px;
@@ -153,7 +309,12 @@
 
     .topic-tag {
         font-size: 13px;
-        padding: 6px 12px;
+        padding: 6px 6px 6px 20px;
+    }
+
+    .legal-links {
+        font-size: 11px;
+        gap: 6px;
     }
 }
 
