@@ -12,6 +12,7 @@ import All from "../All/All";
 import PostDetail from "../PostDetail/PostDetail";
 import UserProfilePage from "../UserProfilePage/UserProfilePage";
 import CommunityPage from "../CommunityPage/CommunityPage";
+import Notifications from "../Notifications/Notifications";
 import { PageProvider } from "../../context/PageContext";
 import Drafts from "../Draft/Drafts";
 
@@ -111,6 +112,8 @@ function Main() {
                 return <Create onNavigateHome={() => setCurrentPage("home")} />;
             case "profile":
                 return <UserProfilePage embedded={true} />;
+            case "notifications":
+                return <Notifications />;
             default:
             case "drafts":
                 return <Drafts />;
@@ -120,7 +123,12 @@ function Main() {
     return (
         <PageProvider onPageChange={handlePageChange}>
             <div className="main-container">
-                <MainNav onCreateClick={() => handlePageChange("create")} onHomeClick={() => handlePageChange("home")} searchBoxClick={handleSearchBoxClick} />
+                <MainNav 
+                    onCreateClick={() => handlePageChange("create")} 
+                    onHomeClick={() => handlePageChange("home")} 
+                    searchBoxClick={handleSearchBoxClick}
+                    onNotificationsClick={() => handlePageChange("notifications")}
+                />
                 <div className="main-app-container">
                     <MainSidePanel onToggle={setIsPanelShifted} onPageChange={handlePageChange} currentPage={currentPage} isViewingPost={!!selectedPostId} />
                     <div

@@ -228,3 +228,265 @@ export const getCommunityPosts = async (req, res, next) => {
     next(error);
   }
 };
+
+// UPDATE community settings (icon, banner, description, name) - only creator/mods
+export const updateCommunitySettings = async (req, res, next) => {
+  try {
+    const community = await Community.findById(req.params.id);
+    if (!community) {
+      throw new NotFoundError("Community not found");
+    }
+
+    const userId = req.user._id.toString();
+    const isCreator = community.creator.toString() === userId;
+    const isMod = community.moderators?.some(m => m.toString() === userId);
+
+    if (!isCreator && !isMod) {
+      throw new ForbiddenError("Only the owner or moderators can update this community");
+    }
+
+    const { name, description, icon, banner, rules } = req.body;
+    
+    // Only owner can change the name
+    if (name !== undefined && isCreator) {
+      // Check for duplicate community name
+      const existing = await Community.findOne({ 
+        name: { $regex: new RegExp(`^${name}$`, 'i') },
+        _id: { $ne: community._id }
+      });
+      if (existing) {
+        throw new BadRequestError("Community name already exists");
+      }
+      community.name = name;
+    }
+    
+    if (description !== undefined) community.description = description;
+    if (icon !== undefined) community.icon = icon;
+    if (banner !== undefined) community.banner = banner;
+    if (rules !== undefined) community.rules = rules;
+
+    await community.save();
+    res.json(community);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ADD moderator - only creator
+export const addModerator = async (req, res, next) => {
+  try {
+    const community = await Community.findById(req.params.id);
+    if (!community) {
+      throw new NotFoundError("Community not found");
+    }
+
+    if (community.creator.toString() !== req.user._id.toString()) {
+      throw new ForbiddenError("Only the owner can add moderators");
+    }
+
+    const { userId } = req.body;
+    if (!userId) {
+      throw new BadRequestError("User ID is required");
+    }
+
+    const isAlreadyMod = community.moderators?.some(m => m.toString() === userId);
+    if (isAlreadyMod) {
+      throw new BadRequestError("User is already a moderator");
+    }
+
+    community.moderators = community.moderators || [];
+    community.moderators.push(userId);
+    await community.save();
+
+    const updatedCommunity = await Community.findById(req.params.id)
+      .populate("moderators", "username avatar");
+
+    res.json(updatedCommunity);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// REMOVE moderator - only creator
+export const removeModerator = async (req, res, next) => {
+  try {
+    const community = await Community.findById(req.params.id);
+    if (!community) {
+      throw new NotFoundError("Community not found");
+    }
+
+    if (community.creator.toString() !== req.user._id.toString()) {
+      throw new ForbiddenError("Only the owner can remove moderators");
+    }
+
+    const { userId } = req.body;
+    community.moderators = community.moderators.filter(m => m.toString() !== userId);
+    await community.save();
+
+    res.json({ message: "Moderator removed", community });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// BAN user from community - only creator/mods
+export const banUser = async (req, res, next) => {
+  try {
+    const community = await Community.findById(req.params.id);
+    if (!community) {
+      throw new NotFoundError("Community not found");
+    }
+
+    const userId = req.user._id.toString();
+    const isCreator = community.creator.toString() === userId;
+    const isMod = community.moderators?.some(m => m.toString() === userId);
+
+    if (!isCreator && !isMod) {
+      throw new ForbiddenError("Only the owner or moderators can ban users");
+    }
+
+    const { userId: banUserId } = req.body;
+    if (!banUserId) {
+      throw new BadRequestError("User ID is required");
+    }
+
+    // Can't ban the creator
+    if (banUserId === community.creator.toString()) {
+      throw new BadRequestError("Cannot ban the community owner");
+    }
+
+    // Can't ban other moderators unless you're the creator
+    const targetIsMod = community.moderators?.some(m => m.toString() === banUserId);
+    if (targetIsMod && !isCreator) {
+      throw new ForbiddenError("Only the owner can ban moderators");
+    }
+
+    community.bannedUsers = community.bannedUsers || [];
+    if (!community.bannedUsers.some(b => b.toString() === banUserId)) {
+      community.bannedUsers.push(banUserId);
+    }
+
+    // Remove from members
+    community.members = community.members.filter(m => m.toString() !== banUserId);
+    // Remove from moderators if applicable
+    community.moderators = community.moderators.filter(m => m.toString() !== banUserId);
+
+    await community.save();
+    res.json({ message: "User banned", community });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// UNBAN user - only creator/mods
+export const unbanUser = async (req, res, next) => {
+  try {
+    const community = await Community.findById(req.params.id);
+    if (!community) {
+      throw new NotFoundError("Community not found");
+    }
+
+    const userId = req.user._id.toString();
+    const isCreator = community.creator.toString() === userId;
+    const isMod = community.moderators?.some(m => m.toString() === userId);
+
+    if (!isCreator && !isMod) {
+      throw new ForbiddenError("Only the owner or moderators can unban users");
+    }
+
+    const { userId: unbanUserId } = req.body;
+    community.bannedUsers = community.bannedUsers.filter(b => b.toString() !== unbanUserId);
+    await community.save();
+
+    res.json({ message: "User unbanned", community });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// REMOVE member from community - only creator/mods
+export const removeMember = async (req, res, next) => {
+  try {
+    const community = await Community.findById(req.params.id);
+    if (!community) {
+      throw new NotFoundError("Community not found");
+    }
+
+    const userId = req.user._id.toString();
+    const isCreator = community.creator.toString() === userId;
+    const isMod = community.moderators?.some(m => m.toString() === userId);
+
+    if (!isCreator && !isMod) {
+      throw new ForbiddenError("Only the owner or moderators can remove members");
+    }
+
+    const { userId: removeUserId } = req.body;
+    
+    // Can't remove the creator
+    if (removeUserId === community.creator.toString()) {
+      throw new BadRequestError("Cannot remove the community owner");
+    }
+
+    community.members = community.members.filter(m => m.toString() !== removeUserId);
+    await community.save();
+
+    res.json({ message: "Member removed", community });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET community members
+export const getCommunityMembers = async (req, res, next) => {
+  try {
+    const community = await Community.findById(req.params.id)
+      .populate("members", "username avatar email")
+      .populate("moderators", "username avatar")
+      .populate("bannedUsers", "username avatar")
+      .populate("creator", "username avatar");
+
+    if (!community) {
+      throw new NotFoundError("Community not found");
+    }
+
+    res.json({
+      members: community.members,
+      moderators: community.moderators || [],
+      bannedUsers: community.bannedUsers || [],
+      creator: community.creator
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// DELETE post from community - only creator/mods
+export const deletePostFromCommunity = async (req, res, next) => {
+  try {
+    const community = await Community.findById(req.params.id);
+    if (!community) {
+      throw new NotFoundError("Community not found");
+    }
+
+    const userId = req.user._id.toString();
+    const isCreator = community.creator.toString() === userId;
+    const isMod = community.moderators?.some(m => m.toString() === userId);
+
+    if (!isCreator && !isMod) {
+      throw new ForbiddenError("Only the owner or moderators can delete posts");
+    }
+
+    const { postId } = req.params;
+    
+    // Remove post from community
+    community.posts = community.posts.filter(p => p.toString() !== postId);
+    await community.save();
+
+    // Delete the post itself
+    await Post.findByIdAndDelete(postId);
+
+    res.json({ message: "Post deleted" });
+  } catch (error) {
+    next(error);
+  }
+};
