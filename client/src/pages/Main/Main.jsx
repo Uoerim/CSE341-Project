@@ -14,6 +14,7 @@ import CommunityPage from "../CommunityPage/CommunityPage";
 import { PageProvider } from "../../context/PageContext";
 import Drafts from "../Draft/Drafts";
 import Settings from "../Settings/Settings";
+import LoopifyAnswers from "../LoopifyAnswers/LoopifyAnswers";
 
 function Main() {
     const [searchParams] = useSearchParams();
@@ -99,6 +100,8 @@ function Main() {
                 return <Drafts />;
             case "settings":
                 return <Settings />;
+            case "answers":
+                return <LoopifyAnswers />;
             default:
                 return <Home onPostClick={setSelectedPostId} />;
         }
@@ -107,7 +110,12 @@ function Main() {
     return (
         <PageProvider onPageChange={handlePageChange}>
             <div className="main-container">
-                <MainNav onCreateClick={() => handlePageChange("create")} onHomeClick={() => handlePageChange("home")} searchBoxClick={handleSearchBoxClick} />
+                <MainNav 
+                    onCreateClick={() => handlePageChange("create")} 
+                    onHomeClick={() => handlePageChange("home")} 
+                    searchBoxClick={handleSearchBoxClick}
+                    onAskClick={() => handlePageChange("answers")}
+                />
                 <div className="main-app-container">
                     <MainSidePanel onToggle={setIsPanelShifted} onPageChange={handlePageChange} currentPage={currentPage} isViewingPost={!!selectedPostId} />
                     <div
