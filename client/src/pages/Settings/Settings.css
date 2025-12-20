@@ -79,12 +79,6 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 0;
-  cursor: pointer;
-  transition: background-color 0.1s ease;
-}
-
-.setting-row:hover {
-  background-color: rgba(255, 255, 255, 0.02);
 }
 
 .setting-row:last-child {
@@ -128,6 +122,26 @@
 .chevron {
   color: #818384;
   flex-shrink: 0;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chevron:hover {
+  background-color: #1a1a1b;
+}
+
+/* Clickable Row (for rows with chevron navigation) */
+.setting-row.clickable {
+  cursor: pointer;
+}
+
+.setting-row.clickable:hover .chevron {
+  background-color: #1a1a1b;
 }
 
 /* Auth Buttons */
@@ -328,6 +342,17 @@
 /* External Link Icon */
 .external-link-icon {
   color: #818384;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.external-link-icon:hover {
+  background-color: #1a1a1b;
 }
 
 /* Placeholder Content */

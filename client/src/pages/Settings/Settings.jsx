@@ -409,8 +409,8 @@ const Settings = () => {
                                                         <div className="setting-label">Profile moderation</div>
                                                     </div>
                                                     <div className="setting-value-action">
-                                                        <svg className="external-link-icon" fill="currentColor" height="20" width="20" viewBox="0 0 20 20">
-                                                            <path d="M14.5 2H18v3.5l-1.5 1.5-2-2L12 7.5 10.5 6l2.5-2.5-2-2L14.5 2zM6 8h3v2H6v6h6v-3h2v3c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2v-6c0-1.1.9-2 2-2z" />
+                                                        <svg className="external-link-icon" fill="none" stroke="currentColor" strokeWidth="1.5" height="20" width="20" viewBox="0 0 20 20">
+                                                            <path d="M11 3h6v6M17 3L9 11M15 11v6H3V5h6" strokeLinecap="round" strokeLinejoin="round" />
                                                         </svg>
                                                     </div>
                                                 </div>
@@ -541,8 +541,8 @@ const Settings = () => {
                                                         <div className="setting-label">Third-party app authorizations</div>
                                                     </div>
                                                     <div className="setting-value-action">
-                                                        <svg className="external-link-icon" fill="currentColor" height="20" width="20" viewBox="0 0 20 20">
-                                                            <path d="M14.5 2H18v3.5l-1.5 1.5-2-2L12 7.5 10.5 6l2.5-2.5-2-2L14.5 2zM6 8h3v2H6v6h6v-3h2v3c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2v-6c0-1.1.9-2 2-2z" />
+                                                        <svg className="external-link-icon" fill="none" stroke="currentColor" strokeWidth="1.5" height="20" width="20" viewBox="0 0 20 20">
+                                                            <path d="M11 3h6v6M17 3L9 11M15 11v6H3V5h6" strokeLinecap="round" strokeLinejoin="round" />
                                                         </svg>
                                                     </div>
                                                 </div>
@@ -1424,7 +1424,7 @@ const Settings = () => {
                     </div>
                 </div>
             </div>
-        </PageProvider>
+        </PageProvider >
     );
 };
 
