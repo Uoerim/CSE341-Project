@@ -37,15 +37,26 @@ function Main() {
         }
     }, [currentPage, usernameParam, communityParam]);
 
+    // Handle community param - set currentPage to "community" when ?r= is present
+    useEffect(() => {
+        if (communityParam && currentPage !== "community") {
+            setCurrentPage("community");
+        }
+    }, [communityParam]);
+
     const handlePageChange = (page) => {
         console.log("handlePageChange called with:", page);
         setSelectedPostId(null); // Clear selected post when changing pages
-        setCurrentPage(page);
+        setSelectedUser(null); // Clear selected user when changing pages
+        setSelectedCommunity(null); // Clear selected community when changing pages
         
-        // Clear edit parameter from URL if navigating away from Create
-        if (editId) {
+        // Clean up URL - remove all query params when navigating to a new page
+        const hasQueryParams = window.location.search && window.location.search !== "";
+        if (hasQueryParams) {
             navigate("/app", { replace: true });
         }
+        
+        setCurrentPage(page);
     };
 
     const handleSearchBoxClick = (type, idOrName) => {
@@ -62,6 +73,10 @@ function Main() {
     };
 
     const renderPage = () => {
+        // If ?r=communityName is in the URL, always show that community
+        if (communityParam) {
+            return <CommunityPage communityName={communityParam} embedded={true} onPostClick={setSelectedPostId} />;
+        }
         if (selectedUser) {
             return <UserProfilePage username={selectedUser} embedded={true} onPostClick={setSelectedPostId} />;
         }
@@ -83,7 +98,6 @@ function Main() {
             );
         }
 
-
         switch (currentPage) {
             case "home":
                 return <Home onPostClick={setSelectedPostId} />;
@@ -100,7 +114,6 @@ function Main() {
             default:
             case "drafts":
                 return <Drafts />;
-                return <Home onPostClick={setSelectedPostId} />;
         }
     };
 
