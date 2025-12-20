@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./loopifyAnswers.css";
 
 const LoopifyAnswers = () => {
+    const navigate = useNavigate();
     const [question, setQuestion] = useState("");
 
     const allSuggestedTopics = [
@@ -41,13 +43,14 @@ const LoopifyAnswers = () => {
     const handleQuestionSubmit = (e) => {
         e.preventDefault();
         if (question.trim()) {
-            // TODO: Implement question submission logic
-            console.log("Question submitted:", question);
+            // Navigate to conversation page with the question
+            navigate("/app?page=answer-conversation&q=" + encodeURIComponent(question));
         }
     };
 
     const handleTopicClick = (topicText) => {
-        setQuestion(topicText);
+        // Navigate directly to conversation page with the topic
+        navigate("/app?page=answer-conversation&q=" + encodeURIComponent(topicText));
     };
 
     return (

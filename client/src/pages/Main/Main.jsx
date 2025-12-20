@@ -15,13 +15,16 @@ import { PageProvider } from "../../context/PageContext";
 import Drafts from "../Draft/Drafts";
 import Settings from "../Settings/Settings";
 import LoopifyAnswers from "../LoopifyAnswers/LoopifyAnswers";
+import AnswerConversation from "../AnswerConversation/AnswerConversation";
 
 function Main() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const editId = searchParams.get("edit");
+    const pageParam = searchParams.get("page");
+    const questionParam = searchParams.get("q");
     const [isPanelShifted, setIsPanelShifted] = useState(false);
-    const [currentPage, setCurrentPage] = useState("home");
+    const [currentPage, setCurrentPage] = useState(pageParam || "home");
     const [selectedPostId, setSelectedPostId] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
     const [selectedCommunity, setSelectedCommunity] = useState(null);
@@ -30,6 +33,13 @@ function Main() {
     // Check for username and community query parameters
     const usernameParam = searchParams.get("u");
     const communityParam = searchParams.get("r");
+
+    // Update currentPage when page param changes
+    useEffect(() => {
+        if (pageParam) {
+            setCurrentPage(pageParam);
+        }
+    }, [pageParam]);
 
     // Fix scroll position on route change
     useEffect(() => {
@@ -102,6 +112,8 @@ function Main() {
                 return <Settings />;
             case "answers":
                 return <LoopifyAnswers />;
+            case "answer-conversation":
+                return <AnswerConversation question={questionParam || ""} />;
             default:
                 return <Home onPostClick={setSelectedPostId} />;
         }
