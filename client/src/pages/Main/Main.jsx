@@ -8,7 +8,6 @@ import Create from "../Create/Create";
 import Home from "../Home/Home";
 import Popular from "../Popular/Popular";
 import Explore from "../ExplorePage/ExplorePage";
-import All from "../All/All";
 import PostDetail from "../PostDetail/PostDetail";
 import UserProfilePage from "../UserProfilePage/UserProfilePage";
 import CommunityPage from "../CommunityPage/CommunityPage";
@@ -92,8 +91,6 @@ function Main() {
                 return <Popular onPostClick={setSelectedPostId} />;
             case "explore":
                 return <Explore onPostClick={setSelectedPostId} />;
-            case "all":
-                return <All onPostClick={setSelectedPostId} />;
             case "create":
                 return <Create onNavigateHome={() => setCurrentPage("home")} />;
             case "profile":
