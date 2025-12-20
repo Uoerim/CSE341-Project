@@ -2,6 +2,8 @@ import "./createCommunityModal.css";
 import { useState } from "react";
 import { uploadImage, getImageUrl } from "../../../services/uploadService";
 
+const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
 const TOPICS = [
   { emoji: '🕹️', name: 'Gaming', tags: ['PC Gaming', 'Console Gaming', 'Mobile Gaming', 'Esports'] },
   { emoji: '🎬', name: 'Movies & TV', tags: ['Movies', 'TV Shows', 'Streaming', 'Reviews'] },
@@ -18,27 +20,34 @@ const TOPICS = [
 const COMMUNITY_TYPES = [
   {
     id: 'public',
-    icon: '🌍',
     title: 'Public',
-    description: 'Anyone can view, post, and comment in this community'
+    description: 'Anyone can view, post, and comment in this community',
+    icon: (
+      <svg fill="currentColor" height="20" width="20" viewBox="0 0 20 20">
+        <path d="M10 1c-4.96 0-9 4.04-9 9s4.04 9 9 9 9-4.04 9-9-4.04-9-9-9zm7.2 9c0 .27-.02.54-.05.8h-2.97c-.1 2.33-.63 4.38-1.41 5.84-.75.31-1.56.5-2.42.54.87-.53 2.06-2.85 2.22-6.38H7.41c.16 3.54 1.35 5.85 2.22 6.38a7 7 0 01-2.42-.54c-.78-1.46-1.31-3.52-1.41-5.84H2.83c-.03-.26-.05-.53-.05-.8s.02-.54.05-.8H5.8c.1-2.33.63-4.38 1.41-5.84.75-.31 1.56-.5 2.42-.54-.87.53-2.06 2.85-2.22 6.38h5.16c-.16-3.54-1.35-5.85-2.22-6.38a7 7 0 012.42.54c.78 1.46 1.31 3.52 1.41 5.84h2.97c.03.26.05.53.05.8z"></path>
+      </svg>
+    )
   },
   {
     id: 'restricted',
-    icon: '👁️',
     title: 'Restricted',
-    description: 'Anyone can view, but only approved users can contribute'
+    description: 'Anyone can view, but only approved users can contribute',
+    icon: (
+      <svg fill="currentColor" height="20" width="20" viewBox="0 0 20 20">
+        <path d="M10 13.9c-2.15 0-3.9-1.75-3.9-3.9S7.85 6.1 10 6.1s3.9 1.75 3.9 3.9-1.75 3.9-3.9 3.9zm0-6a2.1 2.1 0 100 4.2 2.1 2.1 0 000-4.2z"></path>
+        <path d="M10 16.97c-3.8 0-7.28-2.09-9.08-5.44-.51-.96-.51-2.1 0-3.06C2.72 5.11 6.2 3.03 10 3.03s7.28 2.09 9.08 5.44c.51.96.51 2.1 0 3.06-1.8 3.36-5.28 5.44-9.08 5.44zm0-12.14c-3.14 0-6.01 1.72-7.5 4.5-.22.42-.22.94 0 1.35a8.514 8.514 0 007.5 4.5c3.14 0 6.01-1.72 7.5-4.5.22-.42.22-.94 0-1.35a8.514 8.514 0 00-7.5-4.5z"></path>
+      </svg>
+    )
   },
   {
     id: 'private',
-    icon: '🔒',
     title: 'Private',
-    description: 'Only approved users can view and contribute'
-  },
-  {
-    id: 'mature',
-    icon: '🔞',
-    title: 'Mature (18+)',
-    description: 'Users must be over 18 to view and contribute'
+    description: 'Only approved users can view and contribute',
+    icon: (
+      <svg fill="currentColor" height="20" width="20" viewBox="0 0 20 20">
+        <path d="M15.995 8.168h-.429V6.61A5.573 5.573 0 0010 1.044 5.573 5.573 0 004.434 6.61v1.557h-.429A2.005 2.005 0 002 10.173v3.692a5.054 5.054 0 005.054 5.054h5.892A5.054 5.054 0 0018 13.865v-3.692a2.005 2.005 0 00-2.005-2.005zM6.233 6.61A3.771 3.771 0 0110 2.843a3.771 3.771 0 013.767 3.767v1.557H6.234V6.61h-.001zm9.967 7.254a3.258 3.258 0 01-3.254 3.254H7.054A3.258 3.258 0 013.8 13.864v-3.692c0-.113.092-.205.205-.205h11.991c.113 0 .205.092.205.205l-.001 3.692zm-7.1-1.676h1.8v2.809H9.1v-2.81z"></path>
+      </svg>
+    )
   }
 ];
 
@@ -112,20 +121,22 @@ export default function CreateCommunityModal({ onClose, onCommunityCreated }) {
       const token = localStorage.getItem("authToken");
       
       // Upload banner and icon if provided
-      let bannerFileId = null;
-      let iconFileId = null;
+      let bannerUrl = null;
+      let iconUrl = null;
       
       if (banner) {
         const bannerResult = await uploadImage(banner);
-        bannerFileId = bannerResult.fileId;
+        // Construct full URL from the relative path returned by backend
+        bannerUrl = `${apiUrl}${bannerResult.url.replace('/api', '')}`;
       }
       
       if (icon) {
         const iconResult = await uploadImage(icon);
-        iconFileId = iconResult.fileId;
+        // Construct full URL from the relative path returned by backend
+        iconUrl = `${apiUrl}${iconResult.url.replace('/api', '')}`;
       }
       
-      const response = await fetch("http://localhost:5000/api/communities", {
+      const response = await fetch(`${apiUrl}/communities`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -136,8 +147,8 @@ export default function CreateCommunityModal({ onClose, onCommunityCreated }) {
           description,
           type: communityType,
           topics: selectedTopics,
-          banner: bannerFileId,
-          icon: iconFileId
+          banner: bannerUrl,
+          icon: iconUrl
         }),
       });
 
@@ -259,7 +270,18 @@ export default function CreateCommunityModal({ onClose, onCommunityCreated }) {
                         <h4>{type.title}</h4>
                         <p>{type.description}</p>
                       </div>
-                      {communityType === type.id && <span className="checkmark">✓</span>}
+                      <div className="type-radio">
+                        {communityType === type.id ? (
+                          <svg fill="currentColor" height="16" width="16" viewBox="0 0 20 20">
+                            <path d="M10 2.8c3.97 0 7.2 3.23 7.2 7.2s-3.23 7.2-7.2 7.2-7.2-3.23-7.2-7.2S6.03 2.8 10 2.8zM10 1a9 9 0 10.001 18.001A9 9 0 0010 1z"></path>
+                            <path d="M10 14a4 4 0 100-8 4 4 0 000 8z"></path>
+                          </svg>
+                        ) : (
+                          <svg fill="currentColor" height="16" width="16" viewBox="0 0 20 20">
+                            <path d="M10 2.8c3.97 0 7.2 3.23 7.2 7.2s-3.23 7.2-7.2 7.2-7.2-3.23-7.2-7.2S6.03 2.8 10 2.8zM10 1a9 9 0 10.001 18.001A9 9 0 0010 1z"></path>
+                          </svg>
+                        )}
+                      </div>
                     </div>
                   </label>
                 ))}
@@ -364,10 +386,21 @@ export default function CreateCommunityModal({ onClose, onCommunityCreated }) {
               </div>
 
               <div className="preview-card large">
-                <div className="preview-banner" style={bannerPreview ? { backgroundImage: `url(${bannerPreview})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}></div>
+                <div className="preview-banner">
+                  {bannerPreview && (
+                    <>
+                      <img src={bannerPreview} alt="" className="banner-blur-bg" />
+                      <img src={bannerPreview} alt="" className="banner-main-img" />
+                    </>
+                  )}
+                </div>
                 <div className="preview-content">
-                  <div className="preview-icon-large" style={iconPreview ? { backgroundImage: `url(${iconPreview})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}>
-                    {!iconPreview && 'r/'}
+                  <div className="preview-icon-large">
+                    {iconPreview ? (
+                      <img src={iconPreview} alt="" className="icon-preview-img" />
+                    ) : (
+                      <span>r/</span>
+                    )}
                   </div>
                   <div className="preview-details">
                     <h3>r/{name || 'communityname'}</h3>

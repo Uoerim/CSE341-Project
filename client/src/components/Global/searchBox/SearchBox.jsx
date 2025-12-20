@@ -3,6 +3,7 @@ import "./searchBox.css";
 import { globalSearch } from "../../../services/searchService";
 import { getTrendingPosts } from "../../../services/trendingService";
 import { useNavigate } from "react-router-dom";
+import Spinner from "../Spinner/Spinner";
 
 import { useEffect } from "react";
 
@@ -58,7 +59,9 @@ const SearchBox = ({ onNavigate, onAskClick }) => {
         if (loading) {
             return (
                 <div className="search-dropdown-content">
-                    <div className="search-dropdown-item">Loading...</div>
+                    <div className="search-dropdown-item search-loading-item">
+                        <Spinner />
+                    </div>
                 </div>
             );
         }
@@ -105,7 +108,7 @@ const SearchBox = ({ onNavigate, onAskClick }) => {
                         <div className="search-dropdown-content">
                             {results.users.map((user) => (
                                 <div key={user._id} className="search-dropdown-item" onClick={() => onNavigate && onNavigate("user", user.username)} style={{ cursor: "pointer" }}>
-                                    <img src={user.avatar || "/default-avatar.png"} alt="avatar" style={{ width: 28, height: 28, borderRadius: '50%', marginRight: 10 }} />
+                                    <img src={`/character/${user.avatar || "char"}.png`} alt="avatar" style={{ width: 28, height: 28, borderRadius: '50%', marginRight: 10, objectFit: 'cover', objectPosition: 'center top', transform: 'scaleX(-1)' }} />
                                     <div className="item-content">
                                         <div className="item-title">{user.username}</div>
                                         <div className="item-subtitle">{user.email}</div>

@@ -1,9 +1,33 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./mainNav.css";
 import SearchBox from "../Global/searchBox/SearchBox";
 import UserMenu from "../Global/UserMenu/UserMenu";
 
-function MainNav({ onCreateClick, onHomeClick, searchBoxClick, onAskClick }) {
+function MainNav({ onCreateClick, onHomeClick, searchBoxClick, onNotificationsClick, onAskClick }) {
+    const [unreadCount, setUnreadCount] = useState(0);
+    const token = localStorage.getItem("authToken");
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
+    useEffect(() => {
+        fetchUnreadCount();
+        // Poll for new notifications every 30 seconds
+        const interval = setInterval(fetchUnreadCount, 30000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const fetchUnreadCount = async () => {
+        if (!token) return;
+        try {
+            const res = await fetch(`${apiUrl}/notifications/unread-count`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const data = await res.json();
+            setUnreadCount(data.count || 0);
+        } catch (error) {
+            console.error("Failed to fetch unread count:", error);
+        }
+    };
+
     return (
         <div className="main-nav">
             <img src="/logo-white.png" alt="Loopify" className="main-nav-logo"
@@ -25,11 +49,12 @@ function MainNav({ onCreateClick, onHomeClick, searchBoxClick, onAskClick }) {
                     </svg>
                     <span className="nav-create-text">Create</span>
                 </button>
-                {/* <button className="nav-notifications-button">
-                    <svg rpl="" fill="currentColor" height="20" icon-name="notifications" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
+                <button className="nav-notifications-button" onClick={onNotificationsClick}>
+                    <svg fill="currentColor" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
                         <path d="M18.176 14.218l-.925-1.929a2.577 2.577 0 01-.25-1.105V8c0-3.86-3.142-7-7-7-3.86 0-7 3.14-7 7v3.184c0 .38-.088.762-.252 1.105l-.927 1.932A1.103 1.103 0 002.82 15.8h3.26A4.007 4.007 0 0010 19a4.008 4.008 0 003.918-3.2h3.26a1.1 1.1 0 00.934-.514 1.1 1.1 0 00.062-1.068h.002zM10 17.2c-.93 0-1.722-.583-2.043-1.4h4.087a2.197 2.197 0 01-2.043 1.4zM3.925 14l.447-.933c.28-.584.43-1.235.43-1.883V8c0-2.867 2.331-5.2 5.198-5.2A5.205 5.205 0 0115.2 8v3.184c0 .648.147 1.299.428 1.883l.447.933H3.925z"></path>
                     </svg>
-                </button> */}
+                    {unreadCount > 0 && <span className="notification-dot"></span>}
+                </button>
 
                 {/* USER MENU COMPONENT */}
                 <UserMenu />

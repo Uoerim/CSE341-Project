@@ -21,16 +21,24 @@ const communitySchema = new mongoose.Schema({
     type: String,
   }],
   banner: {
-    type: String, // GridFS file ID
+    type: String, // GridFS file ID or URL
   },
   icon: {
-    type: String, // GridFS file ID
+    type: String, // GridFS file ID or URL
   },
   creator: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
+  moderators: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  }],
+  bannedUsers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  }],
   members: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -43,6 +51,10 @@ const communitySchema = new mongoose.Schema({
       ref: "Post",
     },
   ],
+  rules: [{
+    title: String,
+    description: String,
+  }],
 }, { timestamps: true });
 
 export default mongoose.model("Community", communitySchema);

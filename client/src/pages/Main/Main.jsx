@@ -11,6 +11,7 @@ import Explore from "../ExplorePage/ExplorePage";
 import PostDetail from "../PostDetail/PostDetail";
 import UserProfilePage from "../UserProfilePage/UserProfilePage";
 import CommunityPage from "../CommunityPage/CommunityPage";
+import Notifications from "../Notifications/Notifications";
 import { PageProvider } from "../../context/PageContext";
 import Drafts from "../Draft/Drafts";
 import Settings from "../Settings/Settings";
@@ -48,31 +49,52 @@ function Main() {
         }
     }, [currentPage, usernameParam, communityParam]);
 
+    // Handle community param - set currentPage to "community" when ?r= is present
+    useEffect(() => {
+        if (communityParam && currentPage !== "community") {
+            setCurrentPage("community");
+        }
+    }, [communityParam]);
+
     const handlePageChange = (page) => {
         console.log("handlePageChange called with:", page);
         setSelectedPostId(null); // Clear selected post when changing pages
-        setCurrentPage(page);
-
-        // Clear edit parameter from URL if navigating away from Create
-        if (editId) {
+        setSelectedUser(null); // Clear selected user when changing pages
+        setSelectedCommunity(null); // Clear selected community when changing pages
+        
+        // Clean up URL - remove all query params when navigating to a new page
+        const hasQueryParams = window.location.search && window.location.search !== "";
+        if (hasQueryParams) {
             navigate("/app", { replace: true });
         }
+        
+        setCurrentPage(page);
     };
 
     const handleSearchBoxClick = (type, idOrName) => {
+        // Clear all selections first
         setSelectedPostId(null);
         setSelectedUser(null);
         setSelectedCommunity(null);
+        
+        // Force reset the current page to ensure re-render
         if (type === "post") {
+            setCurrentPage("post");
             setSelectedPostId(idOrName);
         } else if (type === "user") {
+            setCurrentPage("user");
             setSelectedUser(idOrName);
         } else if (type === "community") {
-            setSelectedCommunity(idOrName);
+            // Navigate to community via URL to ensure proper loading
+            navigate(`/app?r=${idOrName}`, { replace: true });
         }
     };
 
     const renderPage = () => {
+        // If ?r=communityName is in the URL, always show that community
+        if (communityParam) {
+            return <CommunityPage communityName={communityParam} embedded={true} onPostClick={setSelectedPostId} />;
+        }
         if (selectedUser) {
             return <UserProfilePage username={selectedUser} embedded={true} onPostClick={setSelectedPostId} />;
         }
@@ -94,7 +116,6 @@ function Main() {
             );
         }
 
-
         switch (currentPage) {
             case "home":
                 return <Home onPostClick={setSelectedPostId} />;
@@ -106,6 +127,8 @@ function Main() {
                 return <Create onNavigateHome={() => setCurrentPage("home")} />;
             case "profile":
                 return <UserProfilePage embedded={true} />;
+            case "notifications":
+                return <Notifications />;
             case "drafts":
                 return <Drafts />;
             case "settings":
@@ -127,6 +150,7 @@ function Main() {
                     onHomeClick={() => handlePageChange("home")} 
                     searchBoxClick={handleSearchBoxClick}
                     onAskClick={() => handlePageChange("answers")}
+                    onNotificationsClick={() => handlePageChange("notifications")}
                 />
                 <div className="main-app-container">
                     <MainSidePanel onToggle={setIsPanelShifted} onPageChange={handlePageChange} currentPage={currentPage} isViewingPost={!!selectedPostId} />
