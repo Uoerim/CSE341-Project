@@ -3,7 +3,7 @@ import "./mainNav.css";
 import SearchBox from "../Global/searchBox/SearchBox";
 import UserMenu from "../Global/UserMenu/UserMenu";
 
-function MainNav({ onCreateClick, onHomeClick, searchBoxClick, onNotificationsClick }) {
+function MainNav({ onCreateClick, onHomeClick, searchBoxClick, onNotificationsClick, onAskClick }) {
     const [unreadCount, setUnreadCount] = useState(0);
     const token = localStorage.getItem("authToken");
     const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
@@ -34,7 +34,7 @@ function MainNav({ onCreateClick, onHomeClick, searchBoxClick, onNotificationsCl
              onClick={onHomeClick} style={{ cursor: "pointer"}}/>
             
             <div className="nav-search">
-                <SearchBox onNavigate={searchBoxClick} />
+                <SearchBox onNavigate={searchBoxClick} onAskClick={onAskClick} />
             </div>
             
             <div className="nav-data">

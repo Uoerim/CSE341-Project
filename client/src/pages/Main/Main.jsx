@@ -8,7 +8,6 @@ import Create from "../Create/Create";
 import Home from "../Home/Home";
 import Popular from "../Popular/Popular";
 import Explore from "../ExplorePage/ExplorePage";
-import All from "../All/All";
 import PostDetail from "../PostDetail/PostDetail";
 import UserProfilePage from "../UserProfilePage/UserProfilePage";
 import CommunityPage from "../CommunityPage/CommunityPage";
@@ -16,13 +15,17 @@ import Notifications from "../Notifications/Notifications";
 import { PageProvider } from "../../context/PageContext";
 import Drafts from "../Draft/Drafts";
 import Settings from "../Settings/Settings";
+import LoopifyAnswers from "../LoopifyAnswers/LoopifyAnswers";
+import AnswerConversation from "../AnswerConversation/AnswerConversation";
 
 function Main() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const editId = searchParams.get("edit");
+    const pageParam = searchParams.get("page");
+    const questionParam = searchParams.get("q");
     const [isPanelShifted, setIsPanelShifted] = useState(false);
-    const [currentPage, setCurrentPage] = useState("home");
+    const [currentPage, setCurrentPage] = useState(pageParam || "home");
     const [selectedPostId, setSelectedPostId] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
     const [selectedCommunity, setSelectedCommunity] = useState(null);
@@ -31,6 +34,13 @@ function Main() {
     // Check for username and community query parameters
     const usernameParam = searchParams.get("u");
     const communityParam = searchParams.get("r");
+
+    // Update currentPage when page param changes
+    useEffect(() => {
+        if (pageParam) {
+            setCurrentPage(pageParam);
+        }
+    }, [pageParam]);
 
     // Fix scroll position on route change
     useEffect(() => {
@@ -113,8 +123,6 @@ function Main() {
                 return <Popular onPostClick={setSelectedPostId} />;
             case "explore":
                 return <Explore onPostClick={setSelectedPostId} />;
-            case "all":
-                return <All onPostClick={setSelectedPostId} />;
             case "create":
                 return <Create onNavigateHome={() => setCurrentPage("home")} />;
             case "profile":
@@ -125,6 +133,10 @@ function Main() {
                 return <Drafts />;
             case "settings":
                 return <Settings />;
+            case "answers":
+                return <LoopifyAnswers />;
+            case "answer-conversation":
+                return <AnswerConversation question={questionParam || ""} />;
             default:
                 return <Home onPostClick={setSelectedPostId} />;
         }
@@ -137,6 +149,7 @@ function Main() {
                     onCreateClick={() => handlePageChange("create")} 
                     onHomeClick={() => handlePageChange("home")} 
                     searchBoxClick={handleSearchBoxClick}
+                    onAskClick={() => handlePageChange("answers")}
                     onNotificationsClick={() => handlePageChange("notifications")}
                 />
                 <div className="main-app-container">

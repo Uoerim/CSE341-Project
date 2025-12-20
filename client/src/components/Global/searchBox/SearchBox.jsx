@@ -7,7 +7,7 @@ import Spinner from "../Spinner/Spinner";
 
 import { useEffect } from "react";
 
-const SearchBox = ({ onNavigate }) => {
+const SearchBox = ({ onNavigate, onAskClick }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [query, setQuery] = useState("");
     const [results, setResults] = useState({ users: [], communities: [], posts: [] });
@@ -181,7 +181,14 @@ const SearchBox = ({ onNavigate }) => {
                     className="search-ask-button"
                     onClick={(e) => {
                         e.stopPropagation();
-                        if (query.trim()) handleInputChange({ target: { value: query } });
+                        if (query.trim()) {
+                            handleInputChange({ target: { value: query } });
+                        } else {
+                            // Navigate to answers page when Ask is clicked without query
+                            if (onAskClick) {
+                                onAskClick();
+                            }
+                        }
                     }}
                 >
                     <div className="search-loader"></div>
