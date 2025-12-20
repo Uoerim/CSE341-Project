@@ -1,6 +1,7 @@
 import Post from "../models/Post.js";
 import Community from "../models/Community.js";
 import OpenAI from "openai";
+import mongoose from "mongoose";
 import { BadRequestError, ForbiddenError, NotFoundError} from "../utils/httpErrors.js";
 
 
@@ -8,7 +9,6 @@ const openaiClient = process.env.OPENAI_API_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   : null;
 
-// CREATE post
 export const createPost = async (req, res, next) => {
   try {
     const { title, content, community, status } = req.body;
@@ -39,7 +39,7 @@ export const createPost = async (req, res, next) => {
 
     const post = await Post.create({ 
       title, 
-      content, 
+      content: content || "", // Allow empty content
       author, 
       community: community || null, 
       status: status || "published" 
@@ -71,14 +71,13 @@ export const getAllPosts = async (req, res, next) => {
   }
 };
 
-// FEED posts (home page)
+// FEED posts (home page) - returns random posts
 export const getFeedPosts = async (req, res, next) => {
   try {
     const page = Math.max(1, parseInt(req.query.page) || 1);
     const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
     
-    // Convert exclude IDs to proper strings for comparison
+    // Convert exclude IDs to proper ObjectIds for comparison
     let excludeIds = [];
     if (req.query.exclude) {
       excludeIds = req.query.exclude.split(",").filter(id => id.trim());
@@ -87,28 +86,46 @@ export const getFeedPosts = async (req, res, next) => {
     // Get posts from last 30 days, exclude already loaded posts
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
     
-    const query = {
+    const matchQuery = {
       status: "published",
       createdAt: { $gte: thirtyDaysAgo }
     };
 
     // Add exclude filter only if there are IDs to exclude
     if (excludeIds.length > 0) {
-      query._id = { $nin: excludeIds };
+      matchQuery._id = { $nin: excludeIds.map(id => new mongoose.Types.ObjectId(id)) };
     }
     
-    const posts = await Post.find(query)
-      .sort({ createdAt: -1 })
-      .limit(limit)
-      .skip(skip)
-      .populate("author", "username avatar")
-      .populate("community", "name")
-      .lean();
+    // Use aggregation with $sample for random posts
+    const posts = await Post.aggregate([
+      { $match: matchQuery },
+      { $sample: { size: limit } },
+      {
+        $lookup: {
+          from: "users",
+          localField: "author",
+          foreignField: "_id",
+          as: "author",
+          pipeline: [{ $project: { username: 1, avatar: 1 } }]
+        }
+      },
+      { $unwind: { path: "$author", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: "communities",
+          localField: "community",
+          foreignField: "_id",
+          as: "community",
+          pipeline: [{ $project: { name: 1 } }]
+        }
+      },
+      { $unwind: { path: "$community", preserveNullAndEmptyArrays: true } }
+    ]);
 
     // Get total count for pagination info (excluding the already-loaded posts)
-    const total = await Post.countDocuments(query);
+    const total = await Post.countDocuments(matchQuery);
 
-    const hasMore = (skip + limit) < total;
+    const hasMore = total > limit;
 
     res.json({
       posts: posts.map(post => ({
@@ -369,6 +386,8 @@ export const getPostById = async (req, res, next) => {
 // UPDATE post (only author)
 export const updatePost = async (req, res, next) => {
   try {
+    console.log("updatePost called with:", { id: req.params.id, body: req.body, userId: req.user._id });
+    
     const post = await Post.findById(req.params.id);
     if (!post) {
       throw new NotFoundError("Post not found");
@@ -378,13 +397,31 @@ export const updatePost = async (req, res, next) => {
       throw new ForbiddenError("Not allowed to edit this post");
     }
 
-    post.title = req.body.title ?? post.title;
-    post.content = req.body.content ?? post.content;
+    // Update fields if provided
+    if (req.body.title !== undefined) {
+      post.title = req.body.title;
+    }
+    if (req.body.content !== undefined) {
+      post.content = req.body.content;
+    }
+    if (req.body.status !== undefined) {
+      post.status = req.body.status;
+    }
+    // Only update community if explicitly provided and not null
+    if (req.body.community !== undefined && req.body.community !== null) {
+      const communityDoc = await Community.findById(req.body.community);
+      if (!communityDoc) {
+        throw new NotFoundError("Community not found");
+      }
+      post.community = req.body.community;
+    }
 
     await post.save();
+    console.log("Post updated successfully:", post);
 
     res.json(post);
   } catch (error) {
+    console.error("updatePost error:", error);
     next(error);
   }
 };
@@ -559,6 +596,61 @@ export const getUserDrafts = async (req, res, next) => {
   }
 };
 
+// EXPLORE 
+export const getExplorePosts = async (req, res) => {
+  try {
+    const {
+      sort = "hot",
+      page = 1,
+      limit = 10,
+    } = req.query;
+
+    const skip = (page - 1) * limit;
+
+    const pipeline = [
+      { $match: { status: "published" } },
+
+      {
+        $addFields: {
+          score: {
+            $subtract: [
+              { $size: "$upvotes" },
+              { $size: "$downvotes" },
+            ],
+          },
+        },
+      },
+    ];
+
+    // Sorting logic (Reddit-style)
+    if (sort === "new") {
+      pipeline.push({ $sort: { createdAt: -1 } });
+    } else if (sort === "top") {
+      pipeline.push({ $sort: { score: -1 } });
+    } else {
+      // hot
+      pipeline.push({ $sort: { score: -1, createdAt: -1 } });
+    }
+
+    pipeline.push(
+      { $skip: skip },
+      { $limit: Number(limit) }
+    );
+
+    const posts = await Post.aggregate(pipeline);
+
+    // Populate references after aggregation
+    await Post.populate(posts, [
+      { path: "author", select: "username avatar" },
+      { path: "community", select: "name icon" },
+      { path: "comments" },
+    ]);
+
+    res.status(200).json(posts);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 // SAVE post (toggle)
 export const savePost = async (req, res, next) => {
   try {

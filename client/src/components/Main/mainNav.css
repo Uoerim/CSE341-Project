@@ -22,7 +22,7 @@
 }
 
 .nav-search {
-    width: 550px;
+    width: 580px;
     height: 65%;
     border-radius: 50px;
     position: absolute;
@@ -123,4 +123,19 @@
     border-radius: 50%;
     background-color: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.nav-notifications-button {
+    position: relative;
+}
+
+.notification-dot {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    background: #ff4500;
+    border-radius: 50%;
+    border: 2px solid #0E1113;
 }

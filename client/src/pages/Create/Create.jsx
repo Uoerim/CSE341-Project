@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "./create.css";
+import { useSearchParams } from "react-router-dom";
 import RichTextEditor from "../../components/Global/RichTextEditor";
 import CommunitySelectorModal from "../../components/Global/CommunitySelectorModal/CommunitySelectorModal";
 
 function Create({ onNavigateHome, fromUserProfile = false }) {
-  const [selectedCommunity, setSelectedCommunity] = useState(
-    fromUserProfile ? { type: "user", name: "Loading...", id: null } : null
-  );
+  const [selectedCommunity, setSelectedCommunity] = useState(null);
   const [activeTab, setActiveTab] = useState("text");
   const [title, setTitle] = useState("");
   const [bodyText, setBodyText] = useState("");
@@ -27,6 +26,9 @@ function Create({ onNavigateHome, fromUserProfile = false }) {
   const [titleFocused, setTitleFocused] = useState(false);
   const [linkFocused, setLinkFocused] = useState(false);
 
+  const [searchParams] = useSearchParams();
+  const editId = searchParams.get("edit");
+
   const isValidUrl = (url) => {
     if (!url || url.trim().length === 0) return false;
     let testUrl = url;
@@ -43,6 +45,7 @@ function Create({ onNavigateHome, fromUserProfile = false }) {
   };
 
   useEffect(() => {
+    console.log("Create component mounted/updated, editId:", editId);
     fetchUserData();
     fetchCommunities();
   }, []);
@@ -86,8 +89,9 @@ function Create({ onNavigateHome, fromUserProfile = false }) {
       if (response.ok) {
         const data = await response.json();
         setUserData(data);
-        // If from user profile, set default community
-        if (fromUserProfile) {
+
+        // Default to u/username ONLY when opened from profile and nothing selected yet
+        if (fromUserProfile && !selectedCommunity) {
           setSelectedCommunity({
             type: "user",
             username: data.username,
@@ -100,6 +104,37 @@ function Create({ onNavigateHome, fromUserProfile = false }) {
       console.error("Failed to fetch user data:", error);
     }
   };
+
+  useEffect(() => {
+    const loadDraftForEdit = async () => {
+      if (!editId) return;
+
+      try {
+        const token = localStorage.getItem("authToken");
+
+        const res = await fetch(`http://localhost:5000/api/posts/${editId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) return;
+
+        const draft = await res.json();
+
+        setTitle(draft.title || "");
+        setBodyText(draft.content || "");
+
+        if (draft.community?._id) {
+          setSelectedCommunity(draft.community);
+        }
+      } catch (e) {
+        console.log("Failed to load draft:", e);
+      }
+    };
+
+    loadDraftForEdit();
+  }, [editId]);
 
   const fetchDrafts = async () => {
     try {
@@ -131,7 +166,6 @@ function Create({ onNavigateHome, fromUserProfile = false }) {
     }
     setShowDrafts(false);
   };
-
   const timeAgo = (ts) => {
     if (!ts) return "";
     const then = new Date(ts);
@@ -141,7 +175,6 @@ function Create({ onNavigateHome, fromUserProfile = false }) {
     if (diff < 86400) return `${Math.floor(diff / 3600)} hr. ago`;
     return `${Math.floor(diff / 86400)} d. ago`;
   };
-
   const handleEditDraft = (draft) => {
     // reuse load behavior for editing
     handleLoadDraft(draft);
@@ -153,7 +186,7 @@ function Create({ onNavigateHome, fromUserProfile = false }) {
     try {
       // optimistic removal
       setDrafts((prev) => prev.filter((d) => d._id !== draft._id));
-      // try server delete if endpoint exists
+      // try server delete
       const token = localStorage.getItem("authToken");
       await fetch(`http://localhost:5000/api/posts/${draft._id}`, {
         method: "DELETE",
@@ -174,8 +207,15 @@ function Create({ onNavigateHome, fromUserProfile = false }) {
       setLoading(true);
       setError("");
       const token = localStorage.getItem("authToken");
-      const response = await fetch("http://localhost:5000/api/posts", {
-        method: "POST",
+
+      // If editing an existing post, use PUT; otherwise POST
+      const method = editId ? "PUT" : "POST";
+      const url = editId
+        ? `http://localhost:5000/api/posts/${editId}`
+        : "http://localhost:5000/api/posts";
+
+      const response = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -183,8 +223,11 @@ function Create({ onNavigateHome, fromUserProfile = false }) {
         body: JSON.stringify({
           title,
           content: bodyText,
+          // drafts should NOT attach a community when posting to profile
           community:
-            selectedCommunity?.type === "user" ? null : selectedCommunity?._id,
+            selectedCommunity?.type === "user"
+              ? null
+              : selectedCommunity?._id || null,
           status: "draft",
         }),
       });
@@ -196,6 +239,7 @@ function Create({ onNavigateHome, fromUserProfile = false }) {
         alert("Draft saved successfully!");
       } else {
         const data = await response.json();
+        console.error("Draft save failed:", response.status, data);
         setError(data.message || "Failed to save draft");
       }
     } catch (error) {
@@ -218,6 +262,7 @@ function Create({ onNavigateHome, fromUserProfile = false }) {
         return;
       }
 
+      // If posting to a community (not profile), require body text
       if (selectedCommunity.type !== "user" && !bodyText.trim()) {
         setError("Post content is required when posting to a community");
         return;
@@ -226,8 +271,24 @@ function Create({ onNavigateHome, fromUserProfile = false }) {
       setLoading(true);
       setError("");
       const token = localStorage.getItem("authToken");
-      const response = await fetch("http://localhost:5000/api/posts", {
-        method: "POST",
+
+      // If editing an existing post, use PUT; otherwise POST
+      const method = editId ? "PUT" : "POST";
+      const url = editId
+        ? `http://localhost:5000/api/posts/${editId}`
+        : "http://localhost:5000/api/posts";
+
+      console.log(
+        "handlePost - method:",
+        method,
+        "url:",
+        url,
+        "editId:",
+        editId
+      );
+
+      const response = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -236,10 +297,14 @@ function Create({ onNavigateHome, fromUserProfile = false }) {
           title,
           content: bodyText,
           community:
-            selectedCommunity.type === "user" ? null : selectedCommunity._id,
+            selectedCommunity.type === "user"
+              ? null
+              : selectedCommunity._id || null,
           status: "published",
         }),
       });
+
+      console.log("handlePost response status:", response.status);
 
       if (response.ok) {
         setTitle("");
@@ -251,6 +316,7 @@ function Create({ onNavigateHome, fromUserProfile = false }) {
         }
       } else {
         const data = await response.json();
+        console.error("Post creation failed:", response.status, data);
         setError(data.message || "Failed to create post");
       }
     } catch (error) {

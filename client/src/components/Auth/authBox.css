@@ -70,8 +70,7 @@
 /* CONTENT AREA - SCROLLABLE */
 .authBox-content-area {
     flex: 1;                    /* take all available vertical space */
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
     padding: 0 80px;            /* horizontal padding */
     display: flex;
     flex-direction: column;
@@ -154,4 +153,17 @@
 .switch-btn a:hover {
     color: #7fa3ff;
     text-decoration: underline;
+}
+
+/* ERROR MESSAGE */
+.error-message {
+    width: calc(100% - 160px);
+    margin: 0 80px;
+    padding: 10px 16px;
+    background-color: rgba(244, 67, 54, 0.1);
+    border: 1px solid #f44336;
+    border-radius: 8px;
+    color: #f44336;
+    font-size: 14px;
+    text-align: center;
 }

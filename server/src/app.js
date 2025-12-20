@@ -9,6 +9,8 @@ import postRoutes from "./routes/post.routes.js";
 import commentRoutes from "./routes/comment.routes.js";
 import searchRoutes from "./routes/search.routes.js";
 import uploadRoutes from "./routes/upload.routes.js";
+import exploreRoutes from "./routes/explore.routes.js";
+import notificationRoutes from "./routes/notification.routes.js";
 
 import { protect } from "./middleware/auth.js";
 import { errorHandler } from "./middleware/error.js";
@@ -30,7 +32,8 @@ app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);  // Individual routes handle their own auth
 app.use("/api/search", searchRoutes);
 app.use("/api/uploads", uploadRoutes);
-
+app.use("/api/explore", exploreRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 // Health check route
 app.get("/health", (req, res) => res.json({ status: "OK", message: "Backend running fine 🚀" }));

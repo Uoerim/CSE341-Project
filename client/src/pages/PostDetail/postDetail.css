@@ -109,6 +109,11 @@
     font-size: 13px;
     font-weight: 700;
     line-height: 1;
+    cursor: pointer;
+}
+
+.community-name-text:hover {
+    text-decoration: underline;
 }
 
 .author-row {
@@ -122,12 +127,22 @@
     color: #818384;
     font-size: 12px;
     font-weight: 400;
+    cursor: pointer;
+}
+
+.author-username:hover {
+    text-decoration: underline;
 }
 
 .community-name {
     color: #b8c5c9;
     font-size: 13px;
     font-weight: 500;
+    cursor: pointer;
+}
+
+.community-name:hover {
+    text-decoration: underline;
 }
 
 .header-dot {

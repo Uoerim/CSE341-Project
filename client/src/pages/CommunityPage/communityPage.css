@@ -1,481 +1,953 @@
 /* ================= Page Layout ================= */
 .community-page {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  padding: 20px 16px;
   min-height: 100vh;
+  background: #0b1416;
 }
 
 .community-page-loading {
   color: #818384;
   text-align: center;
   padding: 48px;
-  background: transparent;
+  background: #0b1416;
   min-height: 100vh;
-}
-
-/* ================= Not Found ================= */
-.community-page-not-found {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  background: transparent;
-  color: #d7dadc;
 }
 
-.community-page-not-found-content {
-  text-align: center;
-  padding: 48px;
-  max-width: 400px;
+/* ================= Banner ================= */
+.community-page-banner {
+  width: 100%;
+  height: 140px;
+  background: linear-gradient(135deg, #1a3a4a 0%, #0d2633 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.community-page-not-found-icon {
-  color: #818384;
-  margin-bottom: 24px;
+.banner-blur-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.2);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(20px);
+  opacity: 0.6;
+  z-index: 0;
 }
 
-.community-page-not-found-content h2 {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 12px;
-  color: #d7dadc;
+.banner-main-img {
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  z-index: 1;
 }
 
-.community-page-not-found-content p {
-  font-size: 14px;
-  color: #818384;
-  margin-bottom: 24px;
-}
-
-.community-page-not-found-btn {
-  background: #0079d3;
-  color: white;
+.banner-edit-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.6);
   border: none;
-  padding: 8px 24px;
-  border-radius: 9999px;
-  font-size: 14px;
-  font-weight: 700;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  color: #fff;
   transition: background 0.2s;
+  z-index: 10;
 }
 
-.community-page-not-found-btn:hover {
-  background: #1484d6;
+.banner-edit-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* ================= Layout ================= */
+.community-page-layout {
+  display: flex;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
 }
 
 /* ================= Main Content ================= */
 .community-page-main {
-  width: 100%;
-  max-width: 700px;
+  flex: 1;
+  min-width: 0;
 }
 
-/* ================= Header ================= */
-.community-page-header {
-  background: #1a1a1b;
-  border-radius: 4px;
+/* ================= Title Section ================= */
+.community-page-title-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid #343536;
   margin-bottom: 16px;
-  overflow: hidden;
 }
 
-.community-page-banner {
-  width: 100%;
-  height: 80px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.community-page-header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-}
-
-.community-page-header-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.community-page-icon-wrapper {
+  position: relative;
 }
 
 .community-page-icon {
   width: 72px;
   height: 72px;
   border-radius: 50%;
+  overflow: hidden;
   background: #1a1a1b;
-  border: 4px solid #1a1a1b;
+  border: 3px solid #0b1416;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 32px;
-  font-weight: 700;
-  color: #d7dadc;
-  margin-top: -36px;
 }
 
-.community-page-title-section {
+.community-page-icon .icon-main-img {
+  width: 140%;
+  height: 140%;
+  object-fit: cover;
+  object-position: center;
+  transform: translateX(-12%);
+}
+
+.community-page-icon-placeholder {
+  color: #818384;
+}
+
+.icon-edit-btn {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  background: #0079d3;
+  border: 2px solid #0b1416;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  transition: background 0.2s, transform 0.2s;
+  z-index: 10;
 }
 
-.community-page-title {
-  font-size: 28px;
+.icon-edit-btn:hover {
+  background: #0066b3;
+  transform: scale(1.1);
+}
+
+.community-page-title-info {
+  flex: 1;
+}
+
+.community-page-name {
+  font-size: 24px;
   font-weight: 700;
   color: #d7dadc;
-  margin: 0;
+  margin: 0 0 4px 0;
 }
 
-.community-page-member-count {
+.community-page-handle {
   font-size: 14px;
   color: #818384;
 }
 
-.community-page-header-actions {
+.community-page-title-actions {
   display: flex;
   gap: 8px;
-  align-items: center;
 }
 
-.community-page-bell-btn {
-  background: transparent;
-  border: 1px solid #343536;
-  border-radius: 9999px;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: #d7dadc;
-  transition: background 0.2s;
-}
-
-.community-page-bell-btn:hover {
-  background: #272729;
-}
-
-.community-page-join-btn {
-  background: transparent;
-  border: 1px solid #d7dadc;
-  color: #d7dadc;
-  padding: 6px 24px;
-  border-radius: 9999px;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.community-page-join-btn:hover {
-  background: #d7dadc;
-  color: #1a1a1b;
-}
-
-.community-page-join-btn.joined {
-  background: #0079d3;
-  border-color: #0079d3;
-  color: white;
-}
-
-.community-page-join-btn.joined:hover {
-  background: #1484d6;
-  border-color: #1484d6;
-}
-
-.community-page-mod-tools-btn {
-  background: transparent;
-  border: 1px solid #343536;
-  color: #d7dadc;
-  padding: 6px 16px;
-  border-radius: 9999px;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.community-page-mod-tools-btn:hover {
-  background: #272729;
-}
-
-.community-page-more-btn {
-  background: transparent;
-  border: 1px solid #343536;
-  border-radius: 9999px;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: #d7dadc;
-  transition: background 0.2s;
-}
-
-.community-page-more-btn:hover {
-  background: #272729;
-}
-
-/* ================= Sort Bar ================= */
-.community-page-sort-bar {
-  display: flex;
-  gap: 8px;
-  background: #1a1a1b;
-  padding: 12px 16px;
-  border-radius: 4px;
-  margin-bottom: 16px;
-}
-
-.community-page-sort-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: transparent;
+/* ================= Action Buttons ================= */
+.community-mod-btn {
+  background: linear-gradient(135deg, #00d084 0%, #00b371 100%);
   border: none;
-  color: #818384;
-  padding: 6px 12px;
+  color: #fff;
+  padding: 8px 20px;
   border-radius: 9999px;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.community-join-btn {
+  background: #0079d3;
+  border: none;
+  color: #fff;
+  padding: 8px 24px;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.community-join-btn:hover {
+  background: #0066b3;
+}
+
+.community-joined-btn {
+  background: transparent;
+  border: 1px solid #343536;
+  color: #d7dadc;
+  padding: 8px 20px;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.community-page-sort-btn:hover {
-  background: #272729;
+.community-joined-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
-.community-page-sort-btn.active {
-  background: #0079d3;
-  color: white;
-}
-
-.community-page-sort-btn svg {
-  width: 16px;
-  height: 16px;
-}
-
-/* ================= Posts Section ================= */
+/* ================= Posts ================= */
 .community-page-posts {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-/* ================= Empty State ================= */
-.community-page-empty-state {
-  background: #1a1a1b;
+.community-post-wrapper {
+  position: relative;
+}
+
+.delete-post-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 69, 0, 0.2);
+  border: none;
   border-radius: 4px;
-  padding: 64px 32px;
+  padding: 6px 8px;
+  color: #ff4500;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.community-post-wrapper:hover .delete-post-btn {
+  opacity: 1;
+}
+
+.delete-post-btn:hover {
+  background: rgba(255, 69, 0, 0.4);
+}
+
+.community-page-empty-state {
   text-align: center;
+  padding: 48px;
+  color: #818384;
 }
 
-.community-page-empty-icon {
-  color: #343536;
-  margin-bottom: 16px;
-}
-
-.community-page-empty-title {
-  font-size: 18px;
-  font-weight: 600;
+.community-page-empty-state h2 {
   color: #d7dadc;
   margin-bottom: 8px;
-}
-
-.community-page-empty-subtitle {
-  font-size: 14px;
-  color: #818384;
-  margin-bottom: 24px;
-}
-
-.community-page-empty-button {
-  background: #0079d3;
-  color: white;
-  border: none;
-  padding: 8px 24px;
-  border-radius: 9999px;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.community-page-empty-button:hover {
-  background: #1484d6;
 }
 
 /* ================= Sidebar ================= */
 .community-page-sidebar {
-  width: 320px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  width: 312px;
+  flex-shrink: 0;
+  padding-top: 16px;
 }
 
-.community-page-about-card,
-.community-page-moderators-card,
-.community-page-settings-card {
+.community-sidebar-card {
   background: #1a1a1b;
-  border-radius: 4px;
-  padding: 12px;
-}
-
-.community-page-card-title {
-  font-size: 10px;
-  font-weight: 700;
-  color: #818384;
-  letter-spacing: 0.5px;
-  margin-bottom: 12px;
-  text-transform: uppercase;
-}
-
-.community-page-description {
-  font-size: 14px;
-  color: #d7dadc;
-  line-height: 1.5;
+  border: 1px solid #343536;
+  border-radius: 8px;
+  padding: 16px;
   margin-bottom: 16px;
 }
 
-.community-page-stats {
+.sidebar-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.sidebar-card-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #d7dadc;
+  margin: 0;
+}
+
+.sidebar-edit-btn {
+  background: transparent;
+  border: none;
+  color: #818384;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.sidebar-edit-btn:hover {
+  color: #d7dadc;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-description {
+  font-size: 14px;
+  color: #818384;
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+}
+
+.sidebar-meta {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   margin-bottom: 16px;
-  padding: 12px 0;
-  border-top: 1px solid #343536;
+  padding-bottom: 16px;
   border-bottom: 1px solid #343536;
 }
 
-.community-page-stat {
+.sidebar-meta-item {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: 12px;
   color: #818384;
 }
 
-.community-page-stat-icon {
-  display: flex;
-  align-items: center;
+.sidebar-meta-item svg {
   color: #818384;
 }
 
-.community-page-guide-btn {
+.sidebar-guide-btn {
   width: 100%;
   background: transparent;
-  border: 1px solid #343536;
-  color: #d7dadc;
-  padding: 8px 16px;
-  border-radius: 9999px;
+  border: 1px dashed #343536;
+  border-radius: 8px;
+  padding: 12px;
+  color: #818384;
   font-size: 14px;
-  font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s;
-}
-
-.community-page-guide-btn:hover {
-  background: #272729;
-}
-
-/* ================= Moderators Card ================= */
-.community-page-message-mods-btn,
-.community-page-invite-mod-btn {
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  margin-bottom: 16px;
+  transition: all 0.2s;
+}
+
+.sidebar-guide-btn:hover {
+  border-color: #818384;
+  color: #d7dadc;
+}
+
+/* ================= Community Rules ================= */
+.sidebar-rules {
+  border-top: 1px solid #343536;
+  padding-top: 16px;
+}
+
+.sidebar-rules h4 {
+  font-size: 12px;
+  font-weight: 600;
+  color: #818384;
+  letter-spacing: 0.5px;
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+}
+
+.rules-list {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.rule-item {
+  margin-bottom: 12px;
+}
+
+.rule-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #d7dadc;
+}
+
+.rule-description {
+  font-size: 12px;
+  color: #818384;
+  margin: 4px 0 0 0;
+  line-height: 1.4;
+}
+
+/* ================= Moderators Card ================= */
+.sidebar-card-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #818384;
+  letter-spacing: 0.5px;
+  margin: 0 0 16px 0;
+}
+
+.message-mods-btn {
+  width: 100%;
+  background: #1a3a4a;
+  border: none;
+  border-radius: 9999px;
+  padding: 10px 16px;
+  color: #4fbcff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  transition: background 0.2s;
+}
+
+.message-mods-btn:hover {
+  background: #1f4a5e;
+}
+
+.invite-mod-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px dashed #343536;
+  border-radius: 9999px;
+  padding: 10px 16px;
+  color: #818384;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  transition: all 0.2s;
+}
+
+.invite-mod-btn:hover {
+  border-color: #818384;
+  color: #d7dadc;
+}
+
+.delete-community-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid #ff4500;
+  border-radius: 9999px;
+  padding: 10px 16px;
+  color: #ff4500;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.delete-community-btn:hover {
+  background: rgba(255, 69, 0, 0.1);
+}
+
+/* ================= Modals ================= */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.members-modal,
+.settings-modal,
+.confirm-modal {
+  background: #1a1a1b;
+  border: 1px solid #343536;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #343536;
+}
+
+.modal-header h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #d7dadc;
+  margin: 0;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  color: #818384;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.modal-close-btn:hover {
+  color: #d7dadc;
+}
+
+.modal-tabs {
+  display: flex;
+  border-bottom: 1px solid #343536;
+}
+
+.modal-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 12px;
+  color: #818384;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-tab.active {
+  color: #d7dadc;
+  border-bottom: 2px solid #0079d3;
+}
+
+.modal-tab:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.modal-content {
+  padding: 16px 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-content label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #d7dadc;
+  margin-bottom: 8px;
+}
+
+.modal-content textarea {
+  width: 100%;
+  background: #272729;
+  border: 1px solid #343536;
+  border-radius: 8px;
+  padding: 12px;
+  color: #d7dadc;
+  font-size: 14px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.modal-content textarea:focus {
+  outline: none;
+  border-color: #0079d3;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.cancel-btn {
   background: transparent;
   border: 1px solid #343536;
-  color: #d7dadc;
-  padding: 8px 16px;
   border-radius: 9999px;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.2s;
-  margin-bottom: 8px;
-}
-
-.community-page-message-mods-btn:hover,
-.community-page-invite-mod-btn:hover {
-  background: #272729;
-}
-
-.community-page-mod-list {
-  margin: 16px 0;
-  padding: 12px 0;
-  border-top: 1px solid #343536;
-}
-
-.community-page-mod-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 0;
-  font-size: 14px;
+  padding: 8px 20px;
   color: #d7dadc;
-}
-
-.community-page-mod-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-}
-
-.community-page-view-all-mods {
-  width: 100%;
-  background: transparent;
-  border: none;
-  color: #0079d3;
-  padding: 8px;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
-  text-align: center;
-  transition: background 0.2s;
-  border-radius: 4px;
 }
 
-.community-page-view-all-mods:hover {
-  background: #272729;
+.cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
-/* ================= Settings Card ================= */
-.community-page-setting-item {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: transparent;
-  border: none;
-  color: #d7dadc;
-  padding: 12px 8px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.2s;
-  border-radius: 4px;
-  margin-bottom: 8px;
-}
-
-.community-page-setting-item:hover {
-  background: #272729;
-}
-
-.community-page-edit-widgets-btn {
-  width: 100%;
+.save-btn {
   background: #0079d3;
   border: none;
-  color: white;
-  padding: 8px 16px;
   border-radius: 9999px;
+  padding: 8px 20px;
+  color: #fff;
   font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background: #0066b3;
+}
+
+.delete-btn {
+  background: #ff4500;
+  border: none;
+  border-radius: 9999px;
+  padding: 8px 20px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: #e63e00;
+}
+
+/* ================= Members List ================= */
+.members-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.member-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  background: #272729;
+  border-radius: 8px;
+}
+
+.member-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+  transform: scaleX(-1);
+}
+
+.member-name {
+  flex: 1;
+  font-size: 14px;
+  color: #d7dadc;
+  font-weight: 500;
+}
+
+.member-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.member-actions button {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 4px;
+  padding: 6px;
+  color: #818384;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.member-actions button:hover {
+  color: #d7dadc;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.mod-badge {
+  background: #00d084;
+  color: #fff;
+  font-size: 10px;
   font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.banned-badge {
+  background: #ff4500;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.remove-mod-btn,
+.unban-btn {
+  background: transparent;
+  border: 1px solid #343536;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  color: #818384;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.remove-mod-btn:hover {
+  border-color: #ff4500;
+  color: #ff4500;
+}
+
+.unban-btn:hover {
+  border-color: #00d084;
+  color: #00d084;
+}
+
+.empty-list {
+  text-align: center;
+  color: #818384;
+  padding: 24px;
+}
+
+/* ================= Confirm Modal ================= */
+.confirm-modal {
+  padding: 24px;
+  text-align: center;
+}
+
+.confirm-modal h2 {
+  color: #d7dadc;
+  margin: 0 0 12px 0;
+}
+
+.confirm-modal p {
+  color: #818384;
+  margin: 0 0 24px 0;
+}
+
+.confirm-modal .modal-actions {
+  justify-content: center;
+}
+
+/* ================= Not Found ================= */
+.community-page-not-found {
+  min-height: 100vh;
+  background: #0b1416;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.community-page-not-found-content {
+  text-align: center;
+  color: #818384;
+}
+
+.community-page-not-found-icon {
+  color: #818384;
+  margin-bottom: 16px;
+}
+
+.community-page-not-found-content h2 {
+  color: #d7dadc;
+  margin: 0 0 8px 0;
+}
+
+.community-page-not-found-content p {
+  margin: 0 0 24px 0;
+}
+
+.community-page-not-found-btn {
+  background: #0079d3;
+  border: none;
+  border-radius: 9999px;
+  padding: 10px 24px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.community-page-not-found-btn:hover {
+  background: #0066b3;
+}
+
+/* ================= Settings Input ================= */
+.settings-input {
+  width: 100%;
+  background: #272729;
+  border: 1px solid #343536;
+  border-radius: 8px;
+  padding: 12px;
+  color: #d7dadc;
+  font-size: 14px;
+  font-family: inherit;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+}
+
+.settings-input:focus {
+  outline: none;
+  border-color: #0079d3;
+}
+
+.search-input {
+  margin-bottom: 12px;
+}
+
+.invite-hint {
+  font-size: 12px;
+  color: #818384;
+  margin: 0 0 12px 0;
+}
+
+.invite-user-btn {
+  background: #0079d3;
+  border: none;
+  border-radius: 9999px;
+  padding: 6px 16px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
 }
 
-.community-page-edit-widgets-btn:hover {
-  background: #1484d6;
+.invite-user-btn:hover {
+  background: #0066b3;
+}
+
+/* ================= Rules Modal ================= */
+.rules-modal .modal-content {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.rule-edit-item {
+  background: #272729;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.rule-edit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.rule-number {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4fbcff;
+}
+
+.rule-remove-btn {
+  background: transparent;
+  border: none;
+  color: #ff4500;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.rule-edit-item .settings-input {
+  margin-bottom: 8px;
+}
+
+.rule-edit-item textarea {
+  width: 100%;
+  background: #1a1a1b;
+  border: 1px solid #343536;
+  border-radius: 8px;
+  padding: 10px;
+  color: #d7dadc;
+  font-size: 13px;
+  resize: vertical;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.rule-edit-item textarea:focus {
+  outline: none;
+  border-color: #0079d3;
+}
+
+.add-rule-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px dashed #343536;
+  border-radius: 8px;
+  padding: 12px;
+  color: #4fbcff;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  transition: all 0.2s;
+}
+
+.add-rule-btn:hover {
+  border-color: #4fbcff;
+  background: rgba(79, 188, 255, 0.1);
+}
+
+/* ================= Modal Scrollbar ================= */
+.modal-content::-webkit-scrollbar,
+.members-list::-webkit-scrollbar {
+  width: 12px;
+}
+
+.modal-content::-webkit-scrollbar-track,
+.members-list::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.modal-content::-webkit-scrollbar-thumb,
+.members-list::-webkit-scrollbar-thumb {
+  background-color: #818384;
+  border-radius: 6px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover,
+.members-list::-webkit-scrollbar-thumb:hover {
+  background-color: #a8abb1;
+}
+
+/* ================= Responsive ================= */
+@media (max-width: 900px) {
+  .community-page-layout {
+    flex-direction: column;
+  }
+  
+  .community-page-sidebar {
+    width: 100%;
+  }
 }
