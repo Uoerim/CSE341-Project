@@ -1,265 +1,281 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./answerConversation.css";
 
 const AnswerConversation = ({ question }) => {
     const navigate = useNavigate();
-    const [followup, setFollowup] = useState("");
+    const [messages, setMessages] = useState([]);
+    const [inputValue, setInputValue] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [displayedResponse, setDisplayedResponse] = useState("");
+    const [isTyping, setIsTyping] = useState(false);
+    const messagesEndRef = useRef(null);
+    const typingIntervalRef = useRef(null);
+    const initialMessageSent = useRef(false);
 
-    // Simple hash function to generate consistent random data based on question
-    const hashString = (str) => {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-            const char = str.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash = hash & hash; // Convert to 32bit integer
-        }
-        return Math.abs(hash);
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+    // Scroll to bottom when messages change
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
-    // All possible sources
-    const allSources = [
-        { name: "r/teenagers", icon: "👥" },
-        { name: "r/AskReddit", icon: "❓" },
-        { name: "r/CasualConversation", icon: "💬" },
-        { name: "r/NoStupidQuestions", icon: "🤔" },
-        { name: "r/explainlikeimfive", icon: "🧒" },
-        { name: "r/todayilearned", icon: "📚" },
-        { name: "r/YouShouldKnow", icon: "💡" },
-        { name: "r/mildlyinteresting", icon: "🔍" },
-        { name: "r/interestingasfuck", icon: "🔥" },
-        { name: "r/science", icon: "🔬" }
-    ];
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages, displayedResponse]);
 
-    // All possible facts/quotes
-    const allFacts = [
-        {
-            title: "Butterflies Remember Being Caterpillars:",
-            quote: "Butterflies can remember experiences from when they were caterpillars, even after metamorphosis.",
-            sources: ["r/teenagers", "r/todayilearned"]
-        },
-        {
-            title: "Mars Day Length:",
-            quote: "A day on Mars is only slightly longer than a day on Earth - about 24 hours and 37 minutes.",
-            sources: ["r/AskReddit", "r/science"]
-        },
-        {
-            title: "Octopuses Have Three Hearts:",
-            quote: "Octopuses have three hearts - two pump blood to the gills, and one pumps blood to the rest of the body.",
-            sources: ["r/todayilearned", "r/science"]
-        },
-        {
-            title: "Honey Never Spoils:",
-            quote: "Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible.",
-            sources: ["r/YouShouldKnow", "r/mildlyinteresting"]
-        },
-        {
-            title: "Bananas Are Berries:",
-            quote: "Botanically speaking, bananas are berries, but strawberries are not. The classification depends on where the seeds are located.",
-            sources: ["r/explainlikeimfive", "r/todayilearned"]
-        },
-        {
-            title: "Wombat Poop is Cube-Shaped:",
-            quote: "Wombats produce cube-shaped feces, which helps mark territory and prevents the droppings from rolling away.",
-            sources: ["r/interestingasfuck", "r/science"]
-        },
-        {
-            title: "Sharks Have Been Around Longer Than Trees:",
-            quote: "Sharks have existed for over 400 million years, while trees have only been around for about 350 million years.",
-            sources: ["r/todayilearned", "r/science"]
-        },
-        {
-            title: "A Group of Flamingos is Called a Flamboyance:",
-            quote: "While commonly called a flock, a group of flamingos is technically called a flamboyance, which perfectly describes their appearance.",
-            sources: ["r/mildlyinteresting", "r/CasualConversation"]
-        },
-        {
-            title: "Cleopatra Lived Closer to the Moon Landing Than the Pyramids:",
-            quote: "Cleopatra lived closer in time to the moon landing (1969) than to the construction of the Great Pyramid of Giza.",
-            sources: ["r/YouShouldKnow", "r/todayilearned"]
-        },
-        {
-            title: "Dolphins Have Names:",
-            quote: "Dolphins use signature whistles that act as names, allowing them to call out to specific individuals.",
-            sources: ["r/science", "r/interestingasfuck"]
-        },
-        {
-            title: "The Human Brain Uses 20% of the Body's Energy:",
-            quote: "Despite being only 2% of body weight, the brain consumes about 20% of the body's total energy and oxygen.",
-            sources: ["r/science", "r/YouShouldKnow"]
-        },
-        {
-            title: "There Are More Possible Chess Games Than Atoms in the Universe:",
-            quote: "The number of possible chess games is estimated to be around 10^120, far exceeding the number of atoms in the observable universe.",
-            sources: ["r/explainlikeimfive", "r/science"]
-        },
-        {
-            title: "A Single Cloud Can Weigh More Than a Million Pounds:",
-            quote: "A cumulus cloud can weigh over 1 million pounds, but it floats because the air below it is denser.",
-            sources: ["r/todayilearned", "r/explainlikeimfive"]
-        },
-        {
-            title: "The Speed of Light is Constant:",
-            quote: "Light always travels at 299,792,458 meters per second in a vacuum, regardless of the observer's motion.",
-            sources: ["r/science", "r/explainlikeimfive"]
-        },
-        {
-            title: "Penguins Propose with Pebbles:",
-            quote: "Male penguins search for the perfect pebble to present to their chosen mate as a proposal gift.",
-            sources: ["r/mildlyinteresting", "r/CasualConversation"]
+    // Initial question handling
+    useEffect(() => {
+        if (question && messages.length === 0 && !initialMessageSent.current) {
+            initialMessageSent.current = true;
+            handleSendMessage(question, true);
         }
-    ];
-
-    // Generate data based on question
-    const generatedData = useMemo(() => {
-        if (!question) {
-            return {
-                sources: allSources.slice(0, 5),
-                facts: allFacts.slice(0, 2)
-            };
-        }
-
-        const hash = hashString(question.toLowerCase());
-        const seed = hash % 1000000;
-
-        // Select 5 random sources based on hash
-        const selectedSources = [];
-        const sourceIndices = new Set();
-        for (let i = 0; i < 5; i++) {
-            let index;
-            do {
-                index = (seed + i * 7) % allSources.length;
-            } while (sourceIndices.has(index));
-            sourceIndices.add(index);
-            selectedSources.push(allSources[index]);
-        }
-
-        // Select 3-5 random facts based on hash
-        const numFacts = 3 + (seed % 3); // 3-5 facts
-        const selectedFacts = [];
-        const factIndices = new Set();
-        for (let i = 0; i < numFacts; i++) {
-            let index;
-            do {
-                index = (seed + i * 11) % allFacts.length;
-            } while (factIndices.has(index));
-            factIndices.add(index);
-            const fact = allFacts[index];
-            // Select a random source for this fact
-            const factSource = fact.sources[(seed + i * 3) % fact.sources.length];
-            const timeAgoOptions = ["1 hour ago", "2 hours ago", "5 hours ago", "1 day ago", "2 days ago", "3 days ago", "5 days ago", "1 week ago"];
-            const timeAgo = timeAgoOptions[(seed + i * 5) % timeAgoOptions.length];
-            
-            selectedFacts.push({
-                ...fact,
-                source: factSource,
-                timeAgo: timeAgo
-            });
-        }
-
-        return {
-            sources: selectedSources,
-            facts: selectedFacts
-        };
     }, [question]);
 
-    const sources = generatedData.sources;
-    const facts = generatedData.facts;
+    // Cleanup typing interval on unmount
+    useEffect(() => {
+        return () => {
+            if (typingIntervalRef.current) {
+                clearInterval(typingIntervalRef.current);
+            }
+        };
+    }, []);
 
-    const handleFollowupSubmit = (e) => {
-        e.preventDefault();
-        if (followup.trim()) {
-            // TODO: Implement followup submission logic
-            console.log("Followup submitted:", followup);
+    const typeResponse = (fullResponse, onComplete) => {
+        let currentIndex = 0;
+        setDisplayedResponse("");
+        setIsTyping(true);
+
+        typingIntervalRef.current = setInterval(() => {
+            if (currentIndex < fullResponse.length) {
+                const charsPerTick = Math.random() > 0.9 ? 3 : 2;
+                const nextChunk = fullResponse.slice(currentIndex, currentIndex + charsPerTick);
+                setDisplayedResponse(prev => prev + nextChunk);
+                currentIndex += charsPerTick;
+            } else {
+                clearInterval(typingIntervalRef.current);
+                setIsTyping(false);
+                onComplete(fullResponse);
+            }
+        }, 20);
+    };
+
+    const handleSendMessage = async (messageText, isInitial = false) => {
+        const text = messageText || inputValue;
+        if (!text.trim() || isLoading) return;
+
+        const userMessage = {
+            role: "user",
+            content: text.trim()
+        };
+
+        const newMessages = [...messages, userMessage];
+        setMessages(newMessages);
+        setInputValue("");
+        setIsLoading(true);
+        setDisplayedResponse("");
+
+        try {
+            const response = await fetch(`${apiUrl}/ai/chat`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: text.trim(),
+                    conversationHistory: messages
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success && data.reply) {
+                typeResponse(data.reply, (fullResponse) => {
+                    setMessages(prev => [...prev, {
+                        role: "assistant",
+                        content: fullResponse
+                    }]);
+                    setDisplayedResponse("");
+                });
+            } else {
+                throw new Error(data.error || "Failed to get response");
+            }
+        } catch (error) {
+            console.error("Error sending message:", error);
+            setMessages(prev => [...prev, {
+                role: "assistant",
+                content: "I'm sorry, I encountered an error while processing your request. Please try again."
+            }]);
+        } finally {
+            setIsLoading(false);
         }
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        handleSendMessage();
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            handleSendMessage();
+        }
+    };
+
+    const formatMessage = (content) => {
+        // Simple markdown-like formatting
+        return content
+            .split('\n')
+            .map((line, i) => {
+                // Bold text
+                line = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                // Italic text
+                line = line.replace(/\*(.*?)\*/g, '<em>$1</em>');
+                // Code inline
+                line = line.replace(/`(.*?)`/g, '<code>$1</code>');
+                return <p key={i} dangerouslySetInnerHTML={{ __html: line || '&nbsp;' }} />;
+            });
     };
 
     return (
         <div className="answer-conversation-container">
             <div className="answer-conversation-content">
+                {/* Header */}
                 <div className="conversation-header">
                     <button className="back-button" onClick={() => navigate("/app?page=answers")}>
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                             <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
                     </button>
-                    <h1 className="conversation-title">{question || "Hello?"}</h1>
-                    <button className="new-question-button" onClick={() => navigate("/app?page=answers")}>New question</button>
-                </div>
-
-                <div className="sources-section">
-                    <div className="sources-wrapper">
-                        {sources.map((source, index) => (
-                            <div key={index} className="source-tag" style={{ animationDelay: `${index * 0.1}s` }}>
-                                <span className="source-icon">{source.icon}</span>
-                                <span className="source-name">{source.name}</span>
-                            </div>
-                        ))}
-                        {sources.map((source, index) => (
-                            <div key={`duplicate-${index}`} className="source-tag" style={{ animationDelay: `${(sources.length + index) * 0.1}s` }}>
-                                <span className="source-icon">{source.icon}</span>
-                                <span className="source-name">{source.name}</span>
-                            </div>
-                        ))}
+                    <div className="header-title">
+                        <svg className="ai-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="url(#gradient1)"/>
+                            <defs>
+                                <linearGradient id="gradient1" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                                    <stop stopColor="#4FBCFF"/>
+                                    <stop offset="1" stopColor="#9C6ADE"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <span>Loopify AI</span>
                     </div>
+                    <button className="new-chat-button" onClick={() => {
+                        setMessages([]);
+                        setDisplayedResponse("");
+                        navigate("/app?page=answers");
+                    }}>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M8 3V13M3 8H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                        </svg>
+                        New Chat
+                    </button>
                 </div>
 
-                <div className="description-section">
-                    <p className="description-text">
-                        Discover a collection of <strong>mind-blowing and quirky facts</strong> gathered from redditors on various topics:
-                    </p>
-                </div>
+                {/* Messages Container */}
+                <div className="messages-container">
+                    {messages.length === 0 && !isLoading && (
+                        <div className="empty-state">
+                            <div className="empty-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="url(#gradient2)"/>
+                                    <defs>
+                                        <linearGradient id="gradient2" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                                            <stop stopColor="#4FBCFF"/>
+                                            <stop offset="1" stopColor="#9C6ADE"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <h2>How can I help you today?</h2>
+                            <p>Ask me anything and I'll do my best to help.</p>
+                        </div>
+                    )}
 
-                <div className="facts-section">
-                    <h2 className="facts-title">
-                        {question 
-                            ? `Answers about "${question}"` 
-                            : "General Fun Facts"}
-                    </h2>
-                    {facts.map((fact, index) => (
-                        <div key={index} className="fact-card">
-                            <h3 className="fact-title">{fact.title}</h3>
-                            <p className="fact-quote">"{fact.quote}"</p>
-                            <div className="fact-source">
-                                <span className="source-link">{fact.source}</span>
-                                <span className="source-separator">•</span>
-                                <span className="source-time">{fact.timeAgo}</span>
+                    {messages.map((message, index) => (
+                        <div 
+                            key={index} 
+                            className={`message ${message.role === "user" ? "user-message" : "assistant-message"}`}
+                        >
+                            {message.role === "assistant" && (
+                                <div className="message-avatar">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="url(#gradient3)"/>
+                                        <defs>
+                                            <linearGradient id="gradient3" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                                                <stop stopColor="#4FBCFF"/>
+                                                <stop offset="1" stopColor="#9C6ADE"/>
+                                            </linearGradient>
+                                        </defs>
+                                    </svg>
+                                </div>
+                            )}
+                            <div className="message-content">
+                                {message.role === "user" ? (
+                                    <p>{message.content}</p>
+                                ) : (
+                                    formatMessage(message.content)
+                                )}
                             </div>
                         </div>
                     ))}
+
+                    {/* Typing indicator or streamed response */}
+                    {(isLoading || isTyping) && (
+                        <div className="message assistant-message">
+                            <div className="message-avatar">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="url(#gradient4)"/>
+                                    <defs>
+                                        <linearGradient id="gradient4" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                                            <stop stopColor="#4FBCFF"/>
+                                            <stop offset="1" stopColor="#9C6ADE"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <div className="message-content">
+                                {isTyping && displayedResponse ? (
+                                    formatMessage(displayedResponse)
+                                ) : (
+                                    <div className="typing-indicator">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    <div ref={messagesEndRef} />
                 </div>
 
-                <form className="followup-form" onSubmit={handleFollowupSubmit}>
-                    <div className="followup-input-wrapper">
+                {/* Input Form */}
+                <form className="input-form" onSubmit={handleSubmit}>
+                    <div className="input-wrapper">
                         <input
                             type="text"
-                            className="followup-input"
-                            placeholder="Ask a followup"
-                            value={followup}
-                            onChange={(e) => setFollowup(e.target.value)}
+                            className="message-input"
+                            placeholder="Message Loopify AI..."
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            disabled={isLoading || isTyping}
                         />
-                        <button type="submit" className="followup-submit-button" aria-label="Submit followup">
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <button 
+                            type="submit" 
+                            className="send-button" 
+                            disabled={!inputValue.trim() || isLoading || isTyping}
+                        >
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                                 <path d="M18.5 1.5L9.5 10.5M18.5 1.5L12.5 18.5L9.5 10.5M18.5 1.5L1.5 7.5L9.5 10.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                             </svg>
                         </button>
                     </div>
+                    <p className="input-hint">Loopify AI can make mistakes. Consider checking important information.</p>
                 </form>
             </div>
-
-            <footer className="answers-footer">
-                <div className="legal-links">
-                    <a href="#" className="footer-link">Loopify Rules</a>
-                    <span className="footer-separator">•</span>
-                    <a href="#" className="footer-link">Privacy Policy</a>
-                    <span className="footer-separator">•</span>
-                    <a href="#" className="footer-link">User Agreement</a>
-                    <span className="footer-separator">•</span>
-                    <a href="#" className="footer-link">Accessibility</a>
-                    <span className="footer-separator">•</span>
-                    <span className="footer-copyright">Loopify, Inc. © 2025. All rights reserved.</span>
-                </div>
-            </footer>
         </div>
     );
 };
