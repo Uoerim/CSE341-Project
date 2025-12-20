@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./postDetail.css";
 import Spinner from "../../components/Global/Spinner/Spinner";
 import axios from "axios";
@@ -21,6 +21,21 @@ function PostDetail({ postId, onClose }) {
     const [commentVotes, setCommentVotes] = useState({});
     const [userCommentVotes, setUserCommentVotes] = useState({});
     const [votingComments, setVotingComments] = useState({});
+    
+    // AI Summary states
+    const [postSummary, setPostSummary] = useState("");
+    const [commentsSummary, setCommentsSummary] = useState("");
+    const [isLoadingPostSummary, setIsLoadingPostSummary] = useState(false);
+    const [isLoadingCommentsSummary, setIsLoadingCommentsSummary] = useState(false);
+    const [showPostSummary, setShowPostSummary] = useState(false);
+    const [showCommentsSummary, setShowCommentsSummary] = useState(false);
+    const [displayedPostSummary, setDisplayedPostSummary] = useState("");
+    const [displayedCommentsSummary, setDisplayedCommentsSummary] = useState("");
+    const [isTypingPost, setIsTypingPost] = useState(false);
+    const [isTypingComments, setIsTypingComments] = useState(false);
+    const postTypingRef = useRef(null);
+    const commentsTypingRef = useRef(null);
+    
     const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
     const token = localStorage.getItem("authToken");
     const userId = localStorage.getItem("userId");
@@ -279,6 +294,133 @@ function PostDetail({ postId, onClose }) {
         return votes.upvotes - votes.downvotes;
     };
 
+    // AI Summary typing effect
+    const typeText = (fullText, setDisplayed, setIsTyping, typingRef) => {
+        let currentIndex = 0;
+        setDisplayed("");
+        setIsTyping(true);
+
+        typingRef.current = setInterval(() => {
+            if (currentIndex < fullText.length) {
+                const charsPerTick = Math.random() > 0.9 ? 3 : 2;
+                const nextChunk = fullText.slice(currentIndex, currentIndex + charsPerTick);
+                setDisplayed(prev => prev + nextChunk);
+                currentIndex += charsPerTick;
+            } else {
+                clearInterval(typingRef.current);
+                setIsTyping(false);
+            }
+        }, 15);
+    };
+
+    // Cleanup typing intervals on unmount
+    useEffect(() => {
+        return () => {
+            if (postTypingRef.current) clearInterval(postTypingRef.current);
+            if (commentsTypingRef.current) clearInterval(commentsTypingRef.current);
+        };
+    }, []);
+
+    // Strip HTML tags helper
+    const stripHtml = (html) => {
+        const tmp = document.createElement("div");
+        tmp.innerHTML = html;
+        return tmp.textContent || tmp.innerText || "";
+    };
+
+    // Summarize post content
+    const handleSummarizePost = async () => {
+        if (isLoadingPostSummary || !post) return;
+        
+        if (postSummary) {
+            setShowPostSummary(!showPostSummary);
+            return;
+        }
+
+        setIsLoadingPostSummary(true);
+        setShowPostSummary(true);
+
+        try {
+            const postContent = stripHtml(post.content);
+            const message = `Please provide a concise summary of this post. Title: "${post.title}". Content: "${postContent}". Keep the summary brief (2-3 sentences max).`;
+
+            const response = await fetch(`${apiUrl}/ai/chat`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: message,
+                    conversationHistory: []
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success && data.reply) {
+                setPostSummary(data.reply);
+                typeText(data.reply, setDisplayedPostSummary, setIsTypingPost, postTypingRef);
+            } else {
+                throw new Error(data.error || "Failed to get summary");
+            }
+        } catch (error) {
+            console.error("Error summarizing post:", error);
+            setPostSummary("Failed to generate summary. Please try again.");
+            setDisplayedPostSummary("Failed to generate summary. Please try again.");
+        } finally {
+            setIsLoadingPostSummary(false);
+        }
+    };
+
+    // Summarize comments
+    const handleSummarizeComments = async () => {
+        if (isLoadingCommentsSummary || comments.length === 0) return;
+        
+        if (commentsSummary) {
+            setShowCommentsSummary(!showCommentsSummary);
+            return;
+        }
+
+        setIsLoadingCommentsSummary(true);
+        setShowCommentsSummary(true);
+
+        try {
+            const topComments = comments
+                .filter(c => !c.parentComment && c.author)
+                .slice(0, 10)
+                .map(c => `${c.author?.username}: "${c.content}"`)
+                .join("\n");
+
+            const message = `Please summarize the main themes and opinions from these comments on a post titled "${post?.title}". Comments:\n${topComments}\n\nProvide a brief summary (2-3 sentences) of what people are saying.`;
+
+            const response = await fetch(`${apiUrl}/ai/chat`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: message,
+                    conversationHistory: []
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success && data.reply) {
+                setCommentsSummary(data.reply);
+                typeText(data.reply, setDisplayedCommentsSummary, setIsTypingComments, commentsTypingRef);
+            } else {
+                throw new Error(data.error || "Failed to get summary");
+            }
+        } catch (error) {
+            console.error("Error summarizing comments:", error);
+            setCommentsSummary("Failed to generate summary. Please try again.");
+            setDisplayedCommentsSummary("Failed to generate summary. Please try again.");
+        } finally {
+            setIsLoadingCommentsSummary(false);
+        }
+    };
+
     const renderComment = (comment, isNested = false) => {
         const replies = comments.filter(c => c.parentComment && c.author && c.parentComment.toString() === comment._id.toString());
         const isOP = post && comment.author && post.author && 
@@ -490,7 +632,48 @@ function PostDetail({ postId, onClose }) {
                             </svg>
                             <span>Share</span>
                         </button>
+
+                        <button 
+                            className={`action-pill ai-btn ${showPostSummary ? 'active' : ''}`}
+                            onClick={handleSummarizePost}
+                            disabled={isLoadingPostSummary}
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="currentColor"/>
+                            </svg>
+                            <span>{isLoadingPostSummary ? 'Summarizing...' : 'AI Summary'}</span>
+                        </button>
                     </div>
+
+                    {/* AI Post Summary */}
+                    {showPostSummary && (
+                        <div className="ai-summary-box">
+                            <div className="ai-summary-header">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="url(#aiGradient)"/>
+                                    <defs>
+                                        <linearGradient id="aiGradient" x1="2" y1="2" x2="22" y2="22">
+                                            <stop stopColor="#4FBCFF"/>
+                                            <stop offset="1" stopColor="#9C6ADE"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                                <span>AI Summary</span>
+                                <button className="ai-summary-close" onClick={() => setShowPostSummary(false)}>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M18 6L6 18M6 6l12 12"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div className="ai-summary-content">
+                                {isLoadingPostSummary || isTypingPost ? (
+                                    <p>{displayedPostSummary || <span className="ai-typing-dots"><span></span><span></span><span></span></span>}</p>
+                                ) : (
+                                    <p>{postSummary}</p>
+                                )}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Comments section */}
                     <div className="comments-section">
@@ -534,6 +717,53 @@ function PostDetail({ postId, onClose }) {
                                 </div>
                             )}
                         </div>
+
+                        {/* Comments header with AI summarize button */}
+                        <div className="comments-header">
+                            <span className="comments-count">{comments.filter(c => !c.parentComment && c.author).length} Comments</span>
+                            {comments.filter(c => !c.parentComment && c.author).length > 0 && (
+                                <button 
+                                    className={`ai-summarize-comments-btn ${showCommentsSummary ? 'active' : ''}`}
+                                    onClick={handleSummarizeComments}
+                                    disabled={isLoadingCommentsSummary}
+                                >
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                        <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="currentColor"/>
+                                    </svg>
+                                    <span>{isLoadingCommentsSummary ? 'Summarizing...' : 'AI Summary'}</span>
+                                </button>
+                            )}
+                        </div>
+
+                        {/* AI Comments Summary */}
+                        {showCommentsSummary && (
+                            <div className="ai-summary-box comments-summary">
+                                <div className="ai-summary-header">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                        <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="url(#aiGradient2)"/>
+                                        <defs>
+                                            <linearGradient id="aiGradient2" x1="2" y1="2" x2="22" y2="22">
+                                                <stop stopColor="#4FBCFF"/>
+                                                <stop offset="1" stopColor="#9C6ADE"/>
+                                            </linearGradient>
+                                        </defs>
+                                    </svg>
+                                    <span>Comments Summary</span>
+                                    <button className="ai-summary-close" onClick={() => setShowCommentsSummary(false)}>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <path d="M18 6L6 18M6 6l12 12"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div className="ai-summary-content">
+                                    {isLoadingCommentsSummary || isTypingComments ? (
+                                        <p>{displayedCommentsSummary || <span className="ai-typing-dots"><span></span><span></span><span></span></span>}</p>
+                                    ) : (
+                                        <p>{commentsSummary}</p>
+                                    )}
+                                </div>
+                            </div>
+                        )}
 
                         {/* Comments list */}
                         <div className="comments-list">
