@@ -7,10 +7,19 @@ import MainNav from "../../components/Main/MainNav";
 import MainSidePanel from "../../components/Main/MainSidePanel";
 import Post from "../../components/Post/Post";
 import ProfileComment from "../../components/Comment/ProfileComment";
+import Create from "../Create/Create";
 
-export default function UserProfilePage({ username: propUsername, embedded = false, onPostClick }) {
+export default function UserProfilePage({
+  username: propUsername,
+  embedded = false,
+  onPostClick,
+  onCreateClick,
+}) {
+  // State for create post modal
   const { username: paramUsername } = useParams();
-  const [currentUsername, setCurrentUsername] = useState(propUsername || paramUsername);
+  const [currentUsername, setCurrentUsername] = useState(
+    propUsername || paramUsername
+  );
   const navigate = useNavigate();
   const [showAvatarModal, setShowAvatarModal] = useState(false);
 
@@ -29,7 +38,7 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
   // Fetch current user's username if not provided
   useEffect(() => {
     if (currentUsername) return;
-    
+
     apiGet("/users/me")
       .then((data) => {
         setCurrentUsername(data.username);
@@ -40,7 +49,7 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
   // Load profile header
   useEffect(() => {
     if (!currentUsername) return;
-    
+
     setUserNotFound(false);
     apiGet(`/users/u/${currentUsername}/profile`)
       .then((data) => {
@@ -90,12 +99,21 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
     return (
       <div className="user-profile-not-found">
         <div className="user-profile-not-found-content">
-          <svg className="user-profile-not-found-icon" fill="currentColor" height="80" width="80" viewBox="0 0 20 20">
+          <svg
+            className="user-profile-not-found-icon"
+            fill="currentColor"
+            height="80"
+            width="80"
+            viewBox="0 0 20 20"
+          >
             <path d="M10 0a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zm-1-13a1 1 0 012 0v6a1 1 0 01-2 0V5zm1 10a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
           </svg>
           <h2>User Not Found</h2>
           <p>The user u/{currentUsername} does not exist.</p>
-          <button className="user-profile-not-found-btn" onClick={() => navigate(-1)}>
+          <button
+            className="user-profile-not-found-btn"
+            onClick={() => navigate(-1)}
+          >
             Go Back
           </button>
         </div>
@@ -103,9 +121,19 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
     );
   }
 
-  if (!user) return <div className="user-profile-loading">Loading profile...</div>;
+  if (!user)
+    return <div className="user-profile-loading">Loading profile...</div>;
 
-  const tabs = ["overview", "posts", "comments", "saved", "history", "hidden", "upvoted", "downvoted"];
+  const tabs = [
+    "overview",
+    "posts",
+    "comments",
+    "saved",
+    "history",
+    "hidden",
+    "upvoted",
+    "downvoted",
+  ];
 
   const profileContent = (
     <>
@@ -115,18 +143,26 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
           {/* Profile Header */}
           <section className="user-profile-header-card">
             <div className="user-profile-user-row">
-              <div className="user-profile-avatar clickable" onClick={() => setShowAvatarModal(true)}>
+              <div
+                className="user-profile-avatar clickable"
+                onClick={() => setShowAvatarModal(true)}
+              >
                 <div className="user-profile-avatar-circle">
-                  <img 
-                    src={`/character/${user.avatar || 'char'}.png`} 
+                  <img
+                    src={`/character/${user.avatar || "char"}.png`}
                     alt={user.username}
                     onError={(e) => {
-                      e.target.src = '/character/char.png';
+                      e.target.src = "/character/char.png";
                     }}
                   />
                 </div>
                 <div className="user-profile-avatar-edit-badge">
-                  <svg fill="currentColor" height="12" width="12" viewBox="0 0 20 20">
+                  <svg
+                    fill="currentColor"
+                    height="12"
+                    width="12"
+                    viewBox="0 0 20 20"
+                  >
                     <path d="M18.85 3.15a2.89 2.89 0 00-4.08 0L3.46 14.46a.5.5 0 00-.12.2l-1.3 4.34a.5.5 0 00.63.63l4.34-1.3a.5.5 0 00.2-.12L18.52 6.9a2.89 2.89 0 00.33-4.08v.33zM5.83 17.52l-2.68.8.8-2.68L14.52 5.07l1.88 1.88-10.57 10.57zm12.1-12.1l-.83.83-1.88-1.88.83-.83a1.39 1.39 0 011.88 0 1.33 1.33 0 010 1.88z"></path>
                   </svg>
                 </div>
@@ -153,6 +189,17 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
 
           {/* Posts/Comments Content */}
           <section className="user-profile-content">
+            {/* Show Create Post button on overview and posts tabs */}
+            {(tab === "posts" || tab === "overview") && (
+              <div className="user-profile-create-post-wrapper">
+                <button
+                  className="user-profile-create-post-btn"
+                  onClick={onCreateClick}
+                >
+                  + Create Post
+                </button>
+              </div>
+            )}
             {loading ? (
               <div className="user-profile-loading-content">
                 <div className="user-profile-spinner"></div>
@@ -161,31 +208,64 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
               <div className="user-profile-empty-state">
                 <div className="user-profile-empty-icon">
                   <svg viewBox="0 0 100 100" fill="currentColor">
-                    <circle cx="50" cy="45" r="35" fill="#fff"/>
-                    <circle cx="50" cy="38" r="8" fill="#1a1a1b"/>
-                    <ellipse cx="35" cy="45" rx="5" ry="8" fill="#ff4500"/>
-                    <ellipse cx="65" cy="45" rx="5" ry="8" fill="#ff4500"/>
-                    <path d="M 30 60 Q 50 70 70 60" stroke="#d7dadc" strokeWidth="3" fill="none" strokeLinecap="round"/>
+                    <circle cx="50" cy="45" r="35" fill="#fff" />
+                    <circle cx="50" cy="38" r="8" fill="#1a1a1b" />
+                    <ellipse cx="35" cy="45" rx="5" ry="8" fill="#ff4500" />
+                    <ellipse cx="65" cy="45" rx="5" ry="8" fill="#ff4500" />
+                    <path
+                      d="M 30 60 Q 50 70 70 60"
+                      stroke="#d7dadc"
+                      strokeWidth="3"
+                      fill="none"
+                      strokeLinecap="round"
+                    />
                   </svg>
                 </div>
-                <h2 className="user-profile-empty-title">You don't have any {tab} yet</h2>
+                <h2 className="user-profile-empty-title">
+                  You don't have any {tab} yet
+                </h2>
                 <p className="user-profile-empty-subtitle">
-                  Once you {tab === "posts" ? "post to a community" : tab === "comments" ? "comment on posts" : "vote on posts"}, it'll show up here. If you'd rather hide your {tab}, update your settings.
+                  Once you{" "}
+                  {tab === "posts"
+                    ? "post to a community"
+                    : tab === "comments"
+                    ? "comment on posts"
+                    : "vote on posts"}
+                  , it'll show up here. If you'd rather hide your {tab}, update
+                  your settings.
                 </p>
-                <button className="user-profile-empty-button">Update Settings</button>
+                <button className="user-profile-empty-button">
+                  Update Settings
+                </button>
               </div>
             ) : tab === "overview" ? (
               items.map((item) => {
                 if (!item || !item.data) return null;
                 return item.type === "post" ? (
-                  <Post key={`post-${item.data._id}`} post={item.data} onPostClick={handlePostClick} />
+                  <Post
+                    key={`post-${item.data._id}`}
+                    post={item.data}
+                    onPostClick={handlePostClick}
+                  />
                 ) : (
-                  <ProfileComment key={`comment-${item.data._id}`} comment={item.data} />
+                  <ProfileComment
+                    key={`comment-${item.data._id}`}
+                    comment={item.data}
+                  />
                 );
               })
-            ) : tab === "posts" || tab === "upvoted" || tab === "downvoted" || tab === "saved" || tab === "hidden" || tab === "history" ? (
+            ) : tab === "posts" ||
+              tab === "upvoted" ||
+              tab === "downvoted" ||
+              tab === "saved" ||
+              tab === "hidden" ||
+              tab === "history" ? (
               items.map((post) => (
-                <Post key={post._id} post={post} onPostClick={handlePostClick} />
+                <Post
+                  key={post._id}
+                  post={post}
+                  onPostClick={handlePostClick}
+                />
               ))
             ) : (
               items.map((comment) => (
@@ -209,7 +289,12 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
               }}
             >
               <div className="user-profile-banner-edit-icon">
-                <svg fill="currentColor" height="16" width="16" viewBox="0 0 20 20">
+                <svg
+                  fill="currentColor"
+                  height="16"
+                  width="16"
+                  viewBox="0 0 20 20"
+                >
                   <path d="M18.85 3.15a2.89 2.89 0 00-4.08 0L3.46 14.46a.5.5 0 00-.12.2l-1.3 4.34a.5.5 0 00.63.63l4.34-1.3a.5.5 0 00.2-.12L18.52 6.9a2.89 2.89 0 00.33-4.08v.33z"></path>
                 </svg>
               </div>
@@ -218,9 +303,14 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
             {/* Sidebar Body */}
             <div className="user-profile-side-body">
               <h2 className="user-profile-side-username">{user.username}</h2>
-              
+
               <button className="user-profile-share-btn">
-                <svg fill="currentColor" height="16" width="16" viewBox="0 0 20 20">
+                <svg
+                  fill="currentColor"
+                  height="16"
+                  width="16"
+                  viewBox="0 0 20 20"
+                >
                   <path d="M12.8 17.524l6.89-6.887a.9.9 0 000-1.273L12.8 2.477a1.64 1.64 0 00-1.782-.349 1.64 1.64 0 00-1.014 1.518v2.593C4.054 6.728 1.192 12.075 1 17.376a1.353 1.353 0 00.862 1.32 1.35 1.35 0 001.531-.364l.334-.381c1.705-1.944 3.323-3.791 6.277-4.103v2.509c0 .667.398 1.262 1.014 1.518a1.638 1.638 0 001.783-.349v-.002z"></path>
                 </svg>
                 <span>Share</span>
@@ -235,7 +325,9 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
                   <span>Karma</span>
                 </div>
                 <div className="user-profile-stat-item">
-                  <strong>{(stats?.postCount || 0) + (stats?.commentCount || 0)}</strong>
+                  <strong>
+                    {(stats?.postCount || 0) + (stats?.commentCount || 0)}
+                  </strong>
                   <span>Contributions</span>
                 </div>
                 <div className="user-profile-stat-item">
@@ -260,11 +352,20 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
 
       {/* ================= CHANGE AVATAR MODAL ================= */}
       {showAvatarModal && (
-        <div className="user-profile-modal-overlay" onClick={() => setShowAvatarModal(false)}>
-          <div className="user-profile-avatar-modal" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="user-profile-modal-overlay"
+          onClick={() => setShowAvatarModal(false)}
+        >
+          <div
+            className="user-profile-avatar-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="user-profile-avatar-modal-header">
               <h3>Avatar image</h3>
-              <button className="user-profile-close-btn" onClick={() => setShowAvatarModal(false)}>
+              <button
+                className="user-profile-close-btn"
+                onClick={() => setShowAvatarModal(false)}
+              >
                 ✕
               </button>
             </div>
@@ -274,7 +375,7 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
                 <button>Select avatar</button>
               </div>
               <div className="user-profile-avatar-option">
-                <img src={`/character/${user.avatar || 'char'}.png`} alt="" />
+                <img src={`/character/${user.avatar || "char"}.png`} alt="" />
                 <button>
                   Select a new image
                   <span className="user-profile-upload-icon">⬆</span>
@@ -291,11 +392,20 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
 
       {/* ================= CHANGE BANNER MODAL ================= */}
       {showBannerModal && (
-        <div className="user-profile-modal-overlay" onClick={() => setShowBannerModal(false)}>
-          <div className="user-profile-banner-modal" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="user-profile-modal-overlay"
+          onClick={() => setShowBannerModal(false)}
+        >
+          <div
+            className="user-profile-banner-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="user-profile-avatar-modal-header">
               <h3>Banner image</h3>
-              <button className="user-profile-close-btn" onClick={() => setShowBannerModal(false)}>
+              <button
+                className="user-profile-close-btn"
+                onClick={() => setShowBannerModal(false)}
+              >
                 ✕
               </button>
             </div>

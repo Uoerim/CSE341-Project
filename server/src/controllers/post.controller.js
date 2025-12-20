@@ -17,6 +17,10 @@ export const createPost = async (req, res, next) => {
       throw new BadRequestError("Title is required");
     }
 
+    if (status === "published" && community && (!content || !content.trim())) {
+      throw new BadRequestError("Post content is required");
+    }
+
     // Validate status if provided
     if (status && !["draft", "published"].includes(status)) {
       throw new BadRequestError("Status must be 'draft' or 'published'");

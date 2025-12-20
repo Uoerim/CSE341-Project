@@ -1,3 +1,35 @@
+.user-profile-create-post-wrapper {
+  display: flex;
+  justify-content: flex-start; /* button on the left */
+  margin-bottom: 16px;
+}
+
+/* already have */
+.user-profile-create-post-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 20px;
+  border-radius: 999px;
+  border: 1px solid #343536;
+  background: #1a1a1b;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+
+.user-profile-create-post-btn:hover,
+.user-profile-create-post-btn:focus {
+  background: #343536;
+  border-color: #4a4a4c;
+  color: #fff;
+  text-decoration: none;
+}
 /* ================= Page Layout ================= */
 .user-profile-page {
   display: flex;

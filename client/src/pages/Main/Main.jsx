@@ -27,8 +27,10 @@ function Main() {
     const [isPanelShifted, setIsPanelShifted] = useState(false);
     const [currentPage, setCurrentPage] = useState(pageParam || "home");
     const [selectedPostId, setSelectedPostId] = useState(null);
-    const [selectedUser, setSelectedUser] = useState(null);
-    const [selectedCommunity, setSelectedCommunity] = useState(null);
+const [selectedUser, setSelectedUser] = useState(null);
+const [selectedCommunity, setSelectedCommunity] = useState(null);
+const [createFromUserProfile, setCreateFromUserProfile] = useState(false);
+
     const mainContentRef = useRef(null);
 
     // Check for username and community query parameters
@@ -71,6 +73,9 @@ function Main() {
         setCurrentPage(page);
     };
 
+    const handleCreateClick = (fromUser = false) => {
+        setCreateFromUserProfile(fromUser);
+        handlePageChange("create");
     const handleSearchBoxClick = (type, idOrName) => {
         // Clear all selections first
         setSelectedPostId(null);
@@ -95,8 +100,12 @@ function Main() {
         if (communityParam) {
             return <CommunityPage communityName={communityParam} embedded={true} onPostClick={setSelectedPostId} />;
         }
+
+        // If username parameter exists, show user profile
+        if (usernameParam) {
+            return <UserProfilePage username={usernameParam} embedded={true} onPostClick={setSelectedPostId} onCreateClick={() => handleCreateClick(true)} />;
         if (selectedUser) {
-            return <UserProfilePage username={selectedUser} embedded={true} onPostClick={setSelectedPostId} />;
+            return <UserProfilePage username={selectedUser} embedded={true} onPostClick={setSelectedPostId} onCreateClick={() => handleCreateClick(true)/>;
         }
         if (selectedCommunity) {
             return <CommunityPage communityName={selectedCommunity} embedded={true} onPostClick={setSelectedPostId} />;
@@ -124,19 +133,24 @@ function Main() {
             case "explore":
                 return <Explore onPostClick={setSelectedPostId} />;
             case "create":
-                return <Create onNavigateHome={() => setCurrentPage("home")} />;
-            case "profile":
-                return <UserProfilePage embedded={true} />;
-            case "notifications":
-                return <Notifications />;
-            case "drafts":
-                return <Drafts />;
-            case "settings":
-                return <Settings />;
-            case "answers":
-                return <LoopifyAnswers />;
-            case "answer-conversation":
-                return <AnswerConversation question={questionParam || ""} />;
+                return <Create onNavigateHome={() => setCurrentPage("home")} fromUserProfile={createFromUserProfile} />;
+case "profile":
+  return (
+    <UserProfilePage
+      embedded={true}
+      onCreateClick={() => handleCreateClick(true)}
+    />
+  );
+case "notifications":
+  return <Notifications />;
+case "drafts":
+  return <Drafts />;
+case "settings":
+  return <Settings />;
+case "answers":
+  return <LoopifyAnswers />;
+case "answer-conversation":
+  return <AnswerConversation question={questionParam || ""} />;
             default:
                 return <Home onPostClick={setSelectedPostId} />;
         }
@@ -145,13 +159,14 @@ function Main() {
     return (
         <PageProvider onPageChange={handlePageChange}>
             <div className="main-container">
-                <MainNav 
-                    onCreateClick={() => handlePageChange("create")} 
-                    onHomeClick={() => handlePageChange("home")} 
-                    searchBoxClick={handleSearchBoxClick}
-                    onAskClick={() => handlePageChange("answers")}
-                    onNotificationsClick={() => handlePageChange("notifications")}
-                />
+<MainNav
+  onCreateClick={() => handleCreateClick(false)}
+  onHomeClick={() => handlePageChange("home")}
+  searchBoxClick={handleSearchBoxClick}
+  onAskClick={() => handlePageChange("answers")}
+  onNotificationsClick={() => handlePageChange("notifications")}
+/>
+
                 <div className="main-app-container">
                     <MainSidePanel onToggle={setIsPanelShifted} onPageChange={handlePageChange} currentPage={currentPage} isViewingPost={!!selectedPostId} />
                     <div
