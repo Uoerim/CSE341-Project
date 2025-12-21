@@ -93,10 +93,6 @@ function Login(
             disabled={googleLoading}
           />
         </div>
-
-        {/* Placeholder Buttons */}
-        <div className="login-button-placeholder">Placeholder</div>
-        <div className="login-button-placeholder">Placeholder</div>
       </div>
 
       <div className="login-or-container">

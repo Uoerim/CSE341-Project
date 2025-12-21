@@ -44,17 +44,21 @@
 .floating-label {
     position: absolute;
     left: 14px;
-    top: 18px;
+    top: 50%;
+    transform: translateY(-50%);
     color: #888;
-    font-size: 16px;
+    font-size: 14px;
     pointer-events: none;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     z-index: 1;
+    display: flex;
+    align-items: center;
 }
 
 .floating-label.active {
-    top: -10px;
+    top: -8px;
     left: 10px;
+    transform: translateY(0);
     font-size: 12px;
     color: #999;
     padding: 0 4px;
@@ -67,6 +71,8 @@
 .password-toggle {
     position: absolute;
     right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
     background: none;
     border: none;
     cursor: pointer;
@@ -88,12 +94,16 @@
 .checkmark-icon {
     position: absolute;
     right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
     animation: fadeIn 0.3s ease;
 }
 
 .error-icon {
     position: absolute;
     right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
     animation: fadeIn 0.3s ease;
     color: #f44336;
 }
