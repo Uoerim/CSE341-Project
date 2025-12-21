@@ -30,16 +30,30 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
 
   const mainContentRef = useRef(null);
 
-  // Fetch current user's username if not provided
+  // Update username when prop or param changes, or fetch own profile
   useEffect(() => {
-    if (currentUsername) return;
+    const newUsername = propUsername || paramUsername;
     
-    apiGet("/users/me")
-      .then((data) => {
-        setCurrentUsername(data.username);
-      })
-      .catch(console.error);
-  }, [currentUsername]);
+    if (newUsername) {
+      // Viewing a specific user's profile
+      if (newUsername !== currentUsername) {
+        setCurrentUsername(newUsername);
+        setTab("overview"); // Reset to overview tab when viewing a different user
+        setUser(null); // Reset user data to show loading
+      }
+    } else {
+      // Viewing own profile - fetch current user's username
+      apiGet("/users/me")
+        .then((data) => {
+          if (data.username !== currentUsername) {
+            setCurrentUsername(data.username);
+            setTab("overview");
+            setUser(null); // Reset user data to show loading
+          }
+        })
+        .catch(console.error);
+    }
+  }, [propUsername, paramUsername]);
 
   // Load profile header
   useEffect(() => {
