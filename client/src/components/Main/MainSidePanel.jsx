@@ -14,8 +14,44 @@ function MainSidePanel({ onToggle, onPageChange, currentPage, isViewingPost }) {
     const [isGamesExpanded, setIsGamesExpanded] = useState(false);
     const [isCommunitiesExpanded, setIsCommunitiesExpanded] = useState(true);
     const [isResourcesExpanded, setIsResourcesExpanded] = useState(false);
+    const [isRecentsExpanded, setIsRecentsExpanded] = useState(true);
     const [communities, setCommunities] = useState([]);
     const [isLoadingCommunities, setIsLoadingCommunities] = useState(false);
+    const [recentItems, setRecentItems] = useState([]);
+
+    // Load recent items from localStorage
+    useEffect(() => {
+        const loadRecents = () => {
+            try {
+                const stored = localStorage.getItem('loopifyRecentItems');
+                if (stored) {
+                    setRecentItems(JSON.parse(stored));
+                }
+            } catch (error) {
+                console.error('Failed to load recent items:', error);
+            }
+        };
+
+        loadRecents();
+
+        // Listen for storage changes (when user views a profile/community)
+        const handleStorageChange = (e) => {
+            if (e.key === 'loopifyRecentItems') {
+                loadRecents();
+            }
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+        
+        // Also listen for custom event for same-tab updates
+        const handleRecentsUpdate = () => loadRecents();
+        window.addEventListener('loopifyRecentsUpdated', handleRecentsUpdate);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+            window.removeEventListener('loopifyRecentsUpdated', handleRecentsUpdate);
+        };
+    }, []);
 
     // Fetch user's communities
     useEffect(() => {
@@ -164,12 +200,61 @@ function MainSidePanel({ onToggle, onPageChange, currentPage, isViewingPost }) {
                         </div>
                         <hr />
                         <div className="side-section">
-                            <div className="side-section-title">
+                            <div className="side-section-title" onClick={() => setIsRecentsExpanded(!isRecentsExpanded)}>
                                 <span>RECENT</span>
-                                <svg rpl="" className="text-secondary-weak" fill="currentColor" height="20" icon-name="caret-down-outline" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
+                                <svg rpl="" className="text-secondary-weak" fill="currentColor" height="20" icon-name="caret-down-outline" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg" style={{ transform: isRecentsExpanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
                                     <path d="M10 13.7a.897.897 0 01-.636-.264l-4.6-4.6a.9.9 0 111.272-1.273L10 11.526l3.964-3.963a.9.9 0 011.272 1.273l-4.6 4.6A.897.897 0 0110 13.7z"></path>
                                 </svg>
                             </div>
+                            {isRecentsExpanded && (
+                                <div className="side-section-items recents-list">
+                                    {recentItems.length === 0 ? (
+                                        <div className="recents-empty">
+                                            <span>No recent activity</span>
+                                        </div>
+                                    ) : (
+                                        recentItems.slice(0, 5).map((item, index) => (
+                                            <button
+                                                key={`${item.type}-${item.id}-${index}`}
+                                                className="side-section-item recent-item"
+                                                onClick={() => {
+                                                    if (item.type === 'community') {
+                                                        onPageChange(`community/${item.name}`);
+                                                    } else if (item.type === 'profile') {
+                                                        onPageChange(`profile/${item.username}`);
+                                                    }
+                                                }}
+                                            >
+                                                <span className="recent-icon">
+                                                    {item.type === 'community' ? (
+                                                        item.icon ? (
+                                                            <img src={item.icon} alt={item.name} />
+                                                        ) : (
+                                                            <div className="recent-icon-placeholder community-placeholder">
+                                                                {item.name?.charAt(0).toUpperCase()}
+                                                            </div>
+                                                        )
+                                                    ) : (
+                                                        <img 
+                                                            src={item.avatar ? `/character/${item.avatar}.png` : '/character/char.png'} 
+                                                            alt={item.username}
+                                                            className="recent-avatar"
+                                                        />
+                                                    )}
+                                                </span>
+                                                <span className="recent-info">
+                                                    <span className="recent-name">
+                                                        {item.type === 'community' ? `r/${item.name}` : `u/${item.username}`}
+                                                    </span>
+                                                    <span className="recent-type">
+                                                        {item.type === 'community' ? 'Community' : 'Profile'}
+                                                    </span>
+                                                </span>
+                                            </button>
+                                        ))
+                                    )}
+                                </div>
+                            )}
                         </div>
                         <hr />
                         <div className="side-section">

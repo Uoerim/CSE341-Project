@@ -69,6 +69,14 @@ function Main() {
             return;
         }
         
+        // Handle profile navigation from side panel
+        if (page.startsWith("profile/")) {
+            const username = page.replace("profile/", "");
+            setSelectedUser(username);
+            setCurrentPage("user");
+            return;
+        }
+        
         // Clean up URL - remove all query params when navigating to a new page
         const hasQueryParams = window.location.search && window.location.search !== "";
         if (hasQueryParams) {

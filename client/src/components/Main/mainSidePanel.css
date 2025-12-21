@@ -533,6 +533,101 @@
     border-color: #ff6b35;
 }
 
+/* Recents List Styles */
+.recents-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 4px 0;
+}
+
+.recents-empty {
+    padding: 12px 16px;
+    color: #6B7280;
+    font-size: 13px;
+    text-align: center;
+}
+
+.recent-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.15s ease;
+    width: 100%;
+    text-align: left;
+}
+
+.recent-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.recent-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.recent-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.recent-icon-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.recent-icon-placeholder.community-placeholder {
+    background: linear-gradient(135deg, #ff6b35, #f7418c);
+}
+
+.recent-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    background-color: #3E4042;
+}
+
+.recent-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: hidden;
+}
+
+.recent-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #D1D5DB;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.recent-type {
+    font-size: 12px;
+    color: #6B7280;
+}
+
 /* Resources List Styles */
 .resources-list {
     display: flex;

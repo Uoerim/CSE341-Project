@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { apiGet } from "../../utils/api";
 import Post from "../../components/Post/Post";
 import Spinner from "../../components/Global/Spinner/Spinner";
+import { addRecentCommunity } from "../../utils/recentsService";
 
 export default function CommunityPage({ communityName: propName, embedded = false, onPostClick }) {
   const navigate = useNavigate();
@@ -52,6 +53,9 @@ export default function CommunityPage({ communityName: propName, embedded = fals
         setEditDescription(data.description || "");
         setEditName(data.name || "");
         setEditRules(data.rules || []);
+        
+        // Add to recent items
+        addRecentCommunity(data);
         
         // Check if current user is owner
         const creatorId = data.creator?._id || data.creator;

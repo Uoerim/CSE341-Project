@@ -2,6 +2,7 @@ import "./userProfile.css";
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { apiGet } from "../../utils/api";
+import { addRecentProfile } from "../../utils/recentsService";
 
 import MainNav from "../../components/Main/MainNav";
 import MainSidePanel from "../../components/Main/MainSidePanel";
@@ -46,6 +47,12 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
       .then((data) => {
         setUser(data.user);
         setStats(data.stats);
+        
+        // Add to recent items (only if viewing someone else's profile)
+        const myUserId = localStorage.getItem("userId");
+        if (data.user && data.user._id !== myUserId) {
+          addRecentProfile(data.user);
+        }
       })
       .catch((error) => {
         console.error(error);
