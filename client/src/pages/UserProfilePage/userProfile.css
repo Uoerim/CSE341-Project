@@ -399,6 +399,103 @@
   background: #3a3a3c;
 }
 
+/* Friend Section */
+.user-profile-friend-section {
+  margin: 10px 0;
+}
+
+.user-profile-friend-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  width: 100%;
+  border: none;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.user-profile-friend-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.user-profile-friend-btn.add {
+  background: #0079d3;
+  color: white;
+}
+
+.user-profile-friend-btn.add:hover:not(:disabled) {
+  background: #1a8fdf;
+}
+
+.user-profile-friend-btn.pending {
+  background: #272729;
+  color: #d7dadc;
+  border: 1px solid #343536;
+}
+
+.user-profile-friend-btn.pending:hover:not(:disabled) {
+  background: #3a3a3c;
+  border-color: #818384;
+}
+
+.user-profile-friend-btn.friends {
+  background: #1a472a;
+  color: #4caf50;
+  border: 1px solid #2e5a3a;
+}
+
+.user-profile-friend-btn.friends:hover:not(:disabled) {
+  background: #cc3700;
+  color: white;
+  border-color: #cc3700;
+}
+
+.user-profile-friend-btn.friends:hover:not(:disabled) span::before {
+  content: "Remove Friend";
+}
+
+.user-profile-friend-btn.friends:hover:not(:disabled) span {
+  font-size: 0;
+}
+
+.user-profile-friend-btn.friends:hover:not(:disabled) span::before {
+  font-size: 13px;
+}
+
+.user-profile-friend-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.user-profile-friend-btn.accept {
+  flex: 1;
+  background: #0079d3;
+  color: white;
+}
+
+.user-profile-friend-btn.accept:hover:not(:disabled) {
+  background: #1a8fdf;
+}
+
+.user-profile-friend-btn.decline {
+  flex: 1;
+  background: #272729;
+  color: #d7dadc;
+  border: 1px solid #343536;
+}
+
+.user-profile-friend-btn.decline:hover:not(:disabled) {
+  background: #cc3700;
+  color: white;
+  border-color: #cc3700;
+}
+
 .user-profile-followers {
   font-size: 14px;
   color: #818384;

@@ -1,7 +1,7 @@
 .notifications-page {
   max-width: 800px;
   margin: 0 auto;
-  padding: 24px 16px;
+  padding: 48px 16px 24px;
 }
 
 .notifications-loading {

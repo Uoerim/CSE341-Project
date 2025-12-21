@@ -8,7 +8,13 @@ import {
   sendModInvite,
   respondToModInvite,
   sendModMessage,
-  deleteNotification
+  deleteNotification,
+  sendFriendRequest,
+  respondToFriendRequest,
+  getFriendshipStatus,
+  removeFriend,
+  cancelFriendRequest,
+  getFriends
 } from "../controllers/notification.controller.js";
 
 const router = express.Router();
@@ -36,6 +42,14 @@ router.put("/:id/respond", respondToModInvite);
 
 // Send message to mods
 router.post("/mod-message", sendModMessage);
+
+// Friend request routes
+router.post("/friend-request/:userId", sendFriendRequest);
+router.put("/friend-request/:notificationId/respond", respondToFriendRequest);
+router.get("/friendship-status/:userId", getFriendshipStatus);
+router.delete("/friend/:userId", removeFriend);
+router.delete("/friend-request/:userId/cancel", cancelFriendRequest);
+router.get("/friends/:userId", getFriends);
 
 // Delete notification
 router.delete("/:id", deleteNotification);

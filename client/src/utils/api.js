@@ -96,3 +96,68 @@ export const apiGet = async (path) => {
 
   return response.json();
 };
+
+export const apiPost = async (path, data = {}) => {
+  const token = getToken();
+
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    const err = new Error(error.message || `POST ${path} failed`);
+    err.status = response.status;
+    throw err;
+  }
+
+  return response.json();
+};
+
+export const apiPut = async (path, data = {}) => {
+  const token = getToken();
+
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    const err = new Error(error.message || `PUT ${path} failed`);
+    err.status = response.status;
+    throw err;
+  }
+
+  return response.json();
+};
+
+export const apiDelete = async (path) => {
+  const token = getToken();
+
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    const err = new Error(error.message || `DELETE ${path} failed`);
+    err.status = response.status;
+    throw err;
+  }
+
+  return response.json();
+};

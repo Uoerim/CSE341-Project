@@ -61,6 +61,27 @@ export default function Notifications() {
     }
   };
 
+  const handleRespondToFriendRequest = async (notificationId, action) => {
+    try {
+      await fetch(`${apiUrl}/notifications/friend-request/${notificationId}/respond`, {
+        method: "PUT",
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ action })
+      });
+      // Update local state
+      setNotifications(notifications.map(n => 
+        n._id === notificationId 
+          ? { ...n, status: action === "accept" ? "accepted" : "declined", read: true }
+          : n
+      ));
+    } catch (error) {
+      console.error("Failed to respond to friend request:", error);
+    }
+  };
+
   const handleDeleteNotification = async (notificationId) => {
     try {
       await fetch(`${apiUrl}/notifications/${notificationId}`, {
@@ -90,6 +111,7 @@ export default function Notifications() {
   const filteredNotifications = notifications.filter(n => {
     if (filter === "invites") return n.type === "mod_invite";
     if (filter === "messages") return n.type === "mod_message";
+    if (filter === "friends") return n.type === "friend_request";
     return true;
   });
 
@@ -136,6 +158,12 @@ export default function Notifications() {
           All
         </button>
         <button 
+          className={`filter-btn ${filter === "friends" ? "active" : ""}`}
+          onClick={() => setFilter("friends")}
+        >
+          Friend Requests
+        </button>
+        <button 
           className={`filter-btn ${filter === "invites" ? "active" : ""}`}
           onClick={() => setFilter("invites")}
         >
@@ -169,6 +197,10 @@ export default function Notifications() {
                   <svg fill="currentColor" height="24" width="24" viewBox="0 0 20 20">
                     <path d="M10 0L2 4v6c0 5.25 3.45 10 8 11 4.55-1 8-5.75 8-11V4l-8-4z" />
                   </svg>
+                ) : notification.type === "friend_request" ? (
+                  <svg fill="currentColor" height="24" width="24" viewBox="0 0 20 20">
+                    <path d="M10 5a2.5 2.5 0 100 5 2.5 2.5 0 000-5zm0 1a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm6 4a2 2 0 100-4 2 2 0 000 4zm0-1a1 1 0 110-2 1 1 0 010 2zM9.898 14.937A4.251 4.251 0 0010 11.25a4.25 4.25 0 00-4.064 3.003A.75.75 0 006.65 15.5h6.7a.75.75 0 00.714-.978l-.166-.585zM10 12.25a3.25 3.25 0 013.112 2.333l.058.167H6.83l.058-.167A3.251 3.251 0 0110 12.25z" />
+                  </svg>
                 ) : (
                   <svg fill="currentColor" height="24" width="24" viewBox="0 0 20 20">
                     <path d="M18 4H2a1 1 0 00-1 1v10a1 1 0 001 1h16a1 1 0 001-1V5a1 1 0 00-1-1zm-1 10H3V6.5l7 4.5 7-4.5V14z" />
@@ -192,7 +224,41 @@ export default function Notifications() {
                   <span className="notification-time">{formatTime(notification.createdAt)}</span>
                 </div>
 
-                <p className="notification-message">{notification.message}</p>
+                <p className="notification-message">
+                  {notification.type === "friend_request" 
+                    ? `${notification.sender?.username} sent you a friend request`
+                    : notification.message
+                  }
+                </p>
+
+                {notification.type === "friend_request" && notification.status === "pending" && (
+                  <div className="notification-actions">
+                    <button 
+                      className="accept-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRespondToFriendRequest(notification._id, "accept");
+                      }}
+                    >
+                      Accept
+                    </button>
+                    <button 
+                      className="decline-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRespondToFriendRequest(notification._id, "decline");
+                      }}
+                    >
+                      Decline
+                    </button>
+                  </div>
+                )}
+
+                {notification.type === "friend_request" && notification.status !== "pending" && (
+                  <div className={`invite-status ${notification.status}`}>
+                    {notification.status === "accepted" ? "✓ Friends" : "✗ Declined"}
+                  </div>
+                )}
 
                 {notification.type === "mod_invite" && notification.status === "pending" && (
                   <div className="notification-actions">

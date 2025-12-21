@@ -1,7 +1,7 @@
 import "./userProfile.css";
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { apiGet } from "../../utils/api";
+import { apiGet, apiPost, apiPut, apiDelete } from "../../utils/api";
 import { addRecentProfile } from "../../utils/recentsService";
 import { usePageNavigation } from "../../context/PageContext";
 
@@ -25,6 +25,11 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
   const [isPanelShifted, setIsPanelShifted] = useState(false);
   const [userNotFound, setUserNotFound] = useState(false);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
+
+  // Friend system state
+  const [friendshipStatus, setFriendshipStatus] = useState("none"); // none, friends, request_sent, request_received
+  const [friendNotificationId, setFriendNotificationId] = useState(null);
+  const [friendActionLoading, setFriendActionLoading] = useState(false);
 
   const [showBannerModal, setShowBannerModal] = useState(false);
 
@@ -73,6 +78,10 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
         // Add to recent items (only if viewing someone else's profile)
         if (data.user && !isOwn) {
           addRecentProfile(data.user);
+          // Fetch friendship status
+          fetchFriendshipStatus(data.user._id);
+        } else {
+          setFriendshipStatus("self");
         }
       })
       .catch((error) => {
@@ -82,6 +91,89 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
         }
       });
   }, [currentUsername]);
+
+  // Fetch friendship status
+  const fetchFriendshipStatus = async (userId) => {
+    try {
+      const data = await apiGet(`/notifications/friendship-status/${userId}`);
+      setFriendshipStatus(data.status);
+      if (data.notificationId) {
+        setFriendNotificationId(data.notificationId);
+      }
+    } catch (error) {
+      console.error("Error fetching friendship status:", error);
+    }
+  };
+
+  // Handle friend actions
+  const handleAddFriend = async () => {
+    if (!user || friendActionLoading) return;
+    setFriendActionLoading(true);
+    try {
+      const response = await apiPost(`/notifications/friend-request/${user._id}`);
+      if (response.status === "friends") {
+        setFriendshipStatus("friends");
+      } else {
+        setFriendshipStatus("request_sent");
+      }
+    } catch (error) {
+      console.error("Error sending friend request:", error);
+    } finally {
+      setFriendActionLoading(false);
+    }
+  };
+
+  const handleCancelRequest = async () => {
+    if (!user || friendActionLoading) return;
+    setFriendActionLoading(true);
+    try {
+      await apiDelete(`/notifications/friend-request/${user._id}/cancel`);
+      setFriendshipStatus("none");
+    } catch (error) {
+      console.error("Error cancelling friend request:", error);
+    } finally {
+      setFriendActionLoading(false);
+    }
+  };
+
+  const handleRemoveFriend = async () => {
+    if (!user || friendActionLoading) return;
+    setFriendActionLoading(true);
+    try {
+      await apiDelete(`/notifications/friend/${user._id}`);
+      setFriendshipStatus("none");
+    } catch (error) {
+      console.error("Error removing friend:", error);
+    } finally {
+      setFriendActionLoading(false);
+    }
+  };
+
+  const handleAcceptRequest = async () => {
+    if (!friendNotificationId || friendActionLoading) return;
+    setFriendActionLoading(true);
+    try {
+      await apiPut(`/notifications/friend-request/${friendNotificationId}/respond`, { action: "accept" });
+      setFriendshipStatus("friends");
+    } catch (error) {
+      console.error("Error accepting friend request:", error);
+    } finally {
+      setFriendActionLoading(false);
+    }
+  };
+
+  const handleDeclineRequest = async () => {
+    if (!friendNotificationId || friendActionLoading) return;
+    setFriendActionLoading(true);
+    try {
+      await apiPut(`/notifications/friend-request/${friendNotificationId}/respond`, { action: "decline" });
+      setFriendshipStatus("none");
+    } catch (error) {
+      console.error("Error declining friend request:", error);
+    } finally {
+      setFriendActionLoading(false);
+    }
+  };
 
   // Load tab content
   useEffect(() => {
@@ -259,6 +351,72 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
                 </svg>
                 <span>Share</span>
               </button>
+
+              {/* Friend Button - only show when viewing another user's profile */}
+              {!isOwnProfile && (
+                <div className="user-profile-friend-section">
+                  {friendshipStatus === "none" && (
+                    <button 
+                      className="user-profile-friend-btn add"
+                      onClick={handleAddFriend}
+                      disabled={friendActionLoading}
+                    >
+                      <svg fill="currentColor" height="16" width="16" viewBox="0 0 20 20">
+                        <path d="M12 10.5a.5.5 0 01-.5.5H10v1.5a.5.5 0 01-1 0V11H7.5a.5.5 0 010-1H9V8.5a.5.5 0 011 0V10h1.5a.5.5 0 01.5.5zM9.5 5a2.5 2.5 0 100 5 2.5 2.5 0 000-5zm0 1a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm6.5 4a2 2 0 100-4 2 2 0 000 4zm0-1a1 1 0 110-2 1 1 0 010 2zm-.603 5.937A4.251 4.251 0 009.5 11.25a4.25 4.25 0 00-4.064 3.003A.75.75 0 006.15 15.5h6.7a.75.75 0 00.714-.978l-.167-.585zM9.5 12.25a3.25 3.25 0 013.112 2.333l.058.167H6.33l.058-.167A3.251 3.251 0 019.5 12.25zm6.5.5a3.001 3.001 0 012.83 2.033.5.5 0 01-.472.667h-2.524a5.25 5.25 0 00-.757-1H18a2.001 2.001 0 00-1.86-1.232l-.14-.001a5.25 5.25 0 00-.36-.967 3.001 3.001 0 01.36.5z"></path>
+                      </svg>
+                      <span>{friendActionLoading ? "Sending..." : "Add Friend"}</span>
+                    </button>
+                  )}
+                  {friendshipStatus === "request_sent" && (
+                    <button 
+                      className="user-profile-friend-btn pending"
+                      onClick={handleCancelRequest}
+                      disabled={friendActionLoading}
+                    >
+                      <svg fill="currentColor" height="16" width="16" viewBox="0 0 20 20">
+                        <path d="M10 0a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zm1-13a1 1 0 00-2 0v5a1 1 0 00.293.707l3.5 3.5a1 1 0 001.414-1.414L11 9.586V5z"></path>
+                      </svg>
+                      <span>{friendActionLoading ? "Cancelling..." : "Request Pending"}</span>
+                    </button>
+                  )}
+                  {friendshipStatus === "request_received" && (
+                    <div className="user-profile-friend-actions">
+                      <button 
+                        className="user-profile-friend-btn accept"
+                        onClick={handleAcceptRequest}
+                        disabled={friendActionLoading}
+                      >
+                        <svg fill="currentColor" height="16" width="16" viewBox="0 0 20 20">
+                          <path d="M7.5 15.958a.5.5 0 01-.354-.146l-4.5-4.5a.5.5 0 01.708-.708l4.146 4.147 8.646-8.647a.5.5 0 01.708.708l-9 9a.5.5 0 01-.354.146z"></path>
+                        </svg>
+                        <span>{friendActionLoading ? "..." : "Accept"}</span>
+                      </button>
+                      <button 
+                        className="user-profile-friend-btn decline"
+                        onClick={handleDeclineRequest}
+                        disabled={friendActionLoading}
+                      >
+                        <svg fill="currentColor" height="16" width="16" viewBox="0 0 20 20">
+                          <path d="M10 8.586L6.707 5.293a1 1 0 00-1.414 1.414L8.586 10l-3.293 3.293a1 1 0 101.414 1.414L10 11.414l3.293 3.293a1 1 0 001.414-1.414L11.414 10l3.293-3.293a1 1 0 00-1.414-1.414L10 8.586z"></path>
+                        </svg>
+                        <span>{friendActionLoading ? "..." : "Decline"}</span>
+                      </button>
+                    </div>
+                  )}
+                  {friendshipStatus === "friends" && (
+                    <button 
+                      className="user-profile-friend-btn friends"
+                      onClick={handleRemoveFriend}
+                      disabled={friendActionLoading}
+                    >
+                      <svg fill="currentColor" height="16" width="16" viewBox="0 0 20 20">
+                        <path d="M10 5a2.5 2.5 0 100 5 2.5 2.5 0 000-5zm0 1a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm6 4a2 2 0 100-4 2 2 0 000 4zm0-1a1 1 0 110-2 1 1 0 010 2zM9.898 14.937A4.251 4.251 0 0010 11.25a4.25 4.25 0 00-4.064 3.003A.75.75 0 006.65 15.5h6.7a.75.75 0 00.714-.978l-.166-.585zM10 12.25a3.25 3.25 0 013.112 2.333l.058.167H6.83l.058-.167A3.251 3.251 0 0110 12.25z"></path>
+                      </svg>
+                      <span>{friendActionLoading ? "Removing..." : "Friends ✓"}</span>
+                    </button>
+                  )}
+                </div>
+              )}
 
               <p className="user-profile-followers">0 followers</p>
 

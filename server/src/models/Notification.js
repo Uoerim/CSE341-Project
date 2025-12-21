@@ -15,7 +15,7 @@ const notificationSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["mod_invite", "mod_message", "mention", "reply"],
+      enum: ["mod_invite", "mod_message", "mention", "reply", "friend_request"],
       required: true
     },
     community: {
