@@ -17,7 +17,7 @@ export const getCurrentUser = async () => {
       throw new Error("No authentication token found");
     }
 
-    const response = await apiRequest("/user/profile", {
+    const response = await apiRequest("/users/me", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -26,6 +26,29 @@ export const getCurrentUser = async () => {
     return response;
   } catch (error) {
     throw new Error(error.message || "Failed to fetch user profile");
+  }
+};
+
+/**
+ * Get communities the current user is a member of
+ * @returns {Promise<Array>} - Array of community objects
+ */
+export const getMyCommunities = async () => {
+  try {
+    const token = getToken();
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+
+    const response = await apiRequest("/users/me/communities", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    throw new Error(error.message || "Failed to fetch user communities");
   }
 };
 

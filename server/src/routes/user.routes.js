@@ -15,6 +15,7 @@ import {
   getUserSavedByUsername,
   getUserHistoryByUsername,
   getUserHiddenByUsername,
+  getMyCommunities,
 } from "../controllers/user.controller.js";
 import { protect } from "../middleware/auth.js";
 
@@ -26,6 +27,7 @@ router.get("/search", searchUsersAndCommunities);
 // current logged‑in user
 router.get("/me", protect, getMyProfile);
 router.put("/me", protect, updateMyProfile);
+router.get("/me/communities", protect, getMyCommunities);
 
 // public profile by username (Reddit‑style /u/:username/…)
 router.get("/u/:username/profile", getUserProfileByUsername);

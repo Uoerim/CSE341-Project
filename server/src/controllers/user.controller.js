@@ -387,3 +387,26 @@ export const getUserHiddenByUsername = async (req, res, next) => {
     next(err);
   }
 };
+
+// GET communities the current user is a member of
+export const getMyCommunities = async (req, res, next) => {
+  try {
+    const communities = await Community.find({
+      members: req.user._id
+    })
+      .select("name icon description members")
+      .sort({ name: 1 })
+      .lean();
+
+    // Add member count for each community
+    const result = communities.map(c => ({
+      ...c,
+      memberCount: c.members ? c.members.length : 0,
+      members: undefined // Don't send full members array
+    }));
+
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+};

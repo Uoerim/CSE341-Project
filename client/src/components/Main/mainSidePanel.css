@@ -410,6 +410,129 @@
     fill: currentColor;
 }
 
+/* Flappy Bird Game Item Styles */
+.flappy-bird-icon-circle {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%) !important;
+}
+
+.game-play-badge {
+    background: linear-gradient(135deg, #ff6b35 0%, #e85d04 100%);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+    transition: all 0.2s ease;
+}
+
+.featured-game:hover .game-play-badge {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+}
+
+/* Communities List Styles */
+.communities-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 4px 0;
+}
+
+.community-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    width: 100%;
+    text-align: left;
+}
+
+.community-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.community-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.community-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.community-icon-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+}
+
+.community-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.community-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #D1D5DB;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.communities-loading,
+.communities-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 12px;
+    color: #888;
+    font-size: 13px;
+    gap: 8px;
+}
+
+.join-community-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 107, 53, 0.5);
+    color: #ff6b35;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 4px;
+}
+
+.join-community-btn:hover {
+    background: rgba(255, 107, 53, 0.1);
+    border-color: #ff6b35;
+}
+
 
 .side-panel-footer {
     font-size: 10px;
