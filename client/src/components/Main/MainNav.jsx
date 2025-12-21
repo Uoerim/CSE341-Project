@@ -3,15 +3,20 @@ import "./mainNav.css";
 import SearchBox from "../Global/searchBox/SearchBox";
 import UserMenu from "../Global/UserMenu/UserMenu";
 
-function MainNav({ onCreateClick, onHomeClick, searchBoxClick, onNotificationsClick, onAskClick }) {
+function MainNav({ onCreateClick, onHomeClick, searchBoxClick, onNotificationsClick, onAskClick, onChatClick }) {
     const [unreadCount, setUnreadCount] = useState(0);
+    const [chatUnreadCount, setChatUnreadCount] = useState(0);
     const token = localStorage.getItem("authToken");
     const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
     useEffect(() => {
         fetchUnreadCount();
+        fetchChatUnreadCount();
         // Poll for new notifications every 30 seconds
-        const interval = setInterval(fetchUnreadCount, 30000);
+        const interval = setInterval(() => {
+            fetchUnreadCount();
+            fetchChatUnreadCount();
+        }, 30000);
         return () => clearInterval(interval);
     }, []);
 
@@ -28,6 +33,19 @@ function MainNav({ onCreateClick, onHomeClick, searchBoxClick, onNotificationsCl
         }
     };
 
+    const fetchChatUnreadCount = async () => {
+        if (!token) return;
+        try {
+            const res = await fetch(`${apiUrl}/chats/unread-count`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const data = await res.json();
+            setChatUnreadCount(data.unreadCount || 0);
+        } catch (error) {
+            console.error("Failed to fetch chat unread count:", error);
+        }
+    };
+
     return (
         <div className="main-nav">
             <img src="/logo-white.png" alt="Loopify" className="main-nav-logo"
@@ -38,10 +56,11 @@ function MainNav({ onCreateClick, onHomeClick, searchBoxClick, onNotificationsCl
             </div>
             
             <div className="nav-data">
-                <button className="nav-chat-button">
+                <button className="nav-chat-button" onClick={onChatClick}>
                     <svg viewBox="0 0 20 20">
                         <path d="M10 1a9 9 0 00-9 9c0 1.947.79 3.58 1.935 4.957L.231 17.661A.784.784 0 00.785 19H10a9 9 0 009-9 9 9 0 00-9-9zm0 16.2H6.162c-.994.004-1.907.053-3.045.144l-.076-.188a36.981 36.981 0 002.328-2.087l-1.05-1.263C3.297 12.576 2.8 11.331 2.8 10c0-3.97 3.23-7.2 7.2-7.2s7.2 3.23 7.2 7.2-3.23 7.2-7.2 7.2zm5.2-7.2a1.2 1.2 0 11-2.4 0 1.2 1.2 0 012.4 0zm-4 0a1.2 1.2 0 11-2.4 0 1.2 1.2 0 012.4 0zm-4 0a1.2 1.2 0 11-2.4 0 1.2 1.2 0 012.4 0z"></path>
                     </svg>
+                    {chatUnreadCount > 0 && <span className="chat-dot"></span>}
                 </button>
                 <button className="nav-create-button" onClick={onCreateClick}>
                     <svg rpl="" fill="currentColor" height="20" icon-name="add-square" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">

@@ -18,6 +18,7 @@ import Settings from "../Settings/Settings";
 import LoopifyAnswers from "../LoopifyAnswers/LoopifyAnswers";
 import AnswerConversation from "../AnswerConversation/AnswerConversation";
 import AvatarSelector from "../AvatarSelector/AvatarSelector";
+import ChatPanel from "../../components/Global/ChatPanel/ChatPanel";
 
 function Main() {
     const [searchParams] = useSearchParams();
@@ -30,6 +31,7 @@ function Main() {
     const [selectedPostId, setSelectedPostId] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
     const [selectedCommunity, setSelectedCommunity] = useState(null);
+    const [isChatOpen, setIsChatOpen] = useState(false);
     const mainContentRef = useRef(null);
 
     // Check for username and community query parameters
@@ -169,6 +171,7 @@ function Main() {
                     searchBoxClick={handleSearchBoxClick}
                     onAskClick={() => handlePageChange("answers")}
                     onNotificationsClick={() => handlePageChange("notifications")}
+                    onChatClick={() => setIsChatOpen(!isChatOpen)}
                 />
                 <div className="main-app-container">
                     <MainSidePanel onToggle={setIsPanelShifted} onPageChange={handlePageChange} currentPage={currentPage} isViewingPost={!!selectedPostId} />
@@ -180,6 +183,9 @@ function Main() {
                         {renderPage()}
                     </div>
                 </div>
+                
+                {/* Chat Panel */}
+                <ChatPanel isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
             </div>
         </PageProvider>
     );

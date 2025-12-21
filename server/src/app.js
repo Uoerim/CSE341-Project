@@ -12,6 +12,7 @@ import uploadRoutes from "./routes/upload.routes.js";
 import exploreRoutes from "./routes/explore.routes.js";
 import notificationRoutes from "./routes/notification.routes.js";
 import aiRoutes from "./routes/ai.routes.js";
+import chatRoutes from "./routes/chat.routes.js";
 
 import { protect } from "./middleware/auth.js";
 import { errorHandler } from "./middleware/error.js";
@@ -36,6 +37,7 @@ app.use("/api/uploads", uploadRoutes);
 app.use("/api/explore", exploreRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/chats", chatRoutes);
 
 // Health check route
 app.get("/health", (req, res) => res.json({ status: "OK", message: "Backend running fine 🚀" }));
