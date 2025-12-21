@@ -108,7 +108,9 @@ export default function ChatPanel({ isOpen, onClose }) {
       });
       setMessages(data.messages);
       setView("chat");
+      // Refresh unread count and chat list after opening
       fetchUnreadCount();
+      fetchChats();
     } catch (error) {
       console.error("Failed to open chat:", error);
     } finally {
@@ -260,11 +262,6 @@ export default function ChatPanel({ isOpen, onClose }) {
               >
                 <svg fill="currentColor" height="18" width="18" viewBox="0 0 20 20">
                   <path d="M19 10h-8V2a1 1 0 00-2 0v8H1a1 1 0 000 2h8v8a1 1 0 002 0v-8h8a1 1 0 000-2z" />
-                </svg>
-              </button>
-              <button className="chat-panel-btn" title="Settings">
-                <svg fill="currentColor" height="18" width="18" viewBox="0 0 20 20">
-                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4zm0-6a2 2 0 100-4 2 2 0 000 4zm0 12a2 2 0 100-4 2 2 0 000 4z" />
                 </svg>
               </button>
               <button className="chat-panel-close" onClick={onClose}>

@@ -3,7 +3,7 @@ import "./mainNav.css";
 import SearchBox from "../Global/searchBox/SearchBox";
 import UserMenu from "../Global/UserMenu/UserMenu";
 
-function MainNav({ onCreateClick, onHomeClick, searchBoxClick, onNotificationsClick, onAskClick, onChatClick }) {
+function MainNav({ onCreateClick, onHomeClick, searchBoxClick, onNotificationsClick, onAskClick, onChatClick, chatPanelOpen }) {
     const [unreadCount, setUnreadCount] = useState(0);
     const [chatUnreadCount, setChatUnreadCount] = useState(0);
     const token = localStorage.getItem("authToken");
@@ -19,6 +19,13 @@ function MainNav({ onCreateClick, onHomeClick, searchBoxClick, onNotificationsCl
         }, 30000);
         return () => clearInterval(interval);
     }, []);
+
+    // Refresh chat count when panel closes
+    useEffect(() => {
+        if (!chatPanelOpen) {
+            fetchChatUnreadCount();
+        }
+    }, [chatPanelOpen]);
 
     const fetchUnreadCount = async () => {
         if (!token) return;

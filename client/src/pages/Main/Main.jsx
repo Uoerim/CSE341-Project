@@ -172,6 +172,7 @@ function Main() {
                     onAskClick={() => handlePageChange("answers")}
                     onNotificationsClick={() => handlePageChange("notifications")}
                     onChatClick={() => setIsChatOpen(!isChatOpen)}
+                    chatPanelOpen={isChatOpen}
                 />
                 <div className="main-app-container">
                     <MainSidePanel onToggle={setIsPanelShifted} onPageChange={handlePageChange} currentPage={currentPage} isViewingPost={!!selectedPostId} />
