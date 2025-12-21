@@ -62,6 +62,13 @@ function Main() {
         setSelectedUser(null); // Clear selected user when changing pages
         setSelectedCommunity(null); // Clear selected community when changing pages
         
+        // Handle community navigation from side panel
+        if (page.startsWith("community/")) {
+            const communityName = page.replace("community/", "");
+            navigate(`/app?r=${communityName}`, { replace: true });
+            return;
+        }
+        
         // Clean up URL - remove all query params when navigating to a new page
         const hasQueryParams = window.location.search && window.location.search !== "";
         if (hasQueryParams) {
