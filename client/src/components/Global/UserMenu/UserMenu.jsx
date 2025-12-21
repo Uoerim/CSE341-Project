@@ -271,10 +271,22 @@ function UserMenu() {
                                                 setIsOpen(false);
                                                 onPageChange("drafts");
                                             }
-                                            : undefined
+                                            : item.icon === "avatar"
+                                                ? () => {
+                                                    console.log("Edit Avatar clicked");
+                                                    setIsOpen(false);
+                                                    onPageChange("avatar-selector");
+                                                }
+                                                : item.icon === "settings"
+                                                    ? () => {
+                                                        console.log("Settings clicked");
+                                                        setIsOpen(false);
+                                                        onPageChange("settings");
+                                                    }
+                                                    : undefined
                                 }
                                 style={
-                                    item.icon === "logout" || item.icon === "drafts"
+                                    item.icon === "logout" || item.icon === "drafts" || item.icon === "avatar" || item.icon === "settings"
                                         ? { cursor: "pointer" }
                                         : {}
                                 }

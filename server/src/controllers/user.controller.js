@@ -85,6 +85,38 @@ export const updateMyProfile = async (req, res, next) => {
   }
 };
 
+// UPDATE my avatar only
+export const updateMyAvatar = async (req, res, next) => {
+  try {
+    const { avatar } = req.body;
+
+    if (!avatar) {
+      throw new BadRequestError("Avatar is required");
+    }
+
+    // Valid avatar options
+    const validAvatars = ["char", "char-girl", "char-man-hoodie-gpgrad"];
+    if (!validAvatars.includes(avatar)) {
+      throw new BadRequestError("Invalid avatar selection");
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      throw new NotFoundError("User not found");
+    }
+
+    user.avatar = avatar;
+    await user.save();
+
+    const safeUser = user.toObject();
+    delete safeUser.password;
+
+    res.json(safeUser);
+  } catch (err) {
+    next(err);
+  }
+};
+
 // SEARCH users + communities
 export const searchUsersAndCommunities = async (req, res, next) => {
   try {

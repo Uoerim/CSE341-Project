@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { apiGet } from "../../utils/api";
 import { addRecentProfile } from "../../utils/recentsService";
+import { usePageNavigation } from "../../context/PageContext";
 
 import MainNav from "../../components/Main/MainNav";
 import MainSidePanel from "../../components/Main/MainSidePanel";
@@ -14,6 +15,7 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
   const [currentUsername, setCurrentUsername] = useState(propUsername || paramUsername);
   const navigate = useNavigate();
   const [showAvatarModal, setShowAvatarModal] = useState(false);
+  const { onPageChange } = usePageNavigation();
 
   const [user, setUser] = useState(null);
   const [stats, setStats] = useState(null);
@@ -22,6 +24,7 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
   const [loading, setLoading] = useState(true);
   const [isPanelShifted, setIsPanelShifted] = useState(false);
   const [userNotFound, setUserNotFound] = useState(false);
+  const [isOwnProfile, setIsOwnProfile] = useState(false);
 
   const [showBannerModal, setShowBannerModal] = useState(false);
 
@@ -48,9 +51,13 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
         setUser(data.user);
         setStats(data.stats);
         
-        // Add to recent items (only if viewing someone else's profile)
+        // Check if this is the user's own profile
         const myUserId = localStorage.getItem("userId");
-        if (data.user && data.user._id !== myUserId) {
+        const isOwn = data.user && data.user._id === myUserId;
+        setIsOwnProfile(isOwn);
+        
+        // Add to recent items (only if viewing someone else's profile)
+        if (data.user && !isOwn) {
           addRecentProfile(data.user);
         }
       })
@@ -122,7 +129,11 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
           {/* Profile Header */}
           <section className="user-profile-header-card">
             <div className="user-profile-user-row">
-              <div className="user-profile-avatar clickable" onClick={() => setShowAvatarModal(true)}>
+              <div 
+                className={`user-profile-avatar ${isOwnProfile ? 'clickable' : ''}`} 
+                onClick={isOwnProfile ? () => onPageChange("avatar-selector") : undefined}
+                title={isOwnProfile ? 'Edit your avatar' : ''}
+              >
                 <div className="user-profile-avatar-circle">
                   <img 
                     src={`/character/${user.avatar || 'char'}.png`} 
@@ -132,11 +143,13 @@ export default function UserProfilePage({ username: propUsername, embedded = fal
                     }}
                   />
                 </div>
-                <div className="user-profile-avatar-edit-badge">
-                  <svg fill="currentColor" height="12" width="12" viewBox="0 0 20 20">
-                    <path d="M18.85 3.15a2.89 2.89 0 00-4.08 0L3.46 14.46a.5.5 0 00-.12.2l-1.3 4.34a.5.5 0 00.63.63l4.34-1.3a.5.5 0 00.2-.12L18.52 6.9a2.89 2.89 0 00.33-4.08v.33zM5.83 17.52l-2.68.8.8-2.68L14.52 5.07l1.88 1.88-10.57 10.57zm12.1-12.1l-.83.83-1.88-1.88.83-.83a1.39 1.39 0 011.88 0 1.33 1.33 0 010 1.88z"></path>
-                  </svg>
-                </div>
+                {isOwnProfile && (
+                  <div className="user-profile-avatar-edit-badge">
+                    <svg fill="currentColor" height="12" width="12" viewBox="0 0 20 20">
+                      <path d="M18.85 3.15a2.89 2.89 0 00-4.08 0L3.46 14.46a.5.5 0 00-.12.2l-1.3 4.34a.5.5 0 00.63.63l4.34-1.3a.5.5 0 00.2-.12L18.52 6.9a2.89 2.89 0 00.33-4.08v.33zM5.83 17.52l-2.68.8.8-2.68L14.52 5.07l1.88 1.88-10.57 10.57zm12.1-12.1l-.83.83-1.88-1.88.83-.83a1.39 1.39 0 011.88 0 1.33 1.33 0 010 1.88z"></path>
+                    </svg>
+                  </div>
+                )}
               </div>
               <div className="user-profile-user-text">
                 <h1 className="user-profile-display-name">{user.username}</h1>

@@ -17,6 +17,7 @@ import Drafts from "../Draft/Drafts";
 import Settings from "../Settings/Settings";
 import LoopifyAnswers from "../LoopifyAnswers/LoopifyAnswers";
 import AnswerConversation from "../AnswerConversation/AnswerConversation";
+import AvatarSelector from "../AvatarSelector/AvatarSelector";
 
 function Main() {
     const [searchParams] = useSearchParams();
@@ -148,6 +149,8 @@ function Main() {
                 return <Drafts />;
             case "settings":
                 return <Settings />;
+            case "avatar-selector":
+                return <AvatarSelector />;
             case "answers":
                 return <LoopifyAnswers />;
             case "answer-conversation":

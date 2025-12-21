@@ -5,6 +5,7 @@ import {
   getUserById,
   getMyProfile,
   updateMyProfile,
+  updateMyAvatar,
   searchUsersAndCommunities,
   getUserProfileByUsername,
   getUserPostsByUsername,
@@ -27,6 +28,7 @@ router.get("/search", searchUsersAndCommunities);
 // current logged‑in user
 router.get("/me", protect, getMyProfile);
 router.put("/me", protect, updateMyProfile);
+router.put("/me/avatar", protect, updateMyAvatar);
 router.get("/me/communities", protect, getMyCommunities);
 
 // public profile by username (Reddit‑style /u/:username/…)
