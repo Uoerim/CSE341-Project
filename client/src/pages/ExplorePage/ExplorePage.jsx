@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { apiGet } from "../../utils/api";
-import "./ExplorePage.css";
+import "./explorePage.css";
 
 const TABS = [
   "All",
