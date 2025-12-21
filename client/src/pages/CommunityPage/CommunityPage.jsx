@@ -562,11 +562,20 @@ export default function CommunityPage({ communityName: propName, embedded = fals
                 </svg>
                 <span>{community.type === 'public' ? 'Public' : community.type}</span>
               </div>
-              <div className="sidebar-meta-item">
+              <div 
+                className={`sidebar-meta-item ${(isOwner || isMod) ? 'clickable' : ''}`}
+                onClick={(isOwner || isMod) ? openMembersModal : undefined}
+                title={(isOwner || isMod) ? 'Click to manage members' : ''}
+              >
                 <svg fill="currentColor" height="16" width="16" viewBox="0 0 20 20">
                   <path d="M10 8a2 2 0 100-4 2 2 0 000 4zm0 1a5.01 5.01 0 00-4.9 4H2v2h16v-2h-3.1A5.01 5.01 0 0010 9z"></path>
                 </svg>
                 <span>{memberCount} member{memberCount !== 1 ? 's' : ''}</span>
+                {(isOwner || isMod) && (
+                  <svg className="expand-icon" fill="currentColor" height="12" width="12" viewBox="0 0 20 20">
+                    <path d="M10 13.7a.897.897 0 01-.636-.264l-4.6-4.6a.9.9 0 111.272-1.273L10 11.526l3.964-3.963a.9.9 0 011.272 1.273l-4.6 4.6A.897.897 0 0110 13.7z"></path>
+                  </svg>
+                )}
               </div>
             </div>
 
@@ -615,6 +624,15 @@ export default function CommunityPage({ communityName: propName, embedded = fals
                   <path d="M10 0a10 10 0 100 20 10 10 0 000-20zm5 11h-4v4H9v-4H5V9h4V5h2v4h4v2z"></path>
                 </svg>
                 Invite Mod
+              </button>
+            )}
+
+            {(isOwner || isMod) && (
+              <button className="manage-members-btn" onClick={openMembersModal}>
+                <svg fill="currentColor" height="16" width="16" viewBox="0 0 20 20">
+                  <path d="M15 12.05c1.08 0 1.95.87 1.95 1.95s-.87 1.95-1.95 1.95-1.95-.87-1.95-1.95.87-1.95 1.95-1.95zm0-1.8c-2.07 0-3.75 1.68-3.75 3.75 0 2.07 1.68 3.75 3.75 3.75 2.07 0 3.75-1.68 3.75-3.75 0-2.07-1.68-3.75-3.75-3.75zM5 12.05c1.08 0 1.95.87 1.95 1.95S6.08 15.95 5 15.95 3.05 15.08 3.05 14s.87-1.95 1.95-1.95zm0-1.8c-2.07 0-3.75 1.68-3.75 3.75 0 2.07 1.68 3.75 3.75 3.75 2.07 0 3.75-1.68 3.75-3.75 0-2.07-1.68-3.75-3.75-3.75zM10 4.05c1.08 0 1.95.87 1.95 1.95S11.08 7.95 10 7.95 8.05 7.08 8.05 6 8.92 4.05 10 4.05zm0-1.8C7.93 2.25 6.25 3.93 6.25 6c0 2.07 1.68 3.75 3.75 3.75 2.07 0 3.75-1.68 3.75-3.75 0-2.07-1.68-3.75-3.75-3.75z"></path>
+                </svg>
+                Manage Members
               </button>
             )}
 
@@ -671,13 +689,15 @@ export default function CommunityPage({ communityName: propName, embedded = fals
                         className="member-avatar"
                       />
                       <span className="member-name">{member.username}</span>
-                      {isOwner && member._id !== currentUserId && (
+                      {(isOwner || isMod) && member._id !== currentUserId && (
                         <div className="member-actions">
-                          <button onClick={() => handleAddModerator(member._id)} title="Make Moderator">
-                            <svg fill="currentColor" height="14" width="14" viewBox="0 0 20 20">
-                              <path d="M10 0L2 4v6c0 5.25 3.45 10 8 11 4.55-1 8-5.75 8-11V4l-8-4z"></path>
-                            </svg>
-                          </button>
+                          {isOwner && (
+                            <button onClick={() => handleAddModerator(member._id)} title="Make Moderator">
+                              <svg fill="currentColor" height="14" width="14" viewBox="0 0 20 20">
+                                <path d="M10 0L2 4v6c0 5.25 3.45 10 8 11 4.55-1 8-5.75 8-11V4l-8-4z"></path>
+                              </svg>
+                            </button>
+                          )}
                           <button onClick={() => handleBanUser(member._id)} title="Ban User">
                             <svg fill="currentColor" height="14" width="14" viewBox="0 0 20 20">
                               <path d="M10 0a10 10 0 100 20 10 10 0 000-20zM2 10a8 8 0 0112.9-6.3L4.7 13.9A7.9 7.9 0 012 10zm8 8a7.9 7.9 0 01-3.9-1L16.3 6.1A8 8 0 0110 18z"></path>
